@@ -136,7 +136,7 @@ footer .grad-line{width:60px;height:2px;background:var(--grad);margin:0 auto 16p
 <section class="hero" id="hero">
 <div class="hero-eyebrow">Research Statement</div>
 <h1>研究<span class="gradient">综述</span></h1>
-<p class="hero-sub">我是李奥多，广东工业大学人工智能专业本科生。我的研究始终围绕一个问题：<strong style="color:var(--accent)">如何让强大的 AI 能力，真正跑在资源受限的真实设备上</strong>。从 3D 高斯压缩、二值点云 Transformer，到大模型对齐、多模态安全与四足机器人导航，我以「效率优先、面向部署约束」为统一视角，把昂贵的能力压缩、蒸馏、编译成轻量可落地的形式。本综述把我的工作梳理成四条研究线，并提炼贯穿其间的方法论。</p>
+
 <div class="hero-stats">
 <div class="stat"><div class="stat-num">11</div><div class="stat-label">论文与研究项目</div></div>
 <div class="stat"><div class="stat-num">4</div><div class="stat-label">研究主线</div></div>
@@ -147,36 +147,11 @@ footer .grad-line{width:60px;height:2px;background:var(--grad);margin:0 auto 16p
 <section class="doc-sec" id="vision">
 <div class="sec-label">Vision</div>
 <h2>研究愿景与主线<span class="en">Research Vision &amp; The Connecting Thread</span></h2>
-<p class="lead">我研究的核心命题是「<strong>可部署的智能（Deployable Intelligence）</strong>」：当前最强的模型——大语言模型、点云 Transformer、4D 高斯场景——往往以巨大的算力、显存和延迟为代价，把它们留在了云端和数据中心。我想把这道鸿沟填上，让这些能力能在手机、机器狗、无人机这类带电、带算力预算的边缘设备上真正运转起来。</p>
+
 <p>这个命题之所以吸引我，是因为它<strong>同时是科学问题和工程问题</strong>。科学上，它逼迫我去理解一个模型里「哪些部分是真正承载能力的、哪些是冗余的」——这要求对模型内部机制有足够深的洞察；工程上，它要求把这种洞察落到真实硬件的延迟、显存、带宽约束里，并用实测数字而非纸面 FLOPs 来检验。我的每一篇工作，本质上都是在某个具体场景里回答「能力从哪来、冗余在哪里、如何无损地把它压到能部署」这组问题。</p>
 <p>顺着这条主线，我的工作自然聚成<em>四条研究线</em>：(1) <strong>高效 AI 与极致压缩</strong>——直接攻克部署的算力/显存瓶颈；(2) <strong>LLM 对齐与拟人化交互</strong>——让端侧小模型也具备大模型的对话与推理品质；(3) <strong>多模态理解与安全</strong>——在跨模态系统里以近零开销提供理解与防护；(4) <strong>具身智能与机器人导航</strong>——把前三条线整合到真实机器人这一终极部署载体上。四条线看似分散，但都被「效率—部署」这条主线串起，并共享一套可迁移的方法论（见第 5 节）。</p>
 </section>
-<section class="doc-sec" id="t1">
-<div class="sec-label">Thread 01</div>
-<h2>高效 AI 与极致压缩<span class="en">Efficient AI &amp; Extreme Compression</span></h2>
-<p>这是我研究的根基与发力点。我关心的不是"再小一点"的渐进式压缩，而是<strong>极致压缩</strong>——用数量级（10×–10000×）的体积/算力削减，去触碰真实边缘部署的门槛，同时把质量损失控制在可接受范围。</p>
-<div class="thread t1">
-<h3><span class="tnum">①</span>VEDAL <span class="papers">· CGI 2026 · 一作 · 3D Gaussian Splatting</span></h3>
-<p>3D 高斯泼溅能实时渲染高质量场景，但要存几百万个高斯体，上不了边缘设备。我没有沿用"按梯度/不透明度排序、一刀切硬剪"的主流做法，而是把剪枝<strong>形式化为变分推断</strong>：每个高斯是否保留是一个二值潜变量，通过最小化变分自由能（重建误差 + KL 正则）端到端学习其保留概率。关键洞察是——不同高斯收敛速率天差地别（纹理区快、镜面/遮挡区慢），所以我设计了<em>异步预测误差门</em>，只对"已收敛"的高斯施加剪枝压力，避免误伤。结果：5.2× 压缩、PSNR 仅降 0.31 dB、渲染反而提速；叠加属性量化达 27.2×。</p>
-<div class="pill-row"><span class="pill"><b>5.2×</b> 压缩</span><span class="pill"><b>−0.31 dB</b> PSNR</span><span class="pill"><b>185 FPS</b></span><span class="pill">变分推断 / 闭式解</span></div>
-</div>
-<div class="thread t1">
-<h3><span class="tnum">②</span>BiPT <span class="papers">· IEEE TPAMI 在审 · 作者 · 点云二值化</span></h3>
-<p>这是我压缩工作里最硬的一篇。1-bit 量化（权重+激活都 W1A1）是压缩的物理极限，但直接套到点云 Transformer 上会彻底崩溃——邻域注意力的重尾 softmax 在固定阈值下会"坍塌"成均匀分布，几何稀疏结构被抹平。我提出一组<strong>几何感知二值化算子</strong>：SAB（先在连续域算 softmax、再逐 query 自适应阈值）防注意力坍塌、BiLinearLSR（可学习尺度因子）恢复 sign 丢失的幅值、SubLN/RelNorm 稳住二值激活的方差和几何尺度。最终在 PTv3 上实现 18.9× 参数压缩、14.7× 加速、56× FLOPs 削减，并保持实用精度。这篇工作让我与 TPAMI 级别的合作者一起，把"二值化能不能用于 3D Transformer"这个开放问题往前推了一步。</p>
-<div class="pill-row"><span class="pill"><b>18.9×</b> 参数</span><span class="pill"><b>14.7×</b> 加速</span><span class="pill"><b>56×</b> FLOPs</span><span class="pill">W1A1 全二值</span></div>
-</div>
-<div class="thread t1">
-<h3><span class="tnum">③</span>Latent4D <span class="papers">· IEEE TCE 2026 · 一作 · 4DGS 压缩 · 二轮返修</span></h3>
-<p>把压缩从静态 3D 推到<strong>动态 4D 场景</strong>。动态高斯在相邻时刻、相邻空间高度冗余，逐属性硬量化等于把同样信息抄千百遍。我用变分自编码器（VAE）学一个紧致潜空间来当编解码器，把整套时变高斯属性投影到低维潜流形、再量化潜码落盘，最高达 <em>21900×</em> 压缩比，解码后仍可直接泼溅渲染。它和 VEDAL 是互补的：VEDAL 减"数量"、Latent4D 压"表示"。</p>
-<div class="pill-row"><span class="pill"><b>21900×</b> 压缩</span><span class="pill">VAE 潜空间编解码</span><span class="pill">时序冗余</span></div>
-</div>
-<div class="thread t1">
-<h3><span class="tnum">④</span>CUDA-Eval <span class="papers">· NeurIPS 2026 在投 · 一作 · LLM × CUDA</span></h3>
-<p>这篇是从另一个角度切入"效率"——不是压缩模型，而是<strong>用受控实验厘清"LLM 写高效 GPU 代码时，能力到底卡在哪一环"</strong>。现有全栈 CUDA 智能体把提议、搜索、反馈、环境六个组件揉成黑盒刷分，无法归因。我把它当作组件归因问题，固定其余、只变一项，跑了 4320 个单元的受控矩阵，提出 SPC 算子量化每个组件的边际贡献。核心发现反直觉而有方向性：<em>85.6–95% 的失败是"数值失配"而非编译错误</em>——瓶颈不在语法生成、而在数值语义保真，且搜索策略并非普适加成（在弱模型上反而有害）。这把研究焦点从"换更强的 LLM"转向"教模型理解数值精度"。</p>
-<div class="pill-row"><span class="pill"><b>4320</b> 受控单元</span><span class="pill"><b>SPC</b> 归因算子</span><span class="pill">数值保真瓶颈</span></div>
-</div>
-<p>这四篇让我建立起对"效率"的系统理解：压缩不是单点技巧，而是要<strong>从机制上找到能力的真正载体</strong>（VEDAL 的收敛高斯、BiPT 的注意力稀疏、CUDA-Eval 的数值语义），再围绕它做无损削减。这套能力直接对应简历里的工程经验——3DGS 压缩、二值化设计、Benchmark 设计、CUDA 优化、部署约束下的性能分析。</p>
-</section>
+
 <section class="doc-sec" id="t3">
 <div class="sec-label">Thread 03</div>
 <h2>多模态理解与安全<span class="en">Multimodal Understanding &amp; Safety</span></h2>
@@ -199,7 +174,7 @@ footer .grad-line{width:60px;height:2px;background:var(--grad);margin:0 auto 16p
 <div class="method-grid">
 <div class="method-card">
 <h4>① 重能力离线化、推理轻量化</h4>
-<p>把昂贵的能力预先“烤”进权重或紧致表示，推理时只跑轻量映射。ATRIE 把 14B LLM 推理蒸进 11.8M Adapter；BiPT 把 FP32 能力压进 1-bit。本质都是把推理时延复杂度从 O(大模型) 降到 O(轻量件)。</p>
+
 </div>
 <div class="method-card">
 <h4>② 概率/变分视角处理离散决策</h4>
@@ -211,7 +186,7 @@ footer .grad-line{width:60px;height:2px;background:var(--grad);margin:0 auto 16p
 </div>
 <div class="method-card">
 <h4>④ 以真实部署约束为最终标尺</h4>
-<p>我用实测延迟、显存、真机试验而非纸面 FLOPs 检验工作。BiPT 报 RTX 3090 实测加速并诚实说明小于名义 FLOPs；DOGe 在图书馆服务机器狗系统中完成真实环境测试。诚实地区分“理论增益”与“落地增益”是我的底线。</p>
+
 </div>
 </div>
 </section>
@@ -220,7 +195,7 @@ footer .grad-line{width:60px;height:2px;background:var(--grad);margin:0 auto 16p
 <h2>未来研究方向<span class="en">Future Directions</span></h2>
 <p>我的四条研究线正在自然地收敛到一个目标：<strong>端侧的多模态具身智能（On-Device Multimodal Embodied AI）</strong>——一个能在机器人本体上实时运行、既懂语言又懂场景、还能安全决策的统一系统。具体地，我想推进三个方向：</p>
 <h3>1. 把极致压缩从单模态推向多模态统一模型</h3>
-<p>我已在点云（BiPT）、高斯场景（VEDAL/Latent4D）、语音（ATRIE）上分别验证了极致压缩，下一步是把这套几何/语义感知的压缩原语推广到<strong>多模态统一骨干</strong>，让一个端侧模型同时高效处理视觉、语言、3D。CUDA-Eval 积累的"数值语义保真"洞察会在这里派上用场。</p>
+<p>我已在点云（。CUDA-Eval 积累的"数值语义保真"洞察会在这里派上用场。</p>
 <h3>2. 让端侧模型具备可信的安全与不确定性意识</h3>
 <p>NeuroGuard 的“近零开销、攻击正交监控”指向一个原则：部署级智能必须自带安全与不确定性校准。我希望把这种轻量安全监控做成端侧多模态系统的标准组件，而非事后补丁。</p>
 <h3>3. 把"重训练、轻推理"范式系统化为端侧具身智能的训练框架</h3>
@@ -231,7 +206,7 @@ footer .grad-line{width:60px;height:2px;background:var(--grad);margin:0 auto 16p
 <h2>研究历程<span class="en">Research Trajectory</span></h2>
 <ul class="tl">
 <li><b>2025</b>Forestpest-YOLO 发表于 CAIT 2025——我的第一篇一作，从边缘小目标检测切入"高效部署"主题。</li>
-<li><b>2026 初</b>TCE 红外合成（作者）发表于 IEEE TCE（ ）；BiPT（作者）投稿 IEEE TPAMI，与资深合作者一起攻 1-bit 点云 Transformer。</li>
+
 <li>2026 春密集产出一作工作：ATRIE（ACM ICMR 已录用）、VEDAL（CGI 已录用）、DOGe（IEEE WCCIS 已录用），覆盖语音、3DGS 压缩与具身导航。</li>
 <li>NeuroGuard 的“近零开销、攻击正交监控”指向一个原则：部署级智能必须自带安全与不确定性校准。我希望把这种轻量安全监控做成端侧多模态系统的标准组件，而非事后补丁。</li>
 </ul>

@@ -124,7 +124,7 @@ footer .grad-line{width:60px;height:2px;background:var(--grad);margin:0 auto 16p
 <aside class="sidebar" id="sidebar">
 <div class="sidebar-title">论文全文翻译</div>
 <a href="#t-tce"><span class="side-idx">01</span><span>TCE · 红外图像合成<span class="side-badge done">全文</span></span></a>
-<a href="#t-bipt"><span class="side-idx">03</span><span>BiPT · 二值点云 Transformer<span class="side-badge done">全文</span></span></a>
+
 <a href="#t-vedal"><span class="side-idx">04</span><span>VEDAL · 3DGS 剪枝<span class="side-badge done">全文</span></span></a>
 <a href="#t-neuro"><span class="side-idx">05</span><span>NeuroGuard · 跨模态绑定<span class="side-badge done">全文</span></span></a>
 <a href="#t-atrie"><span class="side-idx">06</span><span>ATRIE · 语音合成<span class="side-badge done">全文</span></span></a>
@@ -632,106 +632,8 @@ I_r    = Φ(I_v) = g(f(I_v))              (9)</span>
 </div>
 <p class="tnote">以上为 NeurIPS 2026 投稿论文《Dissecting LLM-Generated CUDA: Proposal, Search, and Environment Compatibility》全文中译，依据原文逐节翻译；公式以原文符号呈现，部分表格节选关键行、参考文献从略。</p>
 </section>
-<!-- ============ PAPER 04: BiPT ============ -->
-<section class="doc-sec" id="t-bipt">
-<div class="doc-meta">
-<span class="doc-no">PAPER · 04</span>
-<span class="badge b-tpami">IEEE TPAMI</span>
-<span class="role">作者</span>
-<span class="role">点云 / 二值化</span>
-</div>
-<h2 class="doc-title">BiPT：高效二值点云 Transformer 网络
-    <span class="en">BiPT: Efficient Binary Point Cloud Transformer Networks</span>
-</h2>
-<p class="doc-authors">作者：Yihua Shao、<b>李奥多</b>（并列第一作者）、Yuxuan Fan、Siyu Chen、Ziyang Yan、Guofeng Mei、Jingcai Guo、Haotong Qin、Fabio Poiesi、Hao Tang、Ling Shao（IEEE Fellow）、Ming-Hsuan Yang（IEEE Fellow）。</p>
-<p class="doc-affil">CVPR 投稿后转投 IEEE TPAMI（在审）。</p>
-<div class="abstract">
-<p><b>摘要</b>——点云 Transformer 在 3D 感知上达到最先进性能，但其高昂代价限制了在资源受限设备上的部署。我们提出 <b>BiPT</b>，一种把权重和激活都用 <b>1-bit</b> 表示的极致网络二值化。直接二值化对点云 Transformer 尤其困难，因为它会破坏对邻域注意力至关重要的稀疏性和尺度一致性。我们用一组<b>几何感知的二值化算子</b>来解决这一问题，包括 <b>Softmax 感知二值化（SAB）</b>、<b>SubLayerNorm</b>、<b>RelNorm</b> 和 <b>双线性逐层尺度恢复（BiLinearLSR）</b>。我们的方法实现了 <b>18.9× 参数压缩</b>和 <b>14–15× 推理加速</b>，带来数量级的效率提升（如 56× FLOPs 削减），在分类任务上维持近 FP32 精度、在点云基准上维持实用精度。对稠密语义分割，我们进一步引入仅训练期的超点引导边界与对比正则，在不修改推理流水线的前提下改善极致量化下的局部区域一致性。本工作是首批在点云 Transformer 中充分利用二值神经网络的工作之一，为资源受限边缘平台上的实时 3D 深度学习铺平道路。</p>
-<p class="kw"><b>关键词</b>：二值网络、点云理解、高效 AI、模型量化、低比特推理</p>
-</div>
-<h3>I. 引言</h3>
-<p>利用神经网络处理点云是现代 3D 理解的核心。PointNet、PointNet++ 等早期点基方法和近期的 Point Transformer 架构都达到了强精度，但其计算和内存代价对资源受限的边缘平台仍然过高。即便是基于稀疏卷积或混合点-体素流水线的效率导向设计，仍依赖稠密浮点运算和宽特征通道。对边缘设备（如自主无人机或移动机器人）的真实部署而言，主要瓶颈不只是计算 FLOPs，而是<b>内存带宽约束</b>。单纯缩小网络架构是不够的——例如把 FP32 骨干缩到 1/4 通道宽（PTv3-Small）只带来微弱的 2.4× 延迟加速，却仍需相当的内存占用。</p>
-<p>模型量化、尤其是极致二值化，通过把浮点 MAC 换成 XNOR 运算、提供高达 32× 内存压缩，给出了缓解带宽瓶颈的更优效率方案。虽然二值神经网络（BNN）在图像和语言上已被广泛研究，3D 点云二值化主要还局限于分类或地点识别。这一缺口并非偶然：从 2D 图像把二值化扩展到 3D 点云引入了若干根本挑战。第一，图像位于规则网格、感受野固定，激活范围可预测；点云不规则、无序，邻域大小可变、特征统计跨局部区域显著变化。第二，2D 特征源于有界像素强度并被空间池化进一步约束，而 3D 特征编码无界的空间坐标和距离、幅度跨场景和尺度变化极大。第三，图像 Transformer 的注意力作用于空间范围一致的图块，但 Point Transformer 注意力必须编码不同密度邻域间的细粒度几何关系，使 softmax 分布对 sign 函数引入的离散化噪声敏感得多。因此为有界激活、空间均匀特征优化的传统 BNN 不能直接用于 Point Transformer。这种高动态范围迫使朴素二值化把不同值映射到同一档，造成"<b>注意力坍塌</b>"——注意力权重变均匀、破坏稀疏几何、带来巨大精度损失。</p>
-<p>本文提出 BiPT，一个在 PTv3 骨干上针对这些失败模式的全二值点云 Transformer，组合三个关键机制：第一，<b>Softmax 感知二值化（SAB）</b>在连续域计算注意力、再施加 query 特定的阈值得到二值掩码，保留注意力稀疏性、减少量化噪声对 softmax 的影响。第二，<b>双线性逐层尺度恢复（BiLinearLSR）</b>给二值线性投影附加可学习标量因子，恢复 sign 函数丢失的幅度信息、跨层稳定注意力 logits 和 FFN 输出的尺度。第三，<b>Sub-LayerNorm</b> 和基于半径的相对位置 <b>RelNorm</b> 在二值化前归一化中间特征和几何编码，避免深 W1A1 栈中的特征同质化和方差爆炸。主要贡献：</p>
-<ol>
-<li>提出 BiPT，一个面向稠密 3D 预测的全二值 Point Transformer，在 S3DIS 上以 52.9% mIoU、相对 FP32 PTv3 的 18.9× 参数压缩和 14.7× 延迟加速确立了强 W1A1 基线；在增强稠密训练配方下，超点引导正则进一步把 W1A1 分割提升到 63.98% mIoU。</li>
-<li>设计 Softmax 感知二值化机制，保护至关重要的 query 依赖注意力稀疏性——不靠无效的固定全局截断，而对每个 query 动态地阈值化 softmax 权重，从而在不规则局部邻域上捕捉信息量大的二值注意力结构。</li>
-<li>引入 BiLinearLSR 配合 Sub-LayerNorm 和 RelNorm，恢复丢失的幅度、稳定二值特征统计，使深 W1A1 栈能在几何 3D 数据上稳健训练。</li>
-<li>对稠密分割，引入由超点边界监督、超点级对比、语义级对比组成的超点引导训练方案，在不修改推理流水线的前提下改善局部几何一致性和类感知特征分离。</li>
-</ol>
-<h3>II. 相关工作</h3>
-<p><b>网络二值化。</b>网络二值化用 1-bit 值表示权重和激活，大幅降低内存、把浮点乘法换成廉价位运算，同时通过 sign 函数保留方向信息。训练通常依赖直通估计器（STE）处理不可微的 sign 函数。XNOR-Net 引入数据依赖的缩放，Bi-RealNet、ReActNet 等后续 2D 架构改进了 shortcut 和激活函数。对 Transformer 式模型，BinaryBERT、BiT 表明自注意力在二值化下尤其脆弱、需要谨慎的激活裁剪和分阶段训练。把极致量化应用到 3D 点云更晚近也更难：BiPointNet 用基于 EMA 的逐层尺度恢复（LSR）缓解特征同质化，FBPT 进一步研究点云分类和地点识别的 W1A1 二值化。我们把 LSR 哲学扩展到通用 Point Transformer 骨干的邻域注意力，并面向稠密语义分割和更广的场景级理解任务。<b>用于 3D 场景理解的超点。</b>超点把几何均匀的点聚成紧凑区域；与设计新超点骨干或划分算法的工作不同，我们用预先算好的超点作为仅训练期的先验，通过边界和对比目标正则化二值 Point Transformer。<b>轻量 3D 模型 vs 网络量化。</b>剪枝常产生难以在通用硬件加速的非结构化稀疏，FP16 通常只提供约 2× 内存削减；相比之下极致二值化（W1A1）通过把 MAC 换成 XNOR 和 popcount 提供高达 32× 内存压缩，这对内存带宽（而非原始 FLOPs）主导运行时瓶颈的极端边缘部署很重要。</p>
-<h3>III. 方法：BiPT</h3>
-<p><b>问题表述。</b>我们考虑点云分割和分类。目标是二值化一个 PTv3 骨干，把所有内部权重和激活量化到 {−1,+1}，同时保留小的全精度 stem 和 head，并在这种极致压缩下保持二值方法间有竞争力的精度。</p>
-<h4>A. 概述</h4>
-<p>BiPT 是建立在 PTv3 上的全二值点云 Transformer。一个全精度 stem 把点特征嵌入 R^d（默认 d=256）并构建多尺度邻域，然后堆叠 L 个二值 Transformer 块。每块含一个二值自注意力（SA）模块和一个二值前馈（FFN）模块，所有线性投影经 BiLinearLSR 和 SAB 在 {−1,+1} 权重和激活上运作。只有 stem 和任务头保持 FP32，所有内部 transformer 块以 W1A1 模式运作。</p>
-<h4>B. 参数级二值化</h4>
-<p><b>基础二值化。</b>全精度线性层算 y=xW；我们改用由 sign 函数从实值张量得到的二值张量 x_b、W_b∈{−1,+1}（式 1）。为反传过不可微的 sign，采用 STE、把梯度裁剪到 |x|&lt;1（式 2）。<b>双线性逐层尺度恢复（BiLinearLSR）。</b>sign 运算丢弃幅度信息（x=0.01 和 x=100 都映射到 +1）；为恢复有用尺度，每个全精度投影 y=xW 被替换为 y=α·(x_b·W_b)（式 3），含可学习标量（或向量）尺度 α。α 从对应的预训练全精度 PTv3 教师初始化为 α_init=std(xW_fp)/std(x_b·W_b)（式 4），再由梯度下降优化。<b>高效位运算。</b>二值点积经 XNOR 和 popcount 实现：q_b·k_b=2·popcount(XNOR(...))−d（式 5），把 O(d) 浮点 MAC 降到 O(d/w) 位运算（w∈{32,64}）。<b>Sub-LayerNorm 稳定激活。</b>在二值网络中，注意力和 FFN 聚合是实值的、可跨深度累积方差，仅在块边界用 LayerNorm 不够。因此我们在两处插入 SubLN：(i) Q/K/V 投影前、(ii) 第一个 FFN 非线性前（式 6、7）。消融显示这种归一化层布置是训练稳定性增益的主驱动。<b>相对位置归一化（RelNorm）。</b>用层查询半径 r(l) 归一化相对位置 Δp（式 8），把位置通道保持在单位尺度范围、限制跨层方差，且因复用邻域构建已用的 r(l) 而开销极小。<b>EMA-max 聚合。</b>为缓解二值化引入的随机性，训练时对 max 池化特征用指数移动平均（式 9，λ=0.1）；推理时丢弃 EMA 项、用普通 max 池化，无额外开销。</p>
-<h4>C. 注意力级二值化（SAB）</h4>
-<p>朴素地在 softmax 前二值化注意力 logits 是尺度敏感的，因为 exp(·) 放大量化噪声。SAB 保留软注意力分布来定义稀疏模式、只二值化聚合中用的权重、并把梯度经 softmax 路由。<b>自适应逐 query 阈值。</b>给定 BiLinearLSR 层来的二值 query/key 嵌入，先算注意力 logits s_ij（式 10）、再 softmax 得常规分布 a^(s)（式 11）。SAB 不用全局固定阈值，而对每个 query i 用 θ_i=μ_i+βσ_i，其中 μ_i、σ_i 是该 query 注意力分布的均值和标准差；正文采用规范选择 β=0，即 θ_i=μ_i（式 12）。二值掩码 a^(q)_ij=1[a^(s)_ij≥θ_i]（式 13）。<b>前向聚合。</b>用二值掩码聚合输出特征 z_i=HardTanh(α_v·Σ a^(q)_ij·v_b,j)（式 14）。<b>反向梯度路由。</b>直接对式 13 求导几乎处处零梯度；SAB 用软 STE：把对二值掩码的梯度经标准 softmax 雅可比近似回传（式 15、16）——前向走二值掩码，而注意力 logits 及其二值 Q/K 输入像用了 softmax 权重一样被更新。</p>
-<h4>D. 训练级优化</h4>
-<p>量化到 1-bit 降低表示能力、更难拟合复杂 3D 数据（尤其稀有类）。我们用来自全精度 PTv3 教师的<b>知识蒸馏</b>和针对类不平衡与校准的多项损失训练 BiPT。蒸馏同时蒸馏预测和注意力模式：用温度 T 的 KL 散度蒸馏 logits（式 18），并对每层注意力矩阵 L2 归一化后最小化 MSE（式 19），总蒸馏损失 L_KD=λ_LD·L_LD+λ_AD·L_AD（式 20）。<b>基础分割损失</b>组合多个互补项（式 21）：类平衡交叉熵（用有效样本数加权，γ=0.997）、Lovász-Softmax（mIoU 的凸代理，λ_Lov=0.8）、Tversky 损失（对极稀有类强调召回，α=0.3、β=0.7）、置信惩罚（熵正则、改善校准）和知识蒸馏。<b>超点引导边界与对比学习。</b>稠密室内场景有大平面区、细结构和高度不平衡类别；极致量化下二值特征会过平滑、削弱边界判别。我们引入仅训练期的超点引导正则：用边界损失 L_edge 保留局部几何不连续，用 L_sp 强制语义连贯超点内特征一致，用 L_sem 改善语义级类间分离。完整稠密分割目标 L=L_base+λ_edge·L_edge+λ_sp·L_sp+λ_sem·L_sem（式 26）。超点 id 只被辅助损失消费、推理时丢弃，不修改推理图或部署成本。</p>
-<h3>IV. 几何感知二值化分析</h3>
-<p><b>注意力稀疏性与分布保真。</b>SAB 呈现<b>层自适应稀疏</b>：浅层（Layer 1/2）维持更高非零比（0.52/0.48）捕捉稠密局部几何模式，深层（Layer 3/4）激进稀疏（0.35/0.31）专注语义显著 token。尽管 16× 压缩，SAB 相对 FP32 教师保持 85.7% 的熵保真，维持固定阈值会摧毁的长尾 token 重要性；KL 散度跨层保持低位，解释了 SAB 为何改善稀有类性能。<b>1-bit 约束下的蒸馏动态。</b>敏感性分析揭示<b>注意力蒸馏主导</b>：变化 AD 权重对最终 mIoU 的影响范围（Δ=4.0%）显著大于 LD（Δ=2.9%），证实保留拓扑注意力结构比单纯 logit 对齐更关键。蒸馏动态<b>非单调</b>：性能在中等蒸馏强度峰值，过强则退化——过度依赖教师注意力会妨碍二值模型在 1-bit 约束下发现任务特定模式。<b>超越标准 BNN 实践。</b>不用任何提出的模块时基线只达 21.3% mIoU、比完整模型低 31.6 点；BiLinearLSR 在此差距中起核心作用（sign 函数剥离全部幅度信息）；SAB 相对固定阈值基线贡献 +4.6 mIoU，结合 SubLN（再 +17.1）联合增益达 +21.7 mIoU。<b>复杂度分析。</b>空间上权重内存从 O(L·d²·32) 降到 O(L·d²·1) bit，整体内存约 32× 削减（实测参数压缩 18.9×，计入非二值 stem 和头）；时间上把 O(N·K·d) 浮点 MAC 换成 O(N·K·d/64) 位运算，数学上对应约 56× FLOPs 削减。</p>
-<h3>V. 实验</h3>
-<h4>A. 设置</h4>
-<p><b>基线：</b>BiPointNet（点云二值化）、BiViT（transformer 二值化）、FBPT（最接近的二值 Point Transformer 先验，用 sign 二值化+固定阈值注意力规则）、BitNet b1.58（LLM 二值化），全部迁移到 PTv3 作基线。<b>数据集：</b>S3DIS（室内分割，13 类）、ScanNet（20 类）、nuScenes-lidarseg（室外 16 类）、ModelNet40（分类，40 类），均按 PTv3 官方配置。<b>训练配方：</b>8×RTX 3090、AdamW、60 epoch、初始 lr 1e-4、OneCycleLR；解耦学习率（非块参数 1e-4、二值块参数含 BiLinearLSR 尺度 1e-5）；用稀有类采样（RCS）和多任务损失维持少数类梯度流。骨干用 PTv3-m1.0 配置，阶段通道 {32,64,128,256,512}。</p>
-<h4>B. 定量结果</h4>
-<p><b>效率（表 1）。</b>在 S3DIS 上，FP32 PTv3 换成 BiPT 把 FLOPs 从 60.90G 降到 1.09G（55.9×）、参数从 46.00M 降到 2.43M（18.9×）、RTX 3090 实测前向延迟从 147 ms 降到 10 ms（14.7×）。实现的加速小于名义 FLOPs 削减，因为 FLOPs 核算忽略了非二值组件（FP32 stem/head、LayerNorm、SAB 中的 softmax、内存流量、位打包）。<b>室内分割（表 2）。</b>在更激进的 W1A1 区，BiPT 在 S3DIS/ScanNet/nuScenes 得 52.9/44.7/48.6 mIoU，在 PTv3 骨干下一致取得 W1A1 变体中最高精度；在 S3DIS 上比 FBPT 高 27.8 mIoU 点（52.9 vs 25.1）。52.9% 应读作不带超点先验的核心 BiPT W1A1 架构基线；激活超点引导稠密训练配方后，匹配 W1A1 运行提升到 63.24%（历史磁盘超点）和 63.90%/63.98%（重生成 pycut 超点）。ModelNet40 上 top-1 从 93.7% 降到 91.2%，而先前 W1A1 方法损失大得多（BiPointNet −13.4 点、BiViT −15.2 点）。</p>
-<div class="doc-wrap">
-<table class="dtable">
-<caption>表 1（节选）　效率比较（S3DIS，RTX 3090 仅前向延迟）。</caption>
-<tr><th>方法</th><th>FLOPs(G)</th><th>参数(M)</th><th>延迟(ms)</th></tr>
-<tr><td>PTv3 (FP32)</td><td>60.90</td><td>46.00</td><td>147</td></tr>
-<tr><td>FBPT→PTv3</td><td>1.30</td><td>2.44</td><td>12</td></tr>
-<tr><td>BiViT→PTv3</td><td>2.10</td><td>2.48</td><td>22</td></tr>
-<tr><td class="hi">BiPT (本文)</td><td class="hi">1.09 (55.9×)</td><td class="hi">2.43 (18.9×)</td><td class="hi">10 (14.7×)</td></tr>
-</table>
-</div>
-<div class="doc-wrap">
-<table class="dtable">
-<caption>表 2（节选）　PTv3 骨干上的量化比较（mIoU%；FP32 PTv3 为上界）。</caption>
-<tr><th>方法</th><th>W/A</th><th>S3DIS</th><th>ScanNet</th><th>nuScenes</th><th>ModelNet40 OA</th></tr>
-<tr><td>PTv3 (FP32)</td><td>32/32</td><td>73.6</td><td>77.6</td><td>75.3</td><td>93.7</td></tr>
-<tr><td>BiPT (本文)</td><td>2/8</td><td>65.0</td><td>—</td><td>—</td><td>92.0</td></tr>
-<tr><td>FBPT→PTv3</td><td>1/1</td><td>25.1</td><td>—</td><td>—</td><td>67.2</td></tr>
-<tr><td>BiPointNet→PTv3</td><td>1/1</td><td>36.8</td><td>—</td><td>—</td><td>80.3</td></tr>
-<tr><td class="hi">BiPT (本文)</td><td>1/1</td><td class="hi">52.9</td><td class="hi">44.7</td><td class="hi">48.6</td><td class="hi">91.2</td></tr>
-<tr><td class="hi">BiPT++（超点引导）</td><td>1/1</td><td class="hi">63.98</td><td>—</td><td>—</td><td>—</td></tr>
-</table>
-</div>
-<p><b>二值化 vs 轻量 FP32 架构（表 3）。</b>线性缩小 FP32 骨干给出次优的效率-精度权衡：PTv3-Small（12.0M）只 2.4× 加速却掉到 57.8% mIoU，PTv3-Tiny（3.2M）掉到不可用的 41.2%。相比之下，BiPT W2A8（5.8M）精度（60.8%）超过 PTv3-Small 且快近 2.7×；极致 BiPT W1A1 达 14.7× 加速（10 ms），比同样大小的 PTv3-Tiny 高 +11.7% mIoU——证明在极端延迟和内存约束下，维持更宽网络拓扑+1-bit 量化比激进剪通道更有表现力、更硬件友好。</p>
-<div class="doc-wrap">
-<table class="dtable">
-<caption>表 3　缩小 FP32 架构 vs 网络二值化（S3DIS，RTX 3090）。</caption>
-<tr><th>模型配置</th><th>精度</th><th>参数(M)</th><th>延迟(ms)</th><th>mIoU(%)</th></tr>
-<tr><td>PTv3-Base（教师）</td><td>FP32</td><td>46.0</td><td>147</td><td>73.6</td></tr>
-<tr><td>PTv3-Small</td><td>FP32</td><td>12.0</td><td>61</td><td>57.8</td></tr>
-<tr><td>PTv3-Tiny</td><td>FP32</td><td>3.2</td><td>38</td><td>41.2</td></tr>
-<tr><td>BiPT (W2A8)</td><td>2/8</td><td>5.8</td><td>22</td><td>60.8</td></tr>
-<tr><td class="hi">BiPT (W1A1)</td><td>1/1</td><td class="hi">2.4</td><td class="hi">10</td><td class="hi">52.9</td></tr>
-</table>
-</div>
-<h4>C. 消融研究</h4>
-<p><b>组件消融（表 4）。</b>基线（sign 二值化+固定 0.5 阈值注意力+标准 max 池化）只 21.28 mIoU。加 SAB→25.86（+4.58），尤其改善 window 类（per-query 阈值比全局截断更好保留 softmax 稀疏模式）。再加 SubLN→42.99（+17.13，单个模块最大增益）；它把 ceiling IoU 从 42.1 提到 68.5、wall 从 34.6 到 58.9，说明稳定中间统计对沿深度累积误差的大结构区尤其重要。RelNorm 在早期训练（step 4096）改善 +7.28 mIoU。完整模型（SAB+SubLN+RelNorm+EMA-max）达 52.85 mIoU。<b>损失消融（表 5）。</b>从标准 CE（38.42）起：类平衡 CE→42.18（+3.76），Lovász-Softmax→46.35（+4.17，对齐 IoU），Tversky→48.91（+2.56，改善稀有类召回），知识蒸馏→52.85（+3.94）。KD 权重消融揭示注意力蒸馏主导、AD=0.5/LD=0.3 最优（52.9% mIoU）。<b>超点源（表 6）。</b>同样配方下用 pycut 替换历史超点把 W1A1 从 63.24% 提到 63.98% mIoU，说明更干净的几何划分提供更可靠的区域级监督。</p>
-<div class="doc-wrap">
-<table class="dtable">
-<caption>表 4（节选）　S3DIS 组件消融（基线=sign 二值化+固定阈值注意力）。</caption>
-<tr><th>配置</th><th>SAB</th><th>SubLN</th><th>RelNorm</th><th>mIoU</th></tr>
-<tr><td>PTv3 教师（FP32）</td><td>—</td><td>—</td><td>—</td><td>73.58</td></tr>
-<tr><td>a) 基线</td><td>✗</td><td>✗</td><td>✗</td><td>21.28</td></tr>
-<tr><td>b) +SAB</td><td>✓</td><td>✗</td><td>✗</td><td>25.86</td></tr>
-<tr><td>c) +SAB+SubLN</td><td>✓</td><td>✓</td><td>✗</td><td>42.99</td></tr>
-<tr><td class="hi">f) 完整模型(+EMA-max)</td><td>✓</td><td>✓</td><td>✓</td><td class="hi">52.85</td></tr>
-</table>
-</div>
-<p><b>对比 FBPT：克服注意力坍塌。</b>在同一 PTv3 骨干、同 W1A1 设定下重实现 FBPT 核心机制（sign-only 二值化+固定阈值注意力），只得 25.1% mIoU、比 BiPT 低 27.8 点。FBPT 难以量化 3D 注意力图固有的高动态范围，把不同几何响应映射到单一量化档，造成注意力坍塌、注意力权重在局部邻域变均匀、丧失对稀疏信息结构特征（物体边缘、角点）的聚焦。BiPT 的 SAB 学到自适应、query 特定阈值保留注意力权重的长尾分布，BiLinearLSR 恢复 sign 丢失的关键幅度尺度——证明把 2D/1D 二值化配方直接搬到 3D Transformer 不够、需要几何感知机制。</p>
-<h3>VI. 讨论与局限</h3>
-<p><b>细结构挑战：</b>BiPT 偶尔在高长宽比的极细结构（椅腿、桌沿、室外行人肢体）上欠分割——sign 函数抑制了浮点网络可利用的高频空间梯度。<b>极端类不平衡脆弱性：</b>稀有类（梁、柱、小交通锥）对 1-bit 模型仍极具挑战，尽管用了 Tversky 损失和类平衡 CE。<b>硬件部署差距：</b>尽管理论 FLOPs 分析和实测 GPU 延迟展示巨大效率增益（56× FLOPs 削减、14.7× 加速），在商品边缘设备上实现这些增益仍需专门推理引擎——标准 NPU 和边缘 GPU 常为 INT8 高度优化，但缺乏成熟的全融合 XNOR-popcount W1A1 核函数编译支持。<b>W2A8 vs W1A1：</b>W1A1 推到效率极限但精度损失可能限制其在安全关键场景部署；放松到 W2A8 恢复大部分全精度精度、仍保持强效率优势，但在超点引导训练下 W2A8 对量化-边界监督-对比正则的平衡更敏感。</p>
-<h3>VII. 结论</h3>
-<p>本文提出 BiPT，一个把二值神经网络带入点云 Transformer 的框架。通过分割和分类任务上的综合实验，我们表明 BiPT 在 W1A1 区达到有竞争力的精度、一致超越先前基于 PTv3 的二值基线，同时在 FLOPs、参数和延迟上实现大幅效率增益。这把 BiPT 确立为紧资源预算下 3D 深度学习的强精度-效率工作点。对稠密分割，我们进一步表明超点引导边界和对比正则能作为仅训练期先验整合、不改变推理图。总之，我们的工作为点云 Transformer 带来计算和内存使用的数量级改进，这对实时和移动 3D 应用至关重要；同时，实际部署仍依赖能成熟支持融合 XNOR-popcount 核函数的硬件和编译器栈，这对当今商品边缘运行时仍是开放挑战。</p>
-<p class="tnote">以上为 IEEE TPAMI 在审论文《BiPT: Efficient Binary Point Cloud Transformer Networks》全文中译，依据原文逐节翻译；公式以原文符号呈现，部分表格节选关键行、参考文献从略。李奥多为并列第一作者。</p>
-</section>
+
+
 </main>
 </div>
 <footer>

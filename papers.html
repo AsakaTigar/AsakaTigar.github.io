@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>论文讲解合集 · Aoduo Li 李奥多</title>
-<meta content="李奥多 Aoduo Li 已发表论文中文讲解 —— 涵盖 3D 高斯压缩、二值点云 Transformer、多模态安全、具身导航与 LLM 评估。" name="description"/>
+<meta content="李奥多 Aoduo Li 的论文中文讲解，涵盖 3D 高斯压缩、多模态安全、具身导航与 LLM 评估。" name="description"/>
 <link href="data:image/svg+xml,&lt;svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27&gt;&lt;text y=%27.9em%27 font-size=%2790%27&gt;📚&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -270,7 +270,7 @@ footer .grad-line{width:60px;height:2px;background:var(--grad);margin:0 auto 16p
 <a href="#p2"><span class="side-idx">02</span><span class="toc-mark"></span>TCE · 红外图像合成</a>
 </div>
 <div class="sidebar-group"><div class="sidebar-title">高效 AI 系统</div>
-<a href="#p4"><span class="side-idx">04</span><span class="toc-mark"></span>BiPT · 二值点云 Transformer</a>
+
 <a href="#p8"><span class="side-idx">08</span><span class="toc-mark"></span>CUDA-Eval · 组件归因</a>
 </div>
 <div class="sidebar-group"><div class="sidebar-title">多模态与安全</div>
@@ -567,87 +567,7 @@ footer .grad-line{width:60px;height:2px;background:var(--grad);margin:0 auto 16p
 </div>
 </div>
 </section>
-<section class="paper reveal" id="p4">
-<div class="paper-head">
-<div class="paper-meta">
-<span class="paper-no">PAPER · 04</span>
-<span class="badge b-tpami">IEEE TPAMI</span>
-<span class="role">作者</span>
-<span class="role">点云 / 二值化</span>
-</div>
-<h2>BiPT：高效二值点云 Transformer 网络
-      <span class="en">BiPT: Efficient Binary Point Cloud Transformer Networks</span>
-</h2>
-</div>
-<div class="block"><div class="block-label">研究背景</div>
-<p>点云 Transformer 在 3D 理解任务上效果惊艳，但参数量大、推理慢，对无人机、机器人这种带电、带算力预算的设备并不友好。</p>
-<p>1-bit 量化是终极压缩，可是直接把权重和激活都二值化，几何细节会被打散，性能掉得非常厉害。</p>
-</div>
-<div class="block"><div class="block-label">核心动机</div>
-<div class="motivation"><p>把 PTv3 的权重和激活都压到 1-bit（W1A1）时，邻域注意力的 softmax 呈重尾分布，固定阈值会把多数权重压进同一个 bin，导致"注意力坍塌"——注意力退化成均匀、几何稀疏结构被抹平。能不能让二值化"懂得"softmax 的分布，把稀疏性保下来？</p></div>
-</div>
-<div class="block"><div class="block-label">方法 · 几何感知二值化的点云 Transformer</div>
-<div class="method-deep">
-<div class="method-card gap"><h4>填补的研究缺口</h4>
-<p>二值化（±1 量化）在 2D CNN 上已经成熟，但<strong>直接搬到点云 Transformer 上会彻底崩溃</strong>。原因有三：第一，点云是<strong>不规则、稀疏</strong>的，二值化打散后无法恢复原本的相对几何关系；第二，Transformer 中的 Attention 对数值幅度极敏感，±1 量化会让 softmax 退化为均匀分布；第三，LayerNorm 在二值激活下容易梯度爆炸。这三道关卡让现有 1-bit Transformer 方法在点云上至少掉 20pp 精度。</p>
-</div>
-<div class="method-card paradigm"><h4>提出的新范式</h4>
-<p><strong>W1A1（权重 1-bit + 激活 1-bit）全二值化 PTv3 内部所有 block</strong>（仅 stem 与任务头保持 FP32），并针对二值化在点云 Transformer 上的三道坎设计专用模块：用 <strong>SAB</strong> 在连续域算 softmax 再自适应阈值二值，避免注意力坍塌；用 <strong>BiLinearLSR</strong> 逐层缩放恢复 sign 丢失的幅值；用 <strong>SubLN + RelNorm</strong> 稳定二值激活的方差与相对坐标。另提供更温和的 W2A8（权重 2-bit/激活 8-bit）作对照。</p>
-</div>
-<div class="method-card"><h4>创新模块逐一拆解</h4>
-<div class="module-list">
-<div class="module-item"><span class="module-tag">①  SAB · Softmax-Aware Binarization</span><span class="module-desc">核心模块。<strong>在连续域先算完 softmax</strong>，再用<strong>逐 query 自适应阈值</strong> θᵢ=µᵢ+γσᵢ（默认 γ=0，即取该 query 注意力分布的均值）生成二值 mask。<strong>为什么必须 softmax-aware？</strong>邻域注意力权重呈重尾分布，用固定全局阈值会把绝大多数权重压进同一个 bin，softmax 退化为均匀分布即"注意力坍塌"，几何稀疏结构被抹平；逐 query 自适应阈值按每个 query 自己的分布裁决，把稀疏性保下来。</span></div>
-<div class="module-item"><span class="module-tag">②  BiLinearLSR · 逐层尺度恢复</span><span class="module-desc">sign 函数把激活/权重压成 ±1 会<strong>丢失幅值信息</strong>。BiLinearLSR 给每个二值投影附加一个<strong>可学习缩放因子 α</strong>，初始化为 α=std(xW_fp)/std(x_b W_b)，把二值输出的尺度拉回接近全精度。参数量极小却显著回血精度——本质是"二值骨架 + 一个标量幅值修正"。</span></div>
-<div class="module-item"><span class="module-tag">③  SubLN · 子层归一化</span><span class="module-desc">在 Q/K/V 投影与 FFN 的非线性<strong>之前插入归一化</strong>，稳定二值激活的方差分布。<strong>为什么需要？</strong>二值前向 + STE 反向的组合下，激活方差容易漂移导致训练不收敛；SubLN 把方差压在稳定区间，是消融里增益最大的单个模块（S3DIS 从 25.86 跳到 42.99）。</span></div>
-<div class="module-item"><span class="module-tag">④  RelNorm · 相对坐标归一化</span><span class="module-desc">用每一层的层半径 r(l) 归一化相对坐标 Δp，让位置编码在不同采样尺度（S3DIS 球采样 r=2m、nuScenes 柱采样 r=50m）下保持一致量纲，避免二值化把跨场景的几何尺度信息洗掉。</span></div>
-<div class="module-item"><span class="module-tag">⑤  XNOR + popcount 二值算子</span><span class="module-desc">二值注意力点积用位运算实现：q⊤k = 2·popcount(XNOR(q,k)) − d。<strong>这是压缩与加速的物理来源</strong>——把浮点乘加换成按位异或 + 计数，理论上一次访存可并行处理整字宽的元素。梯度方面 sign 用 <strong>STE</strong>（裁剪 |x|&lt;1），注意力 mask 用软 STE（前向走二值、反向经 softmax 雅可比回传）。</span></div>
-</div>
-</div>
-<div class="method-card connect"><h4>模块如何串联：完整 Pipeline</h4>
-<span class="flow-label">Data Flow</span>
-<div class="flow-chain">
-<span class="flow-node in">Point Cloud</span>
-<span class="flow-arrow">→</span>
-<span class="flow-node">Stem (FP32)</span>
-<span class="flow-arrow">→</span>
-<span class="flow-node">Binary Block (W1A1)</span>
-<span class="flow-arrow">→</span>
-<span class="flow-node">SubLN + RelNorm</span>
-<span class="flow-arrow">→</span>
-<span class="flow-node key">SAB Attention (XNOR+popcount)</span>
-<span class="flow-arrow">→</span>
-<span class="flow-node">BiLinearLSR 尺度恢复</span>
-<span class="flow-arrow">→</span>
-<span class="flow-node out">Task Head (Cls / Seg, FP32)</span>
-</div>
-</div>
-<div class="method-card intuition"><h4>核心思路 · 给面试官的直觉解释</h4>
-<p><strong>为什么这套组合能在 W1A1 下守住 91.2% ModelNet40 OA（teacher 93.7%，仅降 2.5pp）？</strong>三个要素各修一道坎，缺一不可：<strong>SAB 防注意力坍塌</strong>（保住几何稀疏性）、<strong>SubLN 稳住二值激活方差</strong>（让训练能收敛）、<strong>BiLinearLSR 恢复幅值</strong>（让二值不丢"程度"）。S3DIS 分割的消融最能说明问题：裸二值只有 21.28，加 SAB 升到 25.86，再加 SubLN 直接跳到 42.99，全模型 52.85；后续用超点(superpoint)训练还能进一步升到 63.98%。本质是把"二值化损失"切成三块、分别修补。</p>
-</div>
-</div>
-</div>
-<div class="block"><div class="block-label">主要贡献</div>
-<div class="contrib-grid">
-<div class="contrib"><div class="contrib-num">01</div><div class="contrib-text">首个对 PTv3 做 W1A1（权重+激活均 1-bit）的全二值点云 Transformer，参数压缩 18.9×、FLOPs 降约 56×。</div></div>
-<div class="contrib"><div class="contrib-num">02</div><div class="contrib-text">提出 SAB（softmax-aware 二值化）防注意力坍塌，配合 BiLinearLSR / SubLN / RelNorm 是性能不崩的关键。</div></div>
-<div class="contrib"><div class="contrib-num">03</div><div class="contrib-text">在 S3DIS / ScanNet / nuScenes 分割与 ModelNet40 分类多数据集一致验证；提供 W2A8 折中方案。</div></div>
-</div>
-</div>
-<div class="block"><div class="block-label">实验结果</div>
-<div class="results">
-<div class="metric"><div class="metric-val"><span class="count-up" data-decimals="1" data-to="18.9">0</span><span class="unit">×</span></div><div class="metric-label">参数压缩</div></div>
-<div class="metric"><div class="metric-val"><span class="count-up" data-decimals="1" data-to="14.7">0</span><span class="unit">×</span></div><div class="metric-label">延迟加速</div></div>
-<div class="metric"><div class="metric-val"><span class="count-up" data-to="56">0</span><span class="unit">×</span></div><div class="metric-label">FLOPs 降低</div></div>
-<div class="metric"><div class="metric-val"><span class="count-up" data-decimals="2" data-to="63.98">0</span><span class="unit">%</span></div><div class="metric-label">S3DIS mIoU（基线 52.9 → +11pp）</div></div>
-<div class="metric"><div class="metric-val"><span class="count-up" data-decimals="1" data-to="91.2">0</span><span class="unit">%</span></div><div class="metric-label">ModelNet40 OA</div></div>
-</div>
-<div class="figs">
-<div class="fig-note">总体网络结构图，标出 SAB / BiLinearLSR / SubLN / RelNorm 模块位置。</div>
-<div class="fig-note b">二值 vs 全精度可视化：注意力图与几何特征对照。</div>
-<div class="fig-note c">压缩率–精度曲线：BiPT 在极限压缩区段仍守住精度。</div>
-</div>
-</div>
-</section><section class="paper reveal" id="p5">
+<section class="paper reveal" id="p5">
 <div class="paper-head">
 <div class="paper-meta">
 <span class="paper-no">PAPER · 05</span>
@@ -1082,7 +1002,7 @@ footer .grad-line{width:60px;height:2px;background:var(--grad);margin:0 auto 16p
 <div class="gloss-item"><div class="gloss-term">隐式神经表示<span class="en">Implicit Neural Representation</span></div><div class="gloss-def">不用查表、而是<strong>用一个小神经网络当函数</strong>来表示映射关系（如颜色坐标→数值）。TCE 的 CRM 用它学 RGB→红外的非线性色域映射。</div></div>
 <div class="gloss-item"><div class="gloss-term">自注意力<span class="en">Self-Attention</span></div><div class="gloss-def">Transformer 的核心，让序列里每个元素都能"<strong>看遍全局其他元素</strong>"并按相关性加权。擅长建模长程依赖。</div></div>
 <div class="gloss-item"><div class="gloss-term">Cross-Attention<span class="en">交叉注意力</span></div><div class="gloss-def">让一种信息"<strong>查询</strong>"另一种信息（如文本查图像）。ATRIE 的 Adapter 用它把语义对齐到韵律。</div></div>
-<div class="gloss-item"><div class="gloss-term">Softmax<span class="en">归一化指数</span></div><div class="gloss-def">把一组任意数值<strong>压成加起来为 1 的概率分布</strong>。注意力权重就是 softmax 出来的。BiPT 发现它在二值化下会"坍塌成均匀分布"。</div></div>
+
 <div class="gloss-item"><div class="gloss-term">傅里叶变换<span class="en">Fourier Transform</span></div><div class="gloss-def">把图像从"空间"换算到"<strong>频率</strong>"视角，看的是整体能量分布。红外热图本质是低频能量图，所以傅里叶域最自然。</div></div>
 <div class="gloss-item"><div class="gloss-term">小波分解<span class="en">Wavelet Transform</span></div><div class="gloss-def">介于空间和频率之间的"<strong>多尺度放大镜</strong>"，能同时保留锐边和缓变。TCE 用它兼顾窗框锐边与墙面渐变。</div></div>
 <div class="gloss-item"><div class="gloss-term">四元数卷积 / MFFM<span class="en">Quaternion Convolution · 我在 TCE 红外论文的融合核心</span></div><div class="gloss-def">四元数是"<strong>一个实部 + 三个虚部 i,j,k</strong>"打包成一组的超复数。我用它来做红外合成里的<strong>多元特征融合（MFFM 模块）</strong>，解决的问题是：RGB→IR 要同时照顾四种异质信息——全局热场（Fourier 分支）、多尺度纹理（Wavelet 分支）、几何对应（Spatial 分支）、边缘锐度（Boundary 分支）。普通做法是把四路特征<strong>Concat 拼起来再卷积</strong>，但拼接只是"摆在一起"，<em>各路之间没有显式的相互作用建模</em>。四元数卷积的精妙在于：把<strong>边界特征当实部、Fourier/Spatial/Wavelet 当三个虚部 i,j,k</strong>，做卷积时走的是<strong>Hamilton 积</strong>（四元数乘法）——它的代数规则会让<strong>四个分量两两交叉相乘、强制耦合</strong>，等于在数学层面逼着"边缘锐度去校正热场分布、纹理去约束几何"，而不是各管各的。还有一个工程红利：四元数卷积<strong>权重在四个分量间共享</strong>，所以参数量极省（整个 MFFM 仅约 195K）。消融证据很硬：它<strong>优于 Concat / Grouped / Attention 等所有对照融合方式</strong>。位置上放在编解码器 bottleneck，对原图全分辨率提取频域+边界后再与深层语义融合，专门补偿下采样丢掉的高频。</div></div>
@@ -1103,20 +1023,20 @@ footer .grad-line{width:60px;height:2px;background:var(--grad);margin:0 auto 16p
 <div class="gloss-item"><div class="gloss-term">剪枝<span class="en">Pruning</span></div><div class="gloss-def">删掉模型里<strong>不重要的部分</strong>(这里指删高斯)来减体积。难点是"砍错就救不回来"，VEDAL 用概率框架让它可逆可学。</div></div>
 <div class="gloss-item"><div class="gloss-term">时序冗余<span class="en">Temporal Redundancy</span></div><div class="gloss-def">动态场景里<strong>相邻时刻几乎雷同</strong>的重复信息。逐帧硬存等于把同样内容抄千百遍，Latent4D 用 VAE 把它吃掉。</div></div>
 <div class="gloss-item"><div class="gloss-term">码本<span class="en">Codebook</span></div><div class="gloss-def">一本"<strong>常用模式字典</strong>"，存原始数据时只记字典编号而非完整值，达到压缩。传统高斯压缩常用，Latent4D 改用 VAE 潜码。</div></div>
-<div class="gloss-item"><div class="gloss-term">点云<span class="en">Point Cloud</span></div><div class="gloss-def">用一堆<strong>三维空间点</strong>(带坐标/颜色)表示物体表面的数据，激光雷达的直接产物。不规则、稀疏，是 BiPT 的处理对象。</div></div>
+
 </div>
 </div>
 <div class="gloss-cat">
 <div class="gloss-cat-title">Compression &amp; Efficiency <span class="cat-cn">模型压缩与高效推理</span></div>
 <div class="gloss-grid">
 <div class="gloss-item"><div class="gloss-term">量化<span class="en">Quantization</span></div><div class="gloss-def">把模型里的高精度浮点数<strong>压成低位宽整数</strong>(如 32-bit→8-bit/4-bit/1-bit)，省显存、提速度。代价是可能掉精度。</div></div>
-<div class="gloss-item"><div class="gloss-term">二值化 / 1-bit<span class="en">Binarization</span></div><div class="gloss-def">量化的极限：每个数只用 <strong>+1 或 −1</strong> 表示。压缩率最高但最难——直接套到点云 Transformer 上会崩，BiPT 专门救它。</div></div>
+
 <div class="gloss-item"><div class="gloss-term">W1A1 / W2A8<span class="en">权重位宽/激活位宽</span></div><div class="gloss-def">"W"是权重、"A"是激活的位数。<strong>W1A1</strong>=权重和激活都 1-bit(全二值，最激进)；W2A8=权重 2-bit/激活 8-bit(更温和的折中)。</div></div>
 <div class="gloss-item"><div class="gloss-term">XNOR + popcount<span class="en">位运算加速</span></div><div class="gloss-def">二值网络的提速魔法：把浮点乘加换成<strong>按位异或同或(XNOR) + 数 1 的个数(popcount)</strong>，一次访存并行处理整字宽。这是二值化省算力的物理来源。</div></div>
 <div class="gloss-item"><div class="gloss-term">STE<span class="en">Straight-Through Estimator</span></div><div class="gloss-def">直通估计器。二值化的 sign 函数没法求导，STE 让<strong>前向走二值、反向时假装它可导</strong>把梯度直接放行，使二值网络能训练。</div></div>
-<div class="gloss-item"><div class="gloss-term">注意力坍塌<span class="en">Attention Collapse</span></div><div class="gloss-def">BiPT 发现的现象：二值化用固定阈值时，重尾的注意力权重<strong>全被压进同一档</strong>，softmax 退化成均匀分布，几何稀疏结构被抹平。SAB 模块专治它。</div></div>
+
 <div class="gloss-item"><div class="gloss-term">SPD-Conv<span class="en">Space-to-Depth Conv 无损下采样</span></div><div class="gloss-def">Forestpest-YOLO 用它替代 stride 卷积：普通下采样直接<strong>丢掉 3/4 像素</strong>，对几十像素的小虫子是灾难；SPD-Conv 把空间像素搬到通道维，<strong>一个不丢</strong>。</div></div>
-<div class="gloss-item"><div class="gloss-term">FLOPs<span class="en">浮点运算次数</span></div><div class="gloss-def">衡量模型<strong>计算量</strong>的指标，越低越省算力。BiPT 把它降了约 56×。</div></div>
+
 <div class="gloss-item"><div class="gloss-term">EMA<span class="en">Exponential Moving Average 指数滑动平均</span></div><div class="gloss-def">一种"<strong>新值占小权重、历史占大权重</strong>"的平滑统计，抗抖动。VEDAL 用 EMA(ρ=0.99) 追踪每个高斯的重要性。</div></div>
 <div class="gloss-item"><div class="gloss-term">FP16 / FP32<span class="en">半/单精度浮点</span></div><div class="gloss-def">16-bit / 32-bit 浮点数。FP16 更快更省但精度低。CUDA-Eval 发现大量失败正是模型没处理好 fp16/fp32 的精度语义。</div></div>
 </div>
@@ -1134,15 +1054,15 @@ footer .grad-line{width:60px;height:2px;background:var(--grad);margin:0 auto 16p
 <div class="gloss-cat-title">Detection / Network Modules <span class="cat-cn">检测分割与网络模块</span></div>
 <div class="gloss-grid">
 <div class="gloss-item"><div class="gloss-term">YOLO<span class="en">You Only Look Once</span></div><div class="gloss-def">最流行的<strong>实时目标检测</strong>框架，一次前向就框出所有物体。Forestpest-YOLO 在它基础上做林业小目标改造。</div></div>
-<div class="gloss-item"><div class="gloss-term">PTv3<span class="en">Point Transformer v3</span></div><div class="gloss-def">当前点云理解的强力 Transformer 骨干。BiPT 把它整个二值化(W1A1)做成首个全二值点云 Transformer。</div></div>
+
 <div class="gloss-item"><div class="gloss-term">CSPOK<span class="en">跨阶段全方位核块 · 我在 Forestpest-YOLO 提出的模块</span></div><div class="gloss-def">林业害虫检测有个特异难点：害虫的判别特征是<strong>局部细纹理</strong>（毛、足、翅纹），而它周围的<strong>叶片/树枝纹理跟它高度相似</strong>（保护色），单一感受野根本分不清"这是虫还是叶子的一小块"。CSPOK 就是为此设计的：①<strong>跨阶段（Cross-Stage）</strong>——借鉴 CSP 结构把特征<strong>分流</strong>，一部分走深层变换、一部分作 shortcut 直连，最后再融合，既保留浅层细节又叠加深层语义，还省算力；②<strong>全方位核（Omni-Kernel）</strong>——同时用<strong>大核和小核多个尺度</strong>去看同一块区域，<em>小核抓虫体本身的精细纹理、大核看周边上下文</em>，让模型能在"局部 vs 上下文"两个尺度上<strong>对比</strong>，把"虫纹理"从"相似的叶纹理"里区分出来，同时对背景噪声做抑制。直觉就是：要判断一小块毛刺是不是虫子，光盯着这一小块不够，还得看它周围的大环境——CSPOK 把这两个视角拼进同一个块里。它和 SPD-Conv（无损下采样、不丢小目标像素）、VarifocalLoss（按 IoU 给高质量样本加权）一起，构成 Forestpest-YOLO 应对"小目标+遮挡+类背景相似"的三件套。</div></div>
 <div class="gloss-item"><div class="gloss-term">VarifocalLoss<span class="en">变焦损失</span></div><div class="gloss-def">训练时按 IoU 给样本加权，<strong>让定位准的高质量样本贡献更大梯度</strong>。比一视同仁的 Focal Loss 更适合小目标精细定位。</div></div>
 <div class="gloss-item"><div class="gloss-term">Focal Loss<span class="en">焦点损失</span></div><div class="gloss-def">经典检测损失，<strong>降低大量简单负样本的权重</strong>、聚焦难例。VarifocalLoss 是它的进化版。</div></div>
-<div class="gloss-item"><div class="gloss-term">SAB<span class="en">Softmax-Aware Binarization · 我在 BiPT 提出的核心模块</span></div><div class="gloss-def">BiPT 全二值化最难啃的骨头是"<strong>注意力坍塌</strong>"，SAB 就是专门解这个的。先说现象：点云邻域注意力权重呈<strong>重尾分布</strong>（少数邻居权重很大、大量邻居接近 0），如果像普通二值化那样用<em>一个固定全局阈值</em>去切，绝大多数权重会被压进同一档，softmax 出来近似<strong>均匀分布</strong>——等于把"该关注谁"的几何稀疏结构整个抹平，性能直接崩。SAB 的两步设计：①<strong>不在二值域硬切，而是先在连续域把 softmax 完整算出来</strong>，保住真实的权重分布形状；②再用<strong>逐 query 自适应阈值</strong> θᵢ = µᵢ + γσᵢ 生成二值 mask（µᵢ、σᵢ 是<em>这一个 query 自己</em>的注意力均值和标准差，默认 γ=0 即取均值）——也就是说<strong>每个 query 按它自己的分布来裁决</strong>谁该留谁该砍，而不是全局一刀切，这样重尾里的稀疏峰值能被保下来。梯度方面：注意力 mask 用<strong>软 STE</strong>（前向走二值、反向经 softmax 雅可比回传），保证可训练。消融最能说明它的价值：S3DIS 上裸二值只有 21.28 mIoU，加上 SAB 升到 25.86，是不崩的第一道关。</div></div>
-<div class="gloss-item"><div class="gloss-term">BiLinearLSR<span class="en">逐层尺度恢复 · 我在 BiPT 提出的模块</span></div><div class="gloss-def">二值化的本质痛点：sign 函数把权重和激活全压成 ±1，<strong>只保留了符号、彻底丢掉了幅值（"程度"）信息</strong>——本来一个很重要的大权重和一个微弱的小权重，二值化后都变成了 +1，模型分不清轻重。BiLinearLSR 的解法很巧：给每个二值投影<strong>附加一个可学习的标量缩放因子 α</strong>，把二值输出乘回一个合适的幅度。关键是 α 的<strong>初始化</strong>不是随便给的，而是 α = std(x·W_fp) / std(x_b·W_b)——即"<em>全精度输出的标准差</em> ÷ <em>二值输出的标准差</em>"，让二值层一上来就把输出的<strong>尺度对齐回接近全精度</strong>的水平，训练再微调。直觉上就是"<strong>二值骨架 + 一个标量幅值修正</strong>"：用 1-bit 决定方向，用一个浮点小尺度补回强度。参数量几乎可以忽略，却能显著回血精度——这是 BiPT 在 W1A1（权重激活都 1-bit）下还能守住 ModelNet40 OA 91.2%（teacher 93.7%，仅降 2.5pp）的重要一环。</div></div>
-<div class="gloss-item"><div class="gloss-term">LayerNorm / SubLN<span class="en">层归一化</span></div><div class="gloss-def">把一层激活<strong>归一化到稳定范围</strong>，防梯度爆炸。SubLN 是 BiPT 在子层前插的归一化，是二值化能收敛的关键(消融增益最大)。</div></div>
-<div class="gloss-item"><div class="gloss-term">RelNorm<span class="en">相对坐标归一化 · 我在 BiPT 提出的模块</span></div><div class="gloss-def">点云 Transformer 靠<strong>相对坐标 Δp</strong>（邻居点相对中心点的位移）来做位置编码，告诉模型"这个邻居在我哪个方向、多远"。问题来了：不同数据集、不同网络层的采样尺度天差地别——室内 S3DIS 用半径约 2m 的球采样、室外 nuScenes 用半径约 50m 的柱采样，<strong>同样一个 Δp 数值在两种场景下的物理含义完全不同</strong>。二值化对数值幅度本就极其敏感，这种<em>跨尺度的量纲漂移</em>会被 sign 函数进一步放大，把几何尺度信息洗掉。RelNorm 的解法：用<strong>每一层自己的"层半径 r(l)"去归一化该层的相对坐标</strong>，把 Δp 统一缩放到一个一致的量纲区间，这样无论室内室外、无论第几层，位置编码看到的都是"<strong>占本层感受野的百分之多少</strong>"这种相对量，而不是绝对米数。它和 RelNorm 解决的是"<em>空间几何尺度</em>"的稳定，配合 SubLN 解决"<em>激活方差</em>"的稳定，共同保证二值网络在多数据集上都能收敛、不被尺度差异带崩。</div></div>
-<div class="gloss-item"><div class="gloss-term">Superpoint<span class="en">超点</span></div><div class="gloss-def">把<strong>邻近相似的点聚成一个"超点"</strong>再处理，降低点云规模。BiPT 用超点训练把 S3DIS 分割进一步提到 63.98%。</div></div>
+
+
+
+
+
 <div class="gloss-item"><div class="gloss-term">VAD<span class="en">Valence-Arousal-Dominance</span></div><div class="gloss-def">心理学的<strong>三维情感空间</strong>：愉悦度/唤醒度/支配感。比离散标签(开心/生气)能连续插值。ATRIE 把情感推理落到 VAD 当韵律目标。</div></div>
 </div>
 </div>
@@ -1187,7 +1107,7 @@ footer .grad-line{width:60px;height:2px;background:var(--grad);margin:0 auto 16p
 <div class="gloss-item"><div class="gloss-term">UTMOS<span class="en">客观自然度评分</span></div><div class="gloss-def">用模型自动预测语音的<strong>自然度 MOS 分</strong>(代替人工听感打分)。ATRIE 达 4.28(VITS 为 4.05)。</div></div>
 <div class="gloss-item"><div class="gloss-term">mAP / mAP@50<span class="en">平均精度均值</span></div><div class="gloss-def">目标检测的<strong>综合精度</strong>指标。@50 指 IoU 阈值 0.5。越高越准。</div></div>
 <div class="gloss-item"><div class="gloss-term">IoU<span class="en">Intersection over Union 交并比</span></div><div class="gloss-def">预测框和真实框<strong>重叠程度</strong>(交集/并集，0-1)。检测/分割判对错的基本尺子。</div></div>
-<div class="gloss-item"><div class="gloss-term">mIoU / OA<span class="en">平均交并比 / 总体精度</span></div><div class="gloss-def">分割任务指标：mIoU=各类 IoU 平均；OA=整体分类正确率。BiPT 在 S3DIS mIoU 达 63.98%、ModelNet40 OA 91.2%。</div></div>
+
 <div class="gloss-item"><div class="gloss-term">AUC / F1<span class="en">曲线下面积 / 调和均值</span></div><div class="gloss-def">分类器质量指标：AUC 越接近 1 区分力越强；F1 是精确率和召回率的<strong>调和平均</strong>。NeuroGuard 多基准 AUC 近 1.0。</div></div>
 <div class="gloss-item"><div class="gloss-term">AG / EPI / HFER<span class="en">高频保真指标</span></div><div class="gloss-def">衡量图像<strong>细节锐度/高频信息</strong>的指标(平均梯度等)。TCE 红外合成在这三项上最接近真实红外。</div></div>
 <div class="gloss-item"><div class="gloss-term">Fleiss κ<span class="en">多标注者一致性</span></div><div class="gloss-def">衡量<strong>多个标注员意见一致程度</strong>的系数(0-1)。ATRIE 的情绪标注 κ=0.78 说明标注质量可靠。</div></div>
@@ -1416,7 +1336,6 @@ try{
     {id:'p3', l:'VEDAL', t:'paper', a:'p3'},
     {id:'p13', l:'Latent4D', t:'paper', a:'p13'},
     {id:'p2', l:'TCE红外', t:'paper', a:'p2'},
-    {id:'p4', l:'BiPT', t:'paper', a:'p4'},
     {id:'p8', l:'CUDA-Eval', t:'paper', a:'p8'},
     {id:'p5', l:'NeuroGuard', t:'paper', a:'p5'},
     {id:'p1', l:'ATRIE', t:'paper', a:'p1'},
