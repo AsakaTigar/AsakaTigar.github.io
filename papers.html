@@ -1,0 +1,1697 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>论文讲解合集 · Aoduo Li 李奥多</title>
+<meta content="李奥多 Aoduo Li 已发表论文中文讲解 —— 涵盖 3D 高斯压缩、二值点云 Transformer、多模态安全、具身导航与 LLM 评估。" name="description"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27&gt;&lt;text y=%27.9em%27 font-size=%2790%27&gt;📚&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#1d1d2b;--bg-elev:#252540;--bg-soft:#2a2a48;
+  --text:#e8e8f0;--text-muted:#a0a0b8;--text-dim:#7a7a92;
+  --accent:#4ecdc4;--accent-2:#ff6b9d;--accent-3:#ffd166;
+  --border:#333355;--border-soft:#2c2c4a;
+  --grad:linear-gradient(135deg,#4ecdc4 0%,#7367f0 100%);
+  --font-zh:"Noto Serif SC",ui-serif,"Songti SC","Source Han Serif",serif;
+  --font-en:"Space Grotesk","Inter",ui-sans-serif,system-ui,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:auto}
+.paper,.hero{scroll-margin-top:84px}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:var(--font-zh);
+  line-height:1.78;letter-spacing:.01em;
+  background-image:
+    radial-gradient(800px 400px at 80% -10%, rgba(78,205,196,.08), transparent 60%),
+    radial-gradient(600px 400px at -10% 30%, rgba(115,103,240,.08), transparent 60%),
+    radial-gradient(900px 500px at 50% 110%, rgba(255,107,157,.05), transparent 60%);
+  background-attachment:fixed;min-height:100vh;
+}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><circle cx='1' cy='1' r='.4' fill='%23ffffff' fill-opacity='.025'/></svg>");}
+a{color:var(--accent);text-decoration:none;transition:.2s}
+a:hover{color:var(--accent-2)}
+::selection{background:rgba(78,205,196,.3);color:#fff}
+.topbar{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:rgba(29,29,43,.78);border-bottom:1px solid var(--border)}
+.topbar-inner{max-width:1400px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{font-family:var(--font-en);font-weight:700;font-size:1.05rem;letter-spacing:.04em;display:flex;align-items:center;gap:10px}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:var(--grad);display:grid;place-items:center;color:#0e0e1a;font-weight:800;box-shadow:0 4px 14px rgba(78,205,196,.4)}
+.brand small{color:var(--text-muted);font-weight:400;margin-left:6px;font-family:var(--font-zh)}
+.topbar-links{display:flex;gap:22px;align-items:center;font-family:var(--font-en);font-size:.88rem}
+.topbar-links a{color:var(--text-muted);font-weight:500}
+.topbar-links a:hover{color:var(--accent)}
+.topbar-links a.nav-kg{color:var(--accent);border:1px solid rgba(78,205,196,.4);border-radius:999px;padding:5px 13px;font-weight:600;transition:.18s}
+.topbar-links a.nav-kg:hover{background:var(--accent);color:#0e0e1a;border-color:var(--accent)}
+.cta{padding:7px 16px;border:1px solid var(--accent);border-radius:999px;color:var(--accent);font-family:var(--font-en);font-size:.82rem}
+.cta:hover{background:var(--accent);color:#0e0e1a}
+.shell{max-width:1400px;margin:0 auto;padding:0 32px;display:grid;grid-template-columns:280px 1fr;gap:48px;position:relative;z-index:1}
+@media(max-width:980px){.shell{grid-template-columns:1fr;padding:0 20px;gap:0}}
+.sidebar{position:sticky;top:78px;align-self:start;height:calc(100vh - 100px);overflow-y:auto;padding:32px 0 64px;scrollbar-width:thin;scrollbar-color:#333 transparent}
+.sidebar::-webkit-scrollbar{width:6px}
+.sidebar::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+.sidebar-group{margin-bottom:28px}
+.sidebar-title{font-family:var(--font-en);font-size:.7rem;font-weight:700;letter-spacing:.18em;color:var(--text-dim);text-transform:uppercase;border-left:2px solid var(--accent);padding:0 0 10px 12px;margin-bottom:6px}
+.sidebar a{display:flex;align-items:center;gap:10px;padding:9px 12px;color:var(--text-muted);font-size:.9rem;border-radius:6px;transition:.18s;border-left:2px solid transparent}
+.sidebar a:hover{background:var(--bg-elev);color:var(--text)}
+.sidebar a.active{color:var(--accent);background:rgba(78,205,196,.08);border-left-color:var(--accent)}
+.side-idx{font-family:var(--font-mono);font-size:.72rem;color:var(--text-dim);min-width:22px}
+.toc-mark{width:6px;height:6px;border-radius:50%;background:var(--text-dim);transition:.2s;flex-shrink:0}
+.sidebar a.active .toc-mark{background:var(--accent);transform:scale(1.4);box-shadow:0 0 12px var(--accent)}
+@media(max-width:980px){.sidebar{position:relative;top:0;height:auto;padding:24px 0}}
+.hero{padding:90px 0 60px;position:relative}
+.hero-eyebrow{font-family:var(--font-en);font-size:.78rem;letter-spacing:.3em;color:var(--accent);text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:14px}
+.hero-eyebrow::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--accent),transparent)}
+.hero h1{font-size:clamp(2.4rem,5vw,3.8rem);font-weight:700;line-height:1.18;letter-spacing:-.01em;margin-bottom:20px}
+.hero h1 .gradient{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-sub{color:var(--text-muted);font-size:1.05rem;max-width:680px;margin-bottom:32px}
+.hero-stats{display:flex;gap:32px;flex-wrap:wrap;margin-top:36px;padding-top:28px;border-top:1px solid var(--border-soft)}
+.stat{display:flex;flex-direction:column}
+.stat-num{font-family:var(--font-en);font-weight:700;font-size:2.2rem;color:var(--accent);line-height:1}
+.stat-label{font-size:.82rem;color:var(--text-dim);margin-top:8px;letter-spacing:.05em}
+</style><style>
+.paper{padding:72px 0;border-top:1px solid var(--border-soft);position:relative}
+.paper::before{content:"";position:absolute;top:-1px;left:0;width:80px;height:1px;background:var(--accent)}
+.paper-head{margin-bottom:34px}
+.paper-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-family:var(--font-en);font-size:.74rem;text-transform:uppercase;letter-spacing:.14em;margin-bottom:14px}
+.paper-no{font-family:var(--font-mono);font-size:.78rem;color:var(--text-dim)}
+.badge{padding:4px 11px;border-radius:999px;font-weight:700;font-size:.7rem;color:#0e0e1a}
+.b-icmr{background:#4ecdc4}
+.b-tce{background:#ffd166}
+.b-cgi{background:#6fe7b7}
+.b-tpami{background:#a78bfa;color:#fff}
+.b-mm{background:#ff6b9d;color:#fff}
+.b-iros{background:#60a5fa;color:#fff}
+.b-neurips{background:#fb923c}
+.b-wccis{background:#94a3b8}
+.b-cait{background:#cbd5e1}
+.role{border:1px solid var(--border);padding:3px 10px;border-radius:999px;color:var(--text-muted);background:var(--bg-elev)}
+.paper h2{font-size:clamp(1.55rem,3vw,2.15rem);font-weight:700;line-height:1.3;margin-bottom:10px}
+.paper h2 .en{display:block;font-family:var(--font-en);font-size:.92rem;color:var(--text-dim);font-weight:500;letter-spacing:.02em;margin-top:8px}
+.block{margin-bottom:30px}
+.block-label{font-family:var(--font-en);font-size:.72rem;font-weight:700;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.block-label::before{content:"";width:18px;height:1px;background:var(--accent)}
+.block p{color:var(--text);font-size:1rem;margin-bottom:10px}
+.motivation{border-left:3px solid var(--accent-2);padding:18px 22px;background:rgba(255,107,157,.06);border-radius:0 8px 8px 0;position:relative;margin-left:14px}
+.motivation::before{content:"?";position:absolute;top:-12px;left:-16px;width:28px;height:28px;border-radius:50%;background:var(--accent-2);color:#fff;display:grid;place-items:center;font-weight:800;font-family:var(--font-en);box-shadow:0 4px 14px rgba(255,107,157,.4)}
+.motivation p{font-style:italic;color:var(--text);margin-bottom:0}
+.pipeline{display:flex;flex-wrap:wrap;gap:20px 28px;align-items:stretch;padding:24px 0 8px}
+.pipeline-step{flex:1;min-width:170px;background:var(--bg-elev);border:1px solid var(--border);border-radius:10px;padding:16px 18px;position:relative;opacity:0;transform:translateY(20px);transition:.6s cubic-bezier(.22,1,.36,1)}
+.pipeline-step.show{opacity:1;transform:translateY(0)}
+.pipeline-step .step-no{font-family:var(--font-mono);font-size:.7rem;color:var(--accent);margin-bottom:6px;letter-spacing:.1em}
+.pipeline-step .step-name{font-weight:700;font-size:.98rem;margin-bottom:6px;color:var(--text)}
+.pipeline-step .step-desc{font-size:.84rem;color:var(--text-muted);line-height:1.6}
+.pipeline-step::after{content:"→";position:absolute;right:-22px;top:50%;color:var(--accent);font-family:var(--font-en);font-weight:700;transform:translateY(-50%);opacity:.7;font-size:1.1rem}
+.pipeline-step:last-child::after{display:none}
+@media(max-width:760px){.pipeline-step::after{display:none}}
+.contrib-grid{display:grid;gap:10px;margin-top:8px}
+.contrib{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;background:var(--bg-elev);border-radius:8px;border:1px solid var(--border-soft);transition:.2s}
+.contrib:hover{border-color:var(--accent);transform:translateX(4px)}
+.contrib-num{font-family:var(--font-en);font-weight:800;font-size:1.1rem;color:var(--accent);min-width:30px;line-height:1.6}
+.contrib-text{flex:1;color:var(--text);font-size:.95rem;line-height:1.65}
+.results{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-top:14px}
+.metric{padding:18px 18px;border-radius:10px;background:linear-gradient(135deg,var(--bg-elev),var(--bg-soft));border:1px solid var(--border);position:relative;overflow:hidden}
+.metric::before{content:"";position:absolute;top:0;left:0;width:3px;height:100%;background:var(--grad)}
+.metric-val{font-family:var(--font-en);font-weight:700;font-size:1.7rem;color:var(--accent);line-height:1}
+.metric-val .unit{font-size:.95rem;color:var(--text-muted);margin-left:3px;font-weight:500}
+.metric-val .arrow{color:var(--accent-3);margin-left:4px;font-size:1rem}
+.metric-label{font-size:.78rem;color:var(--text-muted);margin-top:8px;letter-spacing:.04em;line-height:1.45}
+.figs{display:none}
+.arch-fig{margin-top:14px;background:linear-gradient(135deg,rgba(78,205,196,.05),rgba(115,103,240,.05));border:1px solid var(--border-soft);border-radius:12px;padding:16px 18px 12px;overflow-x:auto}
+.arch-fig .arch-cap{font-family:var(--font-en);font-size:.66rem;letter-spacing:.18em;color:var(--text-dim);text-transform:uppercase;margin-bottom:12px;font-weight:600;display:flex;align-items:center;gap:8px}
+.arch-fig .arch-cap::before{content:"";width:14px;height:1px;background:var(--accent)}
+.arch-svg{display:block;width:100%;height:auto;color:var(--accent)}
+.arch-svg .nb{fill:var(--bg-elev);stroke:var(--border);stroke-width:1.3}
+.arch-svg .nb.in{stroke:var(--accent-2);fill:rgba(255,107,157,.07)}
+.arch-svg .nb.key{stroke:var(--accent-3);fill:rgba(255,209,102,.07)}
+.arch-svg .nb.out{stroke:var(--accent);fill:rgba(78,205,196,.08)}
+.arch-svg text{font-family:var(--font-mono);font-size:13px;fill:var(--text)}
+.arch-svg text.in{fill:var(--accent-2)}
+.arch-svg text.key{fill:var(--accent-3)}
+.arch-svg text.out{fill:var(--accent);font-weight:600}
+.arch-svg .ar{stroke:var(--accent);stroke-width:1.6;fill:none;opacity:.85}
+.fig-note{padding:14px 16px 14px 44px;border-radius:8px;background:var(--bg-elev);border:1px dashed var(--border);font-size:.88rem;color:var(--text-muted);position:relative}
+.fig-note::before{content:"📊";position:absolute;left:14px;top:13px;font-size:1rem}
+.fig-note.b::before{content:"🎨"}
+.fig-note.c::before{content:"🔍"}
+.diagram{background:linear-gradient(160deg,var(--bg-elev),var(--bg-soft));border:1px solid var(--border-soft);border-radius:14px;padding:24px;margin:18px 0;position:relative;overflow:hidden}
+.diagram-title{font-family:var(--font-en);font-size:.72rem;letter-spacing:.2em;color:var(--text-dim);text-transform:uppercase;margin-bottom:18px}
+.flow{position:relative;height:8px;background:var(--bg-soft);border-radius:4px;margin:12px 0;overflow:hidden}
+.flow::before{content:"";position:absolute;top:0;left:-30%;width:30%;height:100%;background:linear-gradient(90deg,transparent,var(--accent),transparent);animation:flowAnim 2.4s ease-in-out infinite}
+@keyframes flowAnim{0%{left:-30%}100%{left:100%}}
+.count-up{display:inline-block}
+.reveal{opacity:0;transform:translateY(28px);transition:.7s cubic-bezier(.22,1,.36,1)}
+.reveal.show{opacity:1;transform:translateY(0)}
+.ba{position:relative;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,#1a1a2a,#2a2a48);border:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;min-height:160px}
+.ba-side{display:grid;place-items:center;text-align:center;padding:24px 18px;font-family:var(--font-en)}
+.ba-side.before{background:rgba(255,107,157,.07);color:var(--text-muted)}
+.ba-side.after{background:rgba(78,205,196,.1)}
+.ba-num{font-size:2.2rem;font-weight:700;line-height:1;margin-bottom:8px}
+.ba-side.before .ba-num{color:#888}
+.ba-side.after .ba-num{color:var(--accent);text-shadow:0 0 24px rgba(78,205,196,.4)}
+.ba-label{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--text-dim)}
+.ba-divider{position:absolute;top:0;left:50%;width:1px;height:100%;background:linear-gradient(180deg,transparent,var(--accent),transparent);transform:translateX(-50%)}
+.ba-arrow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:36px;height:36px;border-radius:50%;background:var(--bg);border:2px solid var(--accent);display:grid;place-items:center;color:var(--accent);font-family:var(--font-en);font-weight:700;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(78,205,196,.5)}50%{box-shadow:0 0 0 12px rgba(78,205,196,0)}}
+footer{text-align:center;padding:56px 0;color:var(--text-dim);font-size:.82rem;border-top:1px solid var(--border-soft);margin-top:60px}
+footer .grad-line{width:60px;height:2px;background:var(--grad);margin:0 auto 16px;border-radius:2px}
+/* ===== Expanded Methodology Cards ===== */
+.method-deep{display:grid;gap:16px;margin-top:10px}
+.method-card{background:var(--bg-elev);border:1px solid var(--border-soft);border-left:3px solid var(--accent);border-radius:8px;padding:18px 22px;position:relative}
+.method-card h4{font-family:var(--font-en);font-size:.7rem;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;margin-bottom:12px;font-weight:700;display:flex;align-items:center;gap:10px}
+.method-card h4::before{content:"";width:14px;height:1px;background:currentColor;display:inline-block}
+.method-card.gap{border-left-color:var(--accent-2);background:linear-gradient(135deg,rgba(255,107,157,.04),var(--bg-elev))}
+.method-card.gap h4{color:var(--accent-2)}
+.method-card.paradigm{border-left-color:var(--accent-3);background:linear-gradient(135deg,rgba(255,209,102,.04),var(--bg-elev))}
+.method-card.paradigm h4{color:var(--accent-3)}
+.method-card.intuition{border-left-color:#a78bfa;background:linear-gradient(135deg,rgba(167,139,250,.05),var(--bg-elev))}
+.method-card.intuition h4{color:#a78bfa}
+.method-card.connect{border-left-color:#6fe7b7;background:linear-gradient(135deg,rgba(111,231,183,.04),var(--bg-elev))}
+.method-card.connect h4{color:#6fe7b7}
+.method-card p{color:var(--text);font-size:.96rem;line-height:1.78;margin-bottom:10px}
+.method-card p:last-child{margin-bottom:0}
+.module-list{display:grid;gap:11px;margin-top:6px}
+.module-item{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;padding:13px 16px;background:rgba(78,205,196,.04);border-radius:7px;border:1px solid rgba(78,205,196,.16);transition:.18s}
+.module-item:hover{background:rgba(78,205,196,.07);border-color:rgba(78,205,196,.32);transform:translateX(3px)}
+.module-tag{font-family:var(--font-mono);font-size:.72rem;color:var(--accent);background:rgba(78,205,196,.13);padding:4px 10px;border-radius:5px;white-space:nowrap;font-weight:700;align-self:start;letter-spacing:.02em}
+.module-desc{font-size:.93rem;color:var(--text);line-height:1.72}
+.module-desc strong{color:var(--accent);font-weight:600}
+.module-desc em{color:var(--accent-3);font-style:normal;font-weight:500}
+.flow-chain{display:flex;flex-wrap:wrap;gap:7px;align-items:center;padding:14px 16px;background:linear-gradient(135deg,rgba(78,205,196,.06),rgba(115,103,240,.06));border-radius:8px;margin-top:12px;font-family:var(--font-mono);font-size:.8rem;line-height:1.85}
+.flow-node{padding:5px 11px;background:var(--bg-elev);border:1px solid var(--border);border-radius:5px;color:var(--text);white-space:nowrap;display:inline-block;margin:2px 0}
+.flow-node.in{border-color:var(--accent-2);color:var(--accent-2)}
+.flow-node.out{border-color:var(--accent);color:var(--accent);font-weight:600}
+.flow-node.key{border-color:var(--accent-3);color:var(--accent-3)}
+.flow-arrow{color:var(--accent);font-weight:700;opacity:.75;padding:0 2px}
+.flow-label{display:block;font-family:var(--font-en);font-size:.66rem;letter-spacing:.18em;color:var(--text-dim);text-transform:uppercase;margin-bottom:8px;font-weight:600}
+.method-card.intuition strong{color:#c4b5fd}
+/* ===== Glossary / 专业名词解释 ===== */
+.glossary-intro{color:var(--text-muted);font-size:1rem;line-height:1.8;margin-bottom:24px;max-width:780px}
+.gloss-toolbar{display:flex;gap:16px;align-items:center;margin-bottom:30px;flex-wrap:wrap}
+.gloss-search-wrap{position:relative;flex:1;min-width:260px;max-width:540px}
+.gloss-back-kg{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border:1px solid var(--accent);border-radius:10px;color:var(--accent);font-family:var(--font-en);font-size:.9rem;font-weight:600;white-space:nowrap;transition:.2s;background:rgba(78,205,196,.06);cursor:pointer}
+.gloss-back-kg:hover{background:var(--accent);color:#0e0e1a;transform:translateY(-2px)}
+.gloss-back-kg .gk-ic{font-size:.8rem}
+.gloss-search{width:100%;padding:13px 16px 13px 44px;background:var(--bg-elev);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--font-zh);font-size:.96rem;outline:none;transition:.2s}
+.gloss-search::placeholder{color:var(--text-dim)}
+.gloss-search:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(78,205,196,.15)}
+.gloss-search-wrap::before{content:"🔍";position:absolute;left:15px;top:50%;transform:translateY(-50%);font-size:.92rem;opacity:.65}
+.gloss-empty{color:var(--text-dim);font-size:.92rem;padding:24px 2px;display:none}
+.gloss-cat{margin-bottom:36px}
+.gloss-cat-title{font-family:var(--font-en);font-size:.74rem;font-weight:700;letter-spacing:.18em;color:var(--text-dim);text-transform:uppercase;margin-bottom:16px;padding-bottom:9px;border-bottom:1px solid var(--border-soft);display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.gloss-cat-title .cat-cn{font-family:var(--font-zh);color:var(--accent-3);font-size:1.12rem;font-weight:700;letter-spacing:.02em}
+.gloss-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:13px}
+.gloss-item{background:var(--bg-elev);border:1px solid var(--border-soft);border-left:3px solid var(--accent);border-radius:9px;padding:15px 18px;transition:.18s}
+.gloss-item:hover{border-left-color:var(--accent-2);transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,0,0,.2)}
+.gloss-term{font-weight:700;color:var(--accent);font-size:1.01rem;margin-bottom:5px;line-height:1.45}
+.gloss-term .en{font-family:var(--font-en);color:var(--text-dim);font-size:.76rem;font-weight:500;margin-left:7px;letter-spacing:.01em}
+.gloss-def{color:var(--text);font-size:.91rem;line-height:1.72}
+.gloss-def strong{color:var(--accent-3);font-weight:600}
+.gloss-def em{color:var(--accent);font-style:normal;font-weight:500}
+@media(max-width:560px){.gloss-grid{grid-template-columns:1fr}}
+/* ===== Knowledge Graph ===== */
+.kg-intro{color:var(--text-muted);font-size:1rem;line-height:1.8;margin-bottom:18px;max-width:820px}
+.kg-legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin-bottom:14px;font-size:.78rem;color:var(--text-muted)}
+.kg-leg{display:flex;align-items:center;gap:7px}
+.kg-leg .dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
+.kg-leg .ln{width:20px;height:0;border-top:2px dashed #6fe7b7}
+.kg-hint{font-size:.8rem;color:var(--text-dim);margin-bottom:14px}
+.kg-hint b{color:var(--accent)}
+.kg-wrap{position:relative;background:radial-gradient(900px 500px at 50% 40%,rgba(115,103,240,.06),transparent 70%),var(--bg-elev);border:1px solid var(--border);border-radius:14px;overflow:hidden;touch-action:none}
+.kg-aspect{position:relative;width:100%;height:0;padding-bottom:74%}
+.kg-svg{position:absolute;top:0;left:0;width:100%;height:100%;display:block;cursor:grab}
+.kg-svg:active{cursor:grabbing}
+.kg-link{stroke:var(--border);stroke-width:1.2;opacity:.5;transition:opacity .2s}
+.kg-link.cross{stroke:#6fe7b7;stroke-dasharray:4 4;opacity:.55}
+.kg-n{cursor:pointer;transition:opacity .22s}
+.kg-n text{font-family:var(--font-zh);pointer-events:none;-webkit-user-select:none;user-select:none}
+.kg-n .nlatin{font-family:var(--font-en)}
+.kg-n .shp{transition:stroke-width .15s,filter .15s}
+.kg-n:hover .shp{filter:drop-shadow(0 0 8px currentColor)}
+.kg-focus .kg-link{opacity:.06}
+.kg-focus .kg-link.on{opacity:.95;stroke-width:2}
+.kg-focus .kg-n{opacity:.12}
+.kg-focus .kg-n.on{opacity:1}
+.kg-reset{position:absolute;top:12px;right:12px;z-index:2;background:var(--bg-soft);border:1px solid var(--border);color:var(--text-muted);font-family:var(--font-en);font-size:.74rem;padding:6px 13px;border-radius:999px;cursor:pointer;transition:.18s}
+.kg-reset:hover{border-color:var(--accent);color:var(--accent)}
+</style>
+</head>
+<body>
+<header class="topbar">
+<div class="topbar-inner">
+<div class="brand"><span class="brand-mark">A</span><span>Aoduo Li <small>· 论文讲解合集</small></span></div>
+<nav class="topbar-links">
+<a href="index.html">← 学术主页</a>
+<a class="nav-kg" href="#kgraph">◆ 知识图谱</a>
+<a href="research.html">研究综述</a>
+<a href="translations.html">全文翻译</a>
+<a href="#hero">导览</a>
+<a href="#p1">论文</a>
+<a class="cta" href="mailto:2030728844@qq.com">联系作者</a>
+</nav>
+</div>
+</header>
+<div class="shell">
+<aside class="sidebar" id="sidebar">
+<div class="sidebar-group"><div class="sidebar-title">总览</div>
+<a href="#kgraph"><span class="side-idx">◆</span><span class="toc-mark"></span>研究知识图谱</a>
+</div>
+<div class="sidebar-group"><div class="sidebar-title">LLM 对齐</div>
+</div>
+<div class="sidebar-group"><div class="sidebar-title">3DGS / 视觉合成</div>
+<a href="#p3"><span class="side-idx">03</span><span class="toc-mark"></span>VEDAL · 3DGS 变分剪枝</a>
+<a href="#p13"><span class="side-idx">13</span><span class="toc-mark"></span>Latent4D · 4DGS 极致压缩</a>
+<a href="#p2"><span class="side-idx">02</span><span class="toc-mark"></span>TCE · 红外图像合成</a>
+</div>
+<div class="sidebar-group"><div class="sidebar-title">高效 AI 系统</div>
+<a href="#p4"><span class="side-idx">04</span><span class="toc-mark"></span>BiPT · 二值点云 Transformer</a>
+<a href="#p8"><span class="side-idx">08</span><span class="toc-mark"></span>CUDA-Eval · 组件归因</a>
+</div>
+<div class="sidebar-group"><div class="sidebar-title">多模态与安全</div>
+<a href="#p5"><span class="side-idx">05</span><span class="toc-mark"></span>NeuroGuard · 跨模态绑定</a>
+<a href="#p1"><span class="side-idx">01</span><span class="toc-mark"></span>ATRIE · 表达性语音合成</a>
+</div>
+<div class="sidebar-group"><div class="sidebar-title">具身智能</div>
+<a href="#p11"><span class="side-idx">11</span><span class="toc-mark"></span>DOGe · Go2 图书馆导航</a>
+<a href="#p10"><span class="side-idx">10</span><span class="toc-mark"></span>Forestpest-YOLO</a>
+</div>
+<div class="sidebar-group"><div class="sidebar-title">附录</div>
+<a href="#glossary"><span class="side-idx">★</span><span class="toc-mark"></span>专业名词解释</a>
+</div>
+</aside>
+<main>
+<section class="hero" id="hero">
+<div class="hero-eyebrow">Paper Walk-Throughs</div>
+<h1>论文讲解</h1>
+<p class="hero-sub">这里收录了我所有论文的中文讲解，帮助快速了解每篇论文的核心思路。</p>
+<div class="hero-stats">
+<div class="stat"><div class="stat-num"><span class="count-up" data-to="11">0</span></div><div class="stat-label">论文 / Papers</div></div>
+<div class="stat"><div class="stat-num"><span class="count-up" data-to="4">0</span></div><div class="stat-label">研究方向</div></div>
+<div class="stat"><div class="stat-num"><span class="count-up" data-to="9">0</span></div><div class="stat-label">第一作者</div></div>
+<div class="stat"><div class="stat-num"><span class="count-up" data-to="2026">0</span></div><div class="stat-label">最新年份</div></div>
+</div>
+</section><section class="paper" id="kgraph">
+<div class="paper-head">
+<div class="paper-meta">
+<span class="paper-no">OVERVIEW</span>
+<span class="badge b-cgi">研究全景</span>
+<span class="role">知识图谱</span>
+</div>
+<h2>研究知识图谱
+      <span class="en">Knowledge Graph · How 11 Papers, Innovations &amp; Concepts Connect</span>
+</h2>
+</div>
+<p class="kg-intro">把我全部研究串成一张网：中心是我，向外是 5 个研究方向 → 10 篇论文 → 每篇的自研创新模块。绿色虚线标出跨论文共享的底层概念（如变分推断同时撑起 VEDAL 与 Latent4D、端侧部署贯穿多项具身与视觉研究），一眼看出方法之间的脉络与迁移。</p>
+<div class="kg-legend">
+<span class="kg-leg"><span class="dot" style="background:#ff6b9d"></span>我</span>
+<span class="kg-leg"><span class="dot" style="background:#ffd166"></span>研究方向</span>
+<span class="kg-leg"><span class="dot" style="background:#4ecdc4"></span>论文</span>
+<span class="kg-leg"><span class="dot" style="background:#a78bfa"></span>自研创新模块</span>
+<span class="kg-leg"><span class="dot" style="background:#6fe7b7"></span>共享概念</span>
+<span class="kg-leg"><span class="ln"></span>跨论文连接</span>
+</div>
+<div class="kg-hint">交互：<b>悬停</b>任意节点高亮关联；<b>拖动</b>节点可重排；<b>点论文节点</b>跳到讲解；<b>点紫色模块/绿色概念</b>跳到「专业名词解释」并自动定位该词条。</div>
+<div class="kg-wrap">
+<button class="kg-reset" id="kgReset" type="button">重新布局</button>
+<div class="kg-aspect">
+<svg aria-label="研究知识图谱" class="kg-svg" id="kgSvg" preserveaspectratio="xMidYMid meet" role="img" viewbox="0 0 1240 920"></svg>
+</div>
+</div>
+</section><section class="paper reveal" id="p1">
+<div class="paper-head">
+<div class="paper-meta">
+<span class="paper-no">PAPER · 01</span>
+<span class="badge b-icmr">ICMR 2026</span>
+<span class="role">第一作者</span>
+<span class="role">多模态 / 语音合成</span>
+</div>
+<h2>ATRIE：面向角色驱动语音合成的鲁棒推理与情感自适应调优
+      <span class="en">ATRIE: Adaptive Tuning for Robust Inference and Emotion in Persona-Driven Speech Synthesis</span>
+</h2>
+</div>
+<div class="block"><div class="block-label">研究背景</div>
+<p>当下的 TTS（文本转语音）系统在"声音像不像角色"和"情感对不对"这两件事上仍然薄弱：要么使用统一中性嗓音，要么虽然能给出情感强度，但不知道为什么要在这一句生气、那一句温柔。</p>
+<p>对动漫角色扮演（Role-Play）这种重度依赖角色一致性的应用而言，没有可解释的情感来源，意味着配音"飘忽"、人设易崩。</p>
+</div>
+<div class="block"><div class="block-label">核心动机</div>
+<div class="motivation"><p>能不能让模型先像演员那样"在心里讲一遍角色为什么这样说话"，再把这份理由翻译成韵律控制信号，从而在保持角色一致的前提下，做到细粒度、可实时的情感语音？</p></div>
+</div>
+<div class="block"><div class="block-label">方法 · 离线蒸馏 + 在线推理的两阶段解耦范式</div>
+<div class="method-deep">
+<div class="method-card gap"><h4>填补的研究缺口</h4>
+<p>现有表达性 TTS 走两条死胡同：第一条是<strong>在线挂载 LLM</strong>，让大模型实时给出情感推理，效果好但延迟动辄秒级，根本无法支撑实时对话或游戏配音；第二条是<strong>预设情感标签</strong>（happy/sad/angry），灵活性差，无法解释"为什么此处要愤怒"，遇到细腻情绪就崩。两条路径都没能同时满足"细粒度可解释"与"实时可部署"。</p>
+</div>
+<div class="method-card paradigm"><h4>提出的新范式</h4>
+<p>把 LLM 的情感推理能力<strong>编译成静态信号</strong>：训练阶段一次性让 LLM 跑完所有台词，输出完整的情感推理链；再用蒸馏把这条链压缩到一个 3 维连续 VAD（Valence 愉悦度 / Arousal 唤醒度 / Dominance 支配感）韵律目标。推理时只跑一个轻量 MLP Adapter，<strong>彻底切断对 LLM 的运行时依赖</strong>，把"重推理"留在训练，把"轻映射"留给在线。</p>
+</div>
+<div class="method-card"><h4>创新模块逐一拆解</h4>
+<div class="module-list">
+<div class="module-item"><span class="module-tag">①  LLM Rationale Generator (Qwen2.5-14B)</span><span class="module-desc">离线阶段用 <strong>Qwen2.5-14B</strong> 作 teacher，针对每句台词生成一段思维链(CoT)情感推理，并输出结构化 JSON（含 VAD 分数 + 相对韵律标量）。<strong>为什么需要它？</strong>没有显式推理链，模型学到的情感是黑盒映射，遇到反讽、克制等复杂情绪会失败；显式 rationale 等于给学生模型提供"老师的解题步骤"。推理链再经<strong>冻结的 Sentence-BERT 编成 768 维</strong>语义向量 h 用于对齐。</span></div>
+<div class="module-item"><span class="module-tag">②  VAD 三维韵律目标</span><span class="module-desc">把推理链落到 3 维连续 <em>(Valence 愉悦度 / Arousal 唤醒度 / Dominance 支配感)</em> + 相对韵律标量。<strong>为什么是 VAD 连续空间而非离散标签？</strong>VAD 是心理学公认的情感空间基底，可连续插值（如"半愤怒-半悲伤"），维度低、训练易收敛、迁移到任何韵律控制器只需线性投影。</span></div>
+<div class="module-item"><span class="module-tag">③  P2P · Persona-to-Prosody Adapter</span><span class="module-desc">学生模型，<strong>11.8M 参数、4 层 Transformer、hidden 512、8 头</strong>，含 Cross-Attention + 4 个并行韵律预测头（Pitch/Energy/Duration/Pause）。把 VAD 映射成韵律控制信号注入 <strong>GPT-SoVITS v4</strong> 的 variance adaptor。<strong>为什么不重训底座？</strong>底座已具备高质量音色复刻，重训既贵又破坏角色一致性；Adapter 只在韵律子空间微调，<strong>音色保真与情感可控互不干扰</strong>，推理时彻底切断对 LLM 的依赖。</span></div>
+</div>
+</div>
+<div class="method-card connect"><h4>模块如何串联：完整 Pipeline</h4>
+<span class="flow-label">Data Flow</span>
+<div class="flow-chain">
+<span style="width:100%;font-family:var(--font-en);font-size:.66rem;letter-spacing:.16em;color:var(--text-dim);text-transform:uppercase;margin-top:6px">Training (Offline)</span>
+<span class="flow-node in">Script Lines</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">LLM Rationale</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">VAD Targets</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node key">Adapter Learns Mapping</span>
+<span style="width:100%;font-family:var(--font-en);font-size:.66rem;letter-spacing:.16em;color:var(--text-dim);text-transform:uppercase;margin-top:6px">Inference (Online, no LLM)</span>
+<span class="flow-node in">Text</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">P2P Adapter</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">Prosody Embedding</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">GPT-SoVITS</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node out">Expressive Speech</span>
+</div>
+</div>
+<div class="method-card intuition"><h4>核心思路 · 给面试官的直觉解释</h4>
+<p>一句话：<strong>把 LLM 的"思考"预先烤进权重</strong>。训练时 Qwen2.5-14B 像一位老戏骨示范"这句应该怎么演"，把示范结果浓缩成 VAD 三维数字 + 韵律标量；推理时只剩一个 11.8M 的学生 Adapter，<strong>完全不调用 LLM</strong>，实测 RTF 0.18（RTX 4090 FP16，约 180ms 合成 1s 音频）。这种"教师重、学生轻"的解耦，本质上是把推理时延复杂度从 O(LLM) 降到 O(Adapter)，同时保留了 LLM 的语义解释能力。</p>
+</div>
+</div>
+</div>
+<div class="block"><div class="block-label">主要贡献</div>
+<div class="contrib-grid">
+<div class="contrib"><div class="contrib-num">01</div><div class="contrib-text">提出"离线蒸馏 + 在线推理"的两阶段解耦框架，把 LLM 的情感能力卸载到训练侧。</div></div>
+<div class="contrib"><div class="contrib-num">02</div><div class="contrib-text">设计 LLM 情感蒸馏机制：让大模型先写"理由"，再产出 VAD 三维韵律目标。</div></div>
+<div class="contrib"><div class="contrib-num">03</div><div class="contrib-text">轻量 P2P Adapter：在 GPT-SoVITS 上做角色一致的实时韵律控制。</div></div>
+</div>
+</div>
+<div class="block"><div class="block-label">实验结果</div>
+<div class="results">
+<div class="metric"><div class="metric-val"><span class="count-up" data-decimals="2" data-to="4.28">0</span></div><div class="metric-label">UTMOS 客观自然度（VITS 4.05）</div></div>
+<div class="metric"><div class="metric-val"><span class="count-up" data-decimals="2" data-to="0.86">0</span></div><div class="metric-label">CCS 人设一致性（比 CosyVoice2 高 12%）</div></div>
+<div class="metric"><div class="metric-val"><span class="count-up" data-decimals="2" data-to="0.84">0</span></div><div class="metric-label">EEA 情感表达准确率</div></div>
+<div class="metric"><div class="metric-val"><span class="count-up" data-decimals="2" data-to="0.18">0</span><span class="unit">RTF</span></div><div class="metric-label">实时率（RTX 4090，比 CosyVoice2 快 3.6×）</div></div>
+</div>
+<div class="figs">
+<div class="fig-note">系统架构图：上半部 LLM 蒸馏离线流，下半部适配器在线流。</div>
+<div class="fig-note b">数据集 AnimeTTS-Bench：日语录音、多角色、8 种情绪标注（Fleiss κ=0.78）。</div>
+<div class="fig-note c">对比实验表：与 FastSpeech2、VITS、VALL-E、CosyVoice2 对比；78% 用户偏好 ATRIE。</div>
+</div>
+</div>
+</section>
+<section class="paper reveal" id="p2">
+<div class="paper-head">
+<div class="paper-meta">
+<span class="paper-no">PAPER · 02</span>
+<span class="badge b-tce">IEEE TCE</span>
+<span class="role">作者</span>
+<span class="role"> </span>
+<span class="role">图像合成</span>
+</div>
+<h2>多元特征引导的高频保真红外图像合成
+      <span class="en">Multivariate Feature-Guided Infrared Image Synthesis with High-Frequency Fidelity</span>
+</h2>
+</div>
+<div class="block"><div class="block-label">研究背景</div>
+<p>红外（IR）相机昂贵、采集成本高、数据稀缺，严重制约下游夜视、安防、行人检测算法的训练。</p>
+<p>"用 RGB 合成 IR"是缓解这一瓶颈的关键手段，但现有方法常常丢失高频细节，并破坏热物理一致性 —— 看起来像热图，物理上却讲不通。</p>
+</div>
+<div class="block"><div class="block-label">核心动机</div>
+<div class="motivation"><p>能不能把"频域、空域、边缘"几条线一起喂给生成器，让 RGB → IR 的色彩重映射既细节锋利、又保持热分布的物理合理性？</p></div>
+</div>
+<div class="block"><div class="block-label">方法 · 四元并行特征融合 + 自适应色彩重映射</div>
+<div class="method-deep">
+<div class="method-card gap"><h4>填补的研究缺口</h4>
+<p>RGB → IR 跨模态合成的真正难点在于"<strong>一个特征空间装不下两类信息</strong>"：热分布是低频的大块全局统计量（哪一片热、哪一片冷），而边缘锐度与物体几何是高频的局部细节。以往单分支 GAN（Pix2Pix、CycleGAN）共用一条编码-解码路径，要么红外图过糊（细节丢失），要么热区错位（全局物理性破坏），二者只能取其一。</p>
+</div>
+<div class="method-card paradigm"><h4>提出的新范式</h4>
+<p><strong>用 Transformer 编解码器(STE-Net) + 多元特征分工，而非 GAN</strong>：论文明确<strong>弃用对抗学习</strong>——理由是自注意力能建模长程依赖、确定性输出更适合 ADAS 安全场景、且规避 GAN 的 mode collapse 与训练不稳。用四个解耦的频率/空间分支（Fourier / Spatial / Wavelet / Boundary）同时提特征，每个分支负责一种"物理量"，再用<strong>四元数卷积</strong>把它们融合，最后通过专门的颜色重映射模块(CRM)完成 RGB → IR 转换。本质是把"一个生成器做所有事"拆成"四个专家 + 一次代数融合"。</p>
+</div>
+<div class="method-card"><h4>创新模块逐一拆解</h4>
+<div class="module-list">
+<div class="module-item"><span class="module-tag">①  Fourier 分支</span><span class="module-desc">对全图做傅里叶变换提取频谱特征，配合 <strong>MDTA</strong>（来自 Restormer 的通道维全局注意力）<strong>捕捉全局热分布</strong>——红外热图本质上是低频能量分布图，傅里叶域是它最自然的表征空间。没有这条分支，模型很难学到"整面墙比整张脸更热"的统计先验。</span></div>
+<div class="module-item"><span class="module-tag">②  Wavelet 分支</span><span class="module-desc">小波分解给出<strong>多尺度</strong>高低频系数，同样接 MDTA，专门解决"既要保留窗框这种锐边、又要保留墙面这种缓变"的多尺度共存问题。傅里叶是全局的，小波在空间-频率联合域取折中。</span></div>
+<div class="module-item"><span class="module-tag">③  Spatial 分支</span><span class="module-desc">空域特征 + MDTA，<strong>维持像素级空间对应</strong>，保证 RGB 上的物体位置在 IR 输出里不会平移漂移。这是几何一致性的兜底分支。</span></div>
+<div class="module-item"><span class="module-tag">④  Boundary 分支（Sobel）</span><span class="module-desc">Sobel 派生的<strong>显式边缘特征</strong>注入。<strong>为什么这条分支不接 MDTA？</strong>Sobel 是 3×3 局部算子，全局注意力反而会把边缘模糊掉。它在后续四元数融合中充当<strong>实部</strong>（结构骨架），专治红外重建的"糊一团"通病——热成像里物体边缘往往是温差最大处。</span></div>
+<div class="module-item"><span class="module-tag">⑤  CRM · 颜色重映射模块</span><span class="module-desc">基于<strong>隐式神经表示</strong>的 MLP：f 把可见光 3 通道映到 128 维隐空间 Z，g 再映到红外单通道，每个子网 3 层全连接 + ReLU + 残差。<strong>为什么需要独立模块？</strong>RGB 与 IR 色域是非平凡非线性关系（黑衣可能很热、白色金属可能很冷），简单通道平均会彻底丢掉这种语义；CRM 把这一映射显式参数化、可学习。</span></div>
+<div class="module-item"><span class="module-tag">⑥  MFFM · 多元特征融合（四元数卷积）</span><span class="module-desc">把四路特征用<strong>四元数卷积</strong>融合：边界作实部、Fourier/Spatial/Wavelet 作虚部 i,j,k，经 Hamilton 积耦合。<strong>为什么用四元数而不是简单拼接/注意力？</strong>四元数代数天然建模四个分量之间的耦合关系，且参数极省（仅约 195K）；消融显示它优于 Concat / Grouped / Attention 融合。MFFM 放在 bottleneck，对原图全分辨率提取频域+边界后再与深层语义融合，补偿下采样丢失的高频。</span></div>
+</div>
+</div>
+<div class="method-card connect"><h4>模块如何串联：完整 Pipeline</h4>
+<span class="flow-label">Data Flow</span>
+<div class="flow-chain">
+<span class="flow-node in">RGB Image</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">STE-Net Encoder</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">4 Branches (Fourier/Spatial/Wavelet/Boundary)</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">MFFM 四元数融合</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">CRM 颜色重映射</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node key">Decoder (无判别器/无对抗)</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node out">Synthetic IR</span>
+</div>
+</div>
+<div class="method-card intuition"><h4>核心思路 · 给面试官的直觉解释</h4>
+<p>一句话：<strong>不同物理量用不同基底表征，再用四元数代数把它们耦合起来</strong>。傅里叶看全局热场，小波看多尺度纹理，空间看几何对应，边缘（实部）看锐度，CRM 学色域映射。损失只用 <strong>Smooth L1 + SSIM + LPIPS 等权相加</strong>（无对抗损失、无显式频域损失），靠 MFFM 在结构上注入高频。注意：RGB→IR 是跨模态映射、不存在像素级一一对应，所以 PSNR 绝对值天然偏低（≈14），真正能说明问题的是高频保真指标与下游行人检测 mAP 的领先。</p>
+</div>
+</div>
+</div>
+<div class="block"><div class="block-label">主要贡献</div>
+<div class="contrib-grid">
+<div class="contrib"><div class="contrib-num">01</div><div class="contrib-text">提出 STE-Net：用 Transformer 编解码器 + 多元特征分工替代 GAN，规避对抗训练不稳与 mode collapse。</div></div>
+<div class="contrib"><div class="contrib-num">02</div><div class="contrib-text">设计 CRM 基于隐式神经表示的颜色重映射，处理 RGB → IR 的非线性色域转换。</div></div>
+<div class="contrib"><div class="contrib-num">03</div><div class="contrib-text">提出 MFFM 多元特征融合（四元数卷积，仅约 195K 参数），耦合 Fourier/Spatial/Wavelet/Boundary 四路特征。</div></div>
+</div>
+</div>
+<div class="block"><div class="block-label">实验结果</div>
+<div class="results">
+<div class="metric"><div class="metric-val"><span class="count-up" data-decimals="2" data-to="6.38">0</span></div><div class="metric-label">高频指标 AG（真实 IR 为 6.72，最接近）</div></div>
+<div class="metric"><div class="metric-val"><span class="count-up" data-decimals="2" data-to="0.46">0</span></div><div class="metric-label">SSIM（跨模态合成，绝对值偏低属正常）</div></div>
+<div class="metric"><div class="metric-val"><span class="count-up" data-decimals="2" data-to="0.46">0</span></div><div class="metric-label">下游 YOLOv5s 行人检测 mAP@50</div></div>
+<div class="metric"><div class="metric-val"><span class="count-up" data-decimals="1" data-to="22.5">0</span><span class="unit">ms</span></div><div class="metric-label">推理延迟（26.83M 参数，单卡 V100）</div></div>
+</div>
+<div class="figs">
+<div class="fig-note">网络总体架构：STE-Net 编解码器 + 四路特征 + MFFM/CRM。</div>
+<div class="fig-note b">定性对比图：与 CycleGAN、Pix2Pix、VQ-InfraTrans、DiffV2IR 等基线对照。</div>
+<div class="fig-note c">高频保真表：AG/EPI/HFER 三项最接近真实红外（数据集 LLVIP/RoadScene/M3FD/FLIR）。</div>
+</div>
+</div>
+</section><section class="paper reveal" id="p3">
+<div class="paper-head">
+<div class="paper-meta">
+<span class="paper-no">PAPER · 03</span>
+<span class="badge b-cgi">CGI 2026</span>
+<span class="role">第一作者</span>
+<span class="role">3D Gaussian Splatting</span>
+</div>
+<h2>VEDAL：基于变分误差驱动异步学习的 3D 高斯分溅高效剪枝
+      <span class="en">VEDAL: Variational Error-Driven Asynchronous Learning for Efficient 3D Gaussian Splatting Pruning</span>
+</h2>
+</div>
+<div class="block"><div class="block-label">研究背景</div>
+<p>3D Gaussian Splatting（3DGS）虽然把神经辐射场拉到了实时渲染，但代价是要存几百万个高斯体，模型大、显存高，根本上不了手机、AR/VR 头显这种边缘设备。</p>
+<p>以往的剪枝多采用"按梯度或不透明度排序、一刀切"的硬阈值策略，要么剪不动，要么剪过头导致渲染崩坏。</p>
+</div>
+<div class="block"><div class="block-label">核心动机</div>
+<div class="motivation"><p>能不能把"该不该剪掉这个高斯"建模为一个概率推断问题，让每个高斯独立地、带不确定性地做出自己的决定？</p></div>
+</div>
+<div class="block"><div class="block-label">方法 · 变分误差驱动的异步剪枝</div>
+<div class="method-deep">
+<div class="method-card gap"><h4>填补的研究缺口</h4>
+<p>现有 3DGS 剪枝方法（如按梯度幅值、不透明度、贡献度排序后<strong>硬阈值砍掉</strong>）有两个根本缺陷：第一，剪枝决策<strong>不可逆</strong>——一旦砍错就再也救不回来；第二，<strong>缺乏理论保证</strong>，砍多少全靠手工调参；第三，所有高斯被迫在同一时刻、同一标准下被裁决，<strong>无法因 Gaussian 而异</strong>地决定其留存概率。</p>
+</div>
+<div class="method-card paradigm"><h4>提出的新范式</h4>
+<p>把剪枝<strong>形式化为变分推断</strong>：每个 Gaussian 是否保留是一个潜变量 <em>z_i ∈ {0,1}</em>，对其后验做变分近似。整个剪枝过程不再是离散的"砍/留"二选一，而是连续的概率优化——通过最小化<strong>变分自由能</strong>（重建误差 + KL 正则）端到端学习，每个 Gaussian 独立、异步地收敛到自己的保留概率。</p>
+</div>
+<div class="method-card"><h4>创新模块逐一拆解</h4>
+<div class="module-list">
+<div class="module-item"><span class="module-tag">①  收敛条件变分推断</span><span class="module-desc">把每个高斯"保留/剪枝"建为二值隐变量 <em>z_i ∈ {0,1}</em>，优化 <strong>ELBO</strong>（重构项 + KL 复杂度项）。<strong>为什么变分？</strong>离散硬剪不可逆、不可学；用变分后验 q(z_i) 把决策变成连续概率优化，可端到端反传，且 KL 项天然提供稀疏先验。关键是<strong>只对"已收敛"的高斯集合 A(t)</strong> 计算 KL，未收敛者不参与剪枝裁决。</span></div>
+<div class="module-item"><span class="module-tag">②  预测误差门（Prediction-Error Gate）</span><span class="module-desc">维护每个高斯 <strong>leave-one-out 重要性</strong>的 EMA（ρ=0.99），用自适应分位阈值 τ(t) 判断该高斯是否"收敛到可被裁决"。<strong>这就是"误差驱动"</strong>——门控信号来自每个高斯对重构误差的真实贡献，而非梯度幅值或不透明度这类启发式代理。为省算力，用 tile 光栅器缓存的 cᵢαᵢTᵢ 做一阶近似，每 100 迭代刷新，约 3% 开销。</span></div>
+<div class="module-item"><span class="module-tag">③  变分不确定性头 + 异步门</span><span class="module-desc">一个极轻量 MLP（<strong>2 层 ×64，约 5K 参数</strong>）输出每个高斯的保留概率 αᵢ，用 <strong>Binary Concrete 松弛</strong>使其可微。<strong>"异步"</strong>体现在：各高斯按各自收敛时刻分别激活剪枝资格，而非同步批量删——纹理区收敛快、镜面/遮挡区收敛慢，异步避免过早剪掉尚未收敛的高斯造成的"误判级联"。Proposition 1 给出最优保留概率闭式解 αᵢ*=σ(Δᵢ/λ_KL + log(α/(1−α)))。</span></div>
+</div>
+</div>
+<div class="method-card connect"><h4>模块如何串联：完整 Pipeline</h4>
+<span class="flow-label">Data Flow</span>
+<div class="flow-chain">
+<span class="flow-node in">3DGS Init</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">+ 不确定性头 (per Gaussian)</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">Render Loss + KL + Sparse</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">预测误差门 (EMA)</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node key">收敛即激活 → 异步剪枝</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">Remaining Gaussians (5.2×)</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">（可选）FlexGaussian 属性量化</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node out">Compressed Scene</span>
+</div>
+</div>
+<div class="method-card intuition"><h4>核心思路 · 给面试官的直觉解释</h4>
+<p><strong>VEDAL 的卖点不是"剪枝还能提质"，而是"用极小的质量代价换巨大的体积压缩"。</strong>在 Mip-NeRF360 上，高斯数从 3.25M 砍到 0.63M（<strong>5.2× 压缩</strong>，734MB→141MB），PSNR 仅从 27.48 <strong>降 0.31 dB</strong> 到 27.17，渲染反而从 148 提到 185 FPS。为什么质量损失这么小？因为变分框架 + 异步门只剪那些<strong>真正对渲染贡献小、且已经收敛</strong>的高斯——同步硬剪会误伤尚未收敛的高斯导致崩坏，而异步"等它收敛再裁决"避免了这种误判级联。VEDAL 本身<strong>只减高斯数量、不做属性量化</strong>；若再叠加正交的 FlexGaussian 量化，总压缩可达 <strong>27.2×</strong>（27MB）。</p>
+</div>
+</div>
+</div>
+<div class="block"><div class="block-label">主要贡献</div>
+<div class="contrib-grid">
+<div class="contrib"><div class="contrib-num">01</div><div class="contrib-text">把剪枝形式化为收敛条件变分推断（ELBO），用概率隐变量 + Proposition 1 闭式解替代硬阈值。</div></div>
+<div class="contrib"><div class="contrib-num">02</div><div class="contrib-text">提出预测误差门 + 异步门控：各高斯按各自收敛时刻分别裁决，避免同步剪枝的误判级联。</div></div>
+<div class="contrib"><div class="contrib-num">03</div><div class="contrib-text">仅减少高斯数量即获 5.2× 压缩、质量损失 &lt;0.31 dB；与正交的属性量化(FlexGaussian)组合可达 27.2×。</div></div>
+</div>
+</div>
+<div class="block"><div class="block-label">实验结果</div>
+<div class="results">
+<div class="metric"><div class="metric-val"><span class="count-up" data-decimals="1" data-to="5.2">0</span><span class="unit">×</span></div><div class="metric-label">压缩比（734MB → 141MB，Mip-NeRF360）</div></div>
+<div class="metric"><div class="metric-val"><span class="count-up" data-decimals="2" data-to="27.17">0</span></div><div class="metric-label">PSNR（基线 27.48 → 仅降 0.31 dB）</div></div>
+<div class="metric"><div class="metric-val"><span class="count-up" data-to="185">0</span><span class="unit">FPS</span></div><div class="metric-label">渲染速度（基线 148 FPS）</div></div>
+<div class="metric"><div class="metric-val"><span class="count-up" data-decimals="1" data-to="27.2">0</span><span class="unit">×</span></div><div class="metric-label">叠加 FlexGaussian 后总压缩（27MB）</div></div>
+</div>
+<div class="figs">
+<div class="fig-note">变分框架图：高斯隐变量 → 收敛门 → ELBO 反传。</div>
+<div class="fig-note b">剪枝前后渲染对比：3.25M → 0.63M 高斯，纹理细节保持干净。</div>
+<div class="fig-note c">质量–压缩率帕累托：vs LightGaussian/PUP/MaskGaussian（Mip-NeRF360/T&amp;T/Deep Blending 共 13 场景）。</div>
+</div>
+</div>
+</section>
+<section class="paper reveal" id="p4">
+<div class="paper-head">
+<div class="paper-meta">
+<span class="paper-no">PAPER · 04</span>
+<span class="badge b-tpami">IEEE TPAMI</span>
+<span class="role">作者</span>
+<span class="role">点云 / 二值化</span>
+</div>
+<h2>BiPT：高效二值点云 Transformer 网络
+      <span class="en">BiPT: Efficient Binary Point Cloud Transformer Networks</span>
+</h2>
+</div>
+<div class="block"><div class="block-label">研究背景</div>
+<p>点云 Transformer 在 3D 理解任务上效果惊艳，但参数量大、推理慢，对无人机、机器人这种带电、带算力预算的设备并不友好。</p>
+<p>1-bit 量化是终极压缩，可是直接把权重和激活都二值化，几何细节会被打散，性能掉得非常厉害。</p>
+</div>
+<div class="block"><div class="block-label">核心动机</div>
+<div class="motivation"><p>把 PTv3 的权重和激活都压到 1-bit（W1A1）时，邻域注意力的 softmax 呈重尾分布，固定阈值会把多数权重压进同一个 bin，导致"注意力坍塌"——注意力退化成均匀、几何稀疏结构被抹平。能不能让二值化"懂得"softmax 的分布，把稀疏性保下来？</p></div>
+</div>
+<div class="block"><div class="block-label">方法 · 几何感知二值化的点云 Transformer</div>
+<div class="method-deep">
+<div class="method-card gap"><h4>填补的研究缺口</h4>
+<p>二值化（±1 量化）在 2D CNN 上已经成熟，但<strong>直接搬到点云 Transformer 上会彻底崩溃</strong>。原因有三：第一，点云是<strong>不规则、稀疏</strong>的，二值化打散后无法恢复原本的相对几何关系；第二，Transformer 中的 Attention 对数值幅度极敏感，±1 量化会让 softmax 退化为均匀分布；第三，LayerNorm 在二值激活下容易梯度爆炸。这三道关卡让现有 1-bit Transformer 方法在点云上至少掉 20pp 精度。</p>
+</div>
+<div class="method-card paradigm"><h4>提出的新范式</h4>
+<p><strong>W1A1（权重 1-bit + 激活 1-bit）全二值化 PTv3 内部所有 block</strong>（仅 stem 与任务头保持 FP32），并针对二值化在点云 Transformer 上的三道坎设计专用模块：用 <strong>SAB</strong> 在连续域算 softmax 再自适应阈值二值，避免注意力坍塌；用 <strong>BiLinearLSR</strong> 逐层缩放恢复 sign 丢失的幅值；用 <strong>SubLN + RelNorm</strong> 稳定二值激活的方差与相对坐标。另提供更温和的 W2A8（权重 2-bit/激活 8-bit）作对照。</p>
+</div>
+<div class="method-card"><h4>创新模块逐一拆解</h4>
+<div class="module-list">
+<div class="module-item"><span class="module-tag">①  SAB · Softmax-Aware Binarization</span><span class="module-desc">核心模块。<strong>在连续域先算完 softmax</strong>，再用<strong>逐 query 自适应阈值</strong> θᵢ=µᵢ+γσᵢ（默认 γ=0，即取该 query 注意力分布的均值）生成二值 mask。<strong>为什么必须 softmax-aware？</strong>邻域注意力权重呈重尾分布，用固定全局阈值会把绝大多数权重压进同一个 bin，softmax 退化为均匀分布即"注意力坍塌"，几何稀疏结构被抹平；逐 query 自适应阈值按每个 query 自己的分布裁决，把稀疏性保下来。</span></div>
+<div class="module-item"><span class="module-tag">②  BiLinearLSR · 逐层尺度恢复</span><span class="module-desc">sign 函数把激活/权重压成 ±1 会<strong>丢失幅值信息</strong>。BiLinearLSR 给每个二值投影附加一个<strong>可学习缩放因子 α</strong>，初始化为 α=std(xW_fp)/std(x_b W_b)，把二值输出的尺度拉回接近全精度。参数量极小却显著回血精度——本质是"二值骨架 + 一个标量幅值修正"。</span></div>
+<div class="module-item"><span class="module-tag">③  SubLN · 子层归一化</span><span class="module-desc">在 Q/K/V 投影与 FFN 的非线性<strong>之前插入归一化</strong>，稳定二值激活的方差分布。<strong>为什么需要？</strong>二值前向 + STE 反向的组合下，激活方差容易漂移导致训练不收敛；SubLN 把方差压在稳定区间，是消融里增益最大的单个模块（S3DIS 从 25.86 跳到 42.99）。</span></div>
+<div class="module-item"><span class="module-tag">④  RelNorm · 相对坐标归一化</span><span class="module-desc">用每一层的层半径 r(l) 归一化相对坐标 Δp，让位置编码在不同采样尺度（S3DIS 球采样 r=2m、nuScenes 柱采样 r=50m）下保持一致量纲，避免二值化把跨场景的几何尺度信息洗掉。</span></div>
+<div class="module-item"><span class="module-tag">⑤  XNOR + popcount 二值算子</span><span class="module-desc">二值注意力点积用位运算实现：q⊤k = 2·popcount(XNOR(q,k)) − d。<strong>这是压缩与加速的物理来源</strong>——把浮点乘加换成按位异或 + 计数，理论上一次访存可并行处理整字宽的元素。梯度方面 sign 用 <strong>STE</strong>（裁剪 |x|&lt;1），注意力 mask 用软 STE（前向走二值、反向经 softmax 雅可比回传）。</span></div>
+</div>
+</div>
+<div class="method-card connect"><h4>模块如何串联：完整 Pipeline</h4>
+<span class="flow-label">Data Flow</span>
+<div class="flow-chain">
+<span class="flow-node in">Point Cloud</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">Stem (FP32)</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">Binary Block (W1A1)</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">SubLN + RelNorm</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node key">SAB Attention (XNOR+popcount)</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">BiLinearLSR 尺度恢复</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node out">Task Head (Cls / Seg, FP32)</span>
+</div>
+</div>
+<div class="method-card intuition"><h4>核心思路 · 给面试官的直觉解释</h4>
+<p><strong>为什么这套组合能在 W1A1 下守住 91.2% ModelNet40 OA（teacher 93.7%，仅降 2.5pp）？</strong>三个要素各修一道坎，缺一不可：<strong>SAB 防注意力坍塌</strong>（保住几何稀疏性）、<strong>SubLN 稳住二值激活方差</strong>（让训练能收敛）、<strong>BiLinearLSR 恢复幅值</strong>（让二值不丢"程度"）。S3DIS 分割的消融最能说明问题：裸二值只有 21.28，加 SAB 升到 25.86，再加 SubLN 直接跳到 42.99，全模型 52.85；后续用超点(superpoint)训练还能进一步升到 63.98%。本质是把"二值化损失"切成三块、分别修补。</p>
+</div>
+</div>
+</div>
+<div class="block"><div class="block-label">主要贡献</div>
+<div class="contrib-grid">
+<div class="contrib"><div class="contrib-num">01</div><div class="contrib-text">首个对 PTv3 做 W1A1（权重+激活均 1-bit）的全二值点云 Transformer，参数压缩 18.9×、FLOPs 降约 56×。</div></div>
+<div class="contrib"><div class="contrib-num">02</div><div class="contrib-text">提出 SAB（softmax-aware 二值化）防注意力坍塌，配合 BiLinearLSR / SubLN / RelNorm 是性能不崩的关键。</div></div>
+<div class="contrib"><div class="contrib-num">03</div><div class="contrib-text">在 S3DIS / ScanNet / nuScenes 分割与 ModelNet40 分类多数据集一致验证；提供 W2A8 折中方案。</div></div>
+</div>
+</div>
+<div class="block"><div class="block-label">实验结果</div>
+<div class="results">
+<div class="metric"><div class="metric-val"><span class="count-up" data-decimals="1" data-to="18.9">0</span><span class="unit">×</span></div><div class="metric-label">参数压缩</div></div>
+<div class="metric"><div class="metric-val"><span class="count-up" data-decimals="1" data-to="14.7">0</span><span class="unit">×</span></div><div class="metric-label">延迟加速</div></div>
+<div class="metric"><div class="metric-val"><span class="count-up" data-to="56">0</span><span class="unit">×</span></div><div class="metric-label">FLOPs 降低</div></div>
+<div class="metric"><div class="metric-val"><span class="count-up" data-decimals="2" data-to="63.98">0</span><span class="unit">%</span></div><div class="metric-label">S3DIS mIoU（基线 52.9 → +11pp）</div></div>
+<div class="metric"><div class="metric-val"><span class="count-up" data-decimals="1" data-to="91.2">0</span><span class="unit">%</span></div><div class="metric-label">ModelNet40 OA</div></div>
+</div>
+<div class="figs">
+<div class="fig-note">总体网络结构图，标出 SAB / BiLinearLSR / SubLN / RelNorm 模块位置。</div>
+<div class="fig-note b">二值 vs 全精度可视化：注意力图与几何特征对照。</div>
+<div class="fig-note c">压缩率–精度曲线：BiPT 在极限压缩区段仍守住精度。</div>
+</div>
+</div>
+</section><section class="paper reveal" id="p5">
+<div class="paper-head">
+<div class="paper-meta">
+<span class="paper-no">PAPER · 05</span>
+<span class="badge b-mm">AAAI 2027</span>
+<span class="role">第一作者</span>
+<span class="role">多模态安全</span>
+</div>
+<h2>NeuroGuard：面向多模态大模型安全的跨模态绑定异常检测
+      <span class="en">NeuroGuard: Cross-Modal Binding Anomaly Detection for Multimodal LLM Safety</span>
+</h2>
+</div>
+<div class="block"><div class="block-label">研究背景</div>
+<p>多模态大模型（MLLM）出现了一类新型攻击：图像安全、文字安全，但两者绑在一起就变成了不安全内容。传统单模态护栏面对这种"组合即攻击"几乎是无效的。</p>
+<p>同时，给每个请求都跑一遍重型分类器既慢又贵，对在线服务不可接受。</p>
+</div>
+<div class="block"><div class="block-label">核心动机</div>
+<div class="motivation"><p>能不能不动 MLLM 主体，只在它跨模态绑定的瞬间"听一下"内部信号，就实时检出组合风险？</p></div>
+</div>
+<div class="block"><div class="block-label">方法 · 跨模态绑定异常的实时诊断</div>
+<div class="method-deep">
+<div class="method-card gap"><h4>填补的研究缺口</h4>
+<p>MLLM 安全防护的现有方案<strong>只看单模态</strong>：要么独立审图（图像分类器），要么独立审文（NLP 分类器）。但 SIUO、FigStep 这类组合攻击的精髓是<strong>"图安全 + 文安全 = 组合不安全"</strong>——单看每一项都是良性输入，组合起来才触发越狱（如安全的"如何制作蛋糕"配上一张化学武器示意图）。单模态护栏对这类绑定攻击的检出率接近 0。同时，全量重型分类器又会让在线延迟翻倍，无法部署。</p>
+</div>
+<div class="method-card paradigm"><h4>提出的新范式</h4>
+<p><strong>检测"绑定模式"而非"内容本身"</strong>：完全冻结 MLLM 主干，把它当成一个免费的特征提取器；只在跨模态注意力发生的<strong>关键中间层</strong>取出图文绑定表示，分析这种绑定的<strong>模式特征</strong>是否偏离正常分布。整个检测过程<strong>复用 MLLM 原本就要做的前向</strong>，几乎零额外开销。</p>
+</div>
+<div class="method-card"><h4>创新模块逐一拆解</h4>
+<div class="module-list">
+<div class="module-item"><span class="module-tag">①  冻结 MLLM 特征提取（始终 frozen）</span><span class="module-desc"><strong>完全不动 MLLM 权重</strong>，只取最终层 <strong>post-fusion 隐层表征</strong>（对图像 token 位置和当前轮文本 token 位置分别做 mean-pool），<strong>不分析注意力图</strong>。<strong>为什么冻结？</strong>商用 MLLM 权重不可改/改不起；冻结意味着零成本部署到任何能拿到 hidden-state 的 MLLM 上，模型无关是落地刚需。L1 还在共享投影后用谱熵算<strong>有效秩 EffRank</strong> 估计表征复杂度。</span></div>
+<div class="module-item"><span class="module-tag">②  L2 门控循环滤波 + L3 方向一致性</span><span class="module-desc">L2 是 <strong>GRU 变体 + 自适应 cooldown</strong>，抑制瞬时模态不一致造成的误报。L3 是核心可分性来源：<strong>MAC</strong>（多尺度角度一致性，把锁相值 PLV 从时间域改到投影域的 dPLV）+ <strong>CDS</strong>（累积偏差分，用 leaky 积分追踪多轮对话的漂移）。<strong>关键洞察：</strong>SIUO 这类组合攻击在原始相似度空间里与正常对无法区分（反而"绑定得太好"、cos 相似度偏高），必须靠<strong>方向性信号</strong>才能暴露——这正是 MAC/dPLV 干的事。</span></div>
+<div class="module-item"><span class="module-tag">③  L4 决策融合（逻辑回归）</span><span class="module-desc">在 L1-L3 输出的 <strong>7 维证据向量</strong>上做一个逻辑回归决策头。<strong>为什么这么轻够用？</strong>前面已经把高维隐层语义浓缩成方向/复杂度/漂移等少数可解释统计量，决策只需在低维空间画一条边界。每个会话仅需存 5 个 FP64 标量（约 40 字节），可"无训练规则版"或"轻量校准版"两种模式运行。</span></div>
+</div>
+</div>
+<div class="method-card connect"><h4>模块如何串联：完整 Pipeline</h4>
+<span class="flow-label">Data Flow</span>
+<div class="flow-chain">
+<span class="flow-node in">Image + Text</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">MLLM Forward (frozen)</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">取 post-fusion 隐层表征</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">L1 EffRank + L2 GRU 滤波</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node key">L3 MAC(dPLV) + CDS 方向信号</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">L4 逻辑回归 (7 维)</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node out">Safe / Unsafe Decision</span>
+</div>
+</div>
+<div class="method-card intuition"><h4>核心思路 · 给面试官的直觉解释</h4>
+<p><strong>为什么监控本身能压到 &lt;3ms？</strong>核心机制是<strong>"搭便车"</strong>——MLLM 本来就要做一次前向给用户出回答，NeuroGuard 完全寄生在这次前向的隐层表征上，自己不发起任何独立推理，只做几次低维统计量计算（实测 monitor-only 约 2.67ms）。<strong>注意如实表述：&lt;3ms 是"监控开销"，含 MLLM 前向的端到端约 40-45ms</strong>——但相比 GuardAlign/OmniGuard 这类 response-level 护栏动辄 1.5-7s，仍是数量级优势。它的真正贡献不在"刷满 AUC"（多数 benchmark 已饱和到 1.0），而在<strong>部署鲁棒性</strong>：面对自适应 PGD 攻击、多轮渐变越狱时，扁平 MLP 分类器会被沿少数方向绕过，而 NeuroGuard 的方向性 + 累积信号守得住。</p>
+</div>
+</div>
+</div>
+<div class="block"><div class="block-label">主要贡献</div>
+<div class="contrib-grid">
+<div class="contrib"><div class="contrib-num">01</div><div class="contrib-text">梳理出"跨模态绑定攻击"的问题定义和评估协议。</div></div>
+<div class="contrib"><div class="contrib-num">02</div><div class="contrib-text">提出超低延迟、模型无关的检测框架。</div></div>
+<div class="contrib"><div class="contrib-num">03</div><div class="contrib-text">在 SIUO、FigStep 等多基准上完成跨数据集验证。</div></div>
+</div>
+</div>
+<div class="block"><div class="block-label">实验结果</div>
+<div class="results">
+<div class="metric"><div class="metric-val"><span class="count-up" data-decimals="2" data-to="1.00">0</span></div><div class="metric-label">FigStep F1（DR=100%）</div></div>
+<div class="metric"><div class="metric-val"><span class="count-up" data-decimals="2" data-to="1.00">0</span><span class="unit">AUC</span></div><div class="metric-label">5 个 benchmark 上冻结特征近饱和</div></div>
+<div class="metric"><div class="metric-val">&lt;<span class="count-up" data-to="3">0</span><span class="unit">ms</span></div><div class="metric-label">监控开销（monitor-only，实测 2.67ms）</div></div>
+<div class="metric"><div class="metric-val">~<span class="count-up" data-to="40">0</span>–<span class="count-up" data-to="45">0</span><span class="unit">ms</span></div><div class="metric-label">端到端（含 MLLM 前向；护栏类 baseline 需 1.5-7s）</div></div>
+</div>
+<div class="figs">
+<div class="fig-note">跨模态绑定攻击示例：单看图像/文本都安全，组合后越界（SIUO/FigStep）。</div>
+<div class="fig-note b">检测流程图：冻结 MLLM → 隐层表征 → L1-L4 统计探针 → 决策。</div>
+<div class="fig-note c">鲁棒性对比：自适应 PGD 与多轮渐变下，相对扁平 MLP/重型护栏的优势。</div>
+</div>
+</div>
+</section>
+<section class="paper reveal" id="p8">
+<div class="paper-head">
+<div class="paper-meta">
+<span class="paper-no">PAPER · 08</span>
+<span class="badge b-neurips">NeurIPS 2026</span>
+<span class="role">第一作者</span>
+<span class="role">LLM × CUDA</span>
+</div>
+<h2>分解 LLM 生成的 CUDA 代码：提议、搜索与环境兼容性
+      <span class="en">Dissecting LLM-Generated CUDA: Proposal, Search, and Environment Compatibility</span>
+</h2>
+</div>
+<div class="block"><div class="block-label">研究背景</div>
+<p>让 LLM 写 CUDA 核函数是对模型能力的硬考试：要能编译、要数值对、还要跑得快。</p>
+<p>但现在的 CUDA Agent 系统把"提议器 / 搜索器 / 评估器 / 环境"绑成一个黑盒，刷分数提升却不知道是谁的功劳。</p>
+</div>
+<div class="block"><div class="block-label">核心动机</div>
+<div class="motivation"><p>能不能把这些组件拆开来逐一控制变量，回答"真正的瓶颈到底在哪一环"这个工业界最关心的问题？</p></div>
+</div>
+<div class="block"><div class="block-label">方法 · CUDA Agent 系统的因果式组件归因</div>
+<div class="method-deep">
+<div class="method-card gap"><h4>填补的研究缺口</h4>
+<p>现在的"全栈 CUDA Agent"系统（KernelBench、CudaLLM 之类）声称比 baseline 加速 5-10×，但<strong>六个组件耦合在一起</strong>（Proposal LLM、Search Strategy、Verifier、Tolerance、Hardware、Tokenizer），刷分提升时<strong>没人知道是谁的功劳</strong>——可能是 LLM 变强，也可能是评估器变宽松、容差放宽、或硬件升级。这种黑盒比较让工业界完全无法判断"该投资哪一环"。</p>
+</div>
+<div class="method-card paradigm"><h4>提出的新范式</h4>
+<p><strong>把消融实验当因果推断做</strong>：把 Agent 系统拆成 4 个层次的可替换组件（Proposal → Controller → Evaluator → Ledger），<strong>固定三项变一项</strong>，在统一硬件 + 统一容差下跑全因子实验（4320 cell），用一个新提出的 SPC 算子量化每个组件对最终结果的<strong>边际贡献</strong>，类似 ATE（Average Treatment Effect）的工业实现。</p>
+</div>
+<div class="method-card"><h4>创新模块逐一拆解</h4>
+<div class="module-list">
+<div class="module-item"><span class="module-tag">①  Attribution Framework (4-Layer Pipeline)</span><span class="module-desc">把任何 CUDA Agent 系统统一抽象成 4 层：<em>Proposal</em>（哪个 LLM 生成代码）→ <em>Controller</em>（搜索/反馈策略）→ <em>Evaluator</em>（编译 + 数值校验）→ <em>Ledger</em>（结果记录与统计）。<strong>统一接口</strong>让不同系统可以即插即换比较。</span></div>
+<div class="module-item"><span class="module-tag">②  SPC 算子 (Search-Proposal Compatibility)</span><span class="module-desc">核心诊断量：<strong>SPC = PR(π) − PR(BON) ∈ [−100, +100] pp</strong>，即某控制器 π 相对 Best-of-N 基线在通过率（pass rate）上的边际增减。据此把 (模型,控制器) 组合归入三个 regime：<strong>controller-helpful</strong>（搜索真有用）、<strong>proposal-bound</strong>（瓶颈在生成器，搜索无力）、<strong>proposal-saturated</strong>（生成器已饱和，加搜索反而拖累）。<strong>为什么这个量重要？</strong>它揭示"控制器不是普适加成"——MCTS 在 Qwen2.5-7B-Instruct 上 helpful（14.7% vs BON 6.7%），但在 Coder-1.5B 上随预算增大由 +40pp 翻转到 −40pp，单纯报"加速 X×"完全掩盖了这种交互作用。</span></div>
+<div class="module-item"><span class="module-tag">③  Cross-Family Replication（跨模型族复现）</span><span class="module-desc">主矩阵在 Qwen2.5 系列（7B-Instruct / Coder-7B / Coder-1.5B）上跑，再用 <strong>DeepSeek-Coder-7B / Llama-Code-7B</strong> 做跨族复现，<strong>验证结论不是某个 tokenizer 的特例</strong>。这一步是消除"研究只在自家模型上成立"的硬要求。</span></div>
+<div class="module-item"><span class="module-tag">④  统一容差 + 受控网格</span><span class="module-desc">任务取 <strong>KernelBench 的 30 个切片</strong>，固定 Evaluator + 统一容差（<strong>torch.allclose, rtol 1e-3 / atol 1e-5</strong>），遍历 (Model × Controller × Budget × Seed)，每格多 seed 跑出置信区间；计时用 5 warmup + 20 次 CUDA-event。<strong>统一容差是关键</strong>——不同 paper 用的浮点容差不同，会把"数值失配"判成"通过"或"失败"，统一才能横向比较。</span></div>
+</div>
+</div>
+<div class="method-card connect"><h4>模块如何串联：完整 Pipeline</h4>
+<span class="flow-label">Data Flow</span>
+<div class="flow-chain">
+<span class="flow-node in">Fix Evaluator + Tolerance</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">Vary (Model × Controller × Budget × Seed)</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">Run 4320 Cells</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">Compute SPC per Cell</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">Identify Regime</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node key">helpful / bound / saturated / harmful</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node out">Component Attribution Report</span>
+</div>
+</div>
+<div class="method-card intuition"><h4>核心思路 · 给面试官的直觉解释</h4>
+<p><strong>核心发现：85.6-95.0% 的失败是"数值失配"而非"编译错误"</strong>。这句话的含义是：模型其实<strong>能写出"长得像 CUDA 的代码"</strong>，编译也能过，但跑出来的数值与参考实现差 1e-3 以上。这说明<strong>真正的瓶颈不在"语法生成"</strong>（这早就被解决了），而在<strong>"数值语义正确性"</strong>——模型对 fp16/fp32 精度、归约顺序、原子操作的隐式语义掌握得不够。这一发现把 CUDA Agent 的研究焦点从"换更强的 LLM"转向"教模型理解数值精度"，是方向性的而非渐进性的结论。</p>
+</div>
+</div>
+</div>
+<div class="block"><div class="block-label">主要贡献</div>
+<div class="contrib-grid">
+<div class="contrib"><div class="contrib-num">01</div><div class="contrib-text">面向 CUDA Agent 的组件归因实验框架。</div></div>
+<div class="contrib"><div class="contrib-num">02</div><div class="contrib-text">大规模、统一容差、可复现的受控实验。</div></div>
+<div class="contrib"><div class="contrib-num">03</div><div class="contrib-text">明确揭示"数值保真度"是被低估的核心瓶颈。</div></div>
+</div>
+</div>
+<div class="block"><div class="block-label">实验结果</div>
+<div class="results">
+<div class="metric"><div class="metric-val"><span class="count-up" data-decimals="1" data-to="85.6">0</span>–<span class="count-up" data-decimals="0" data-to="95">0</span><span class="unit">%</span></div><div class="metric-label">错误单元中"数值失配"占比</div></div>
+<div class="metric"><div class="metric-val"><span class="count-up" data-to="0">0</span><span class="unit">%</span></div><div class="metric-label">L3 难度任务所有 模型×控制器 通过率</div></div>
+<div class="metric"><div class="metric-val">14.7<span class="unit">%</span></div><div class="metric-label">MCTS@Instruct-7B 通过率（BON 仅 6.7%）</div></div>
+<div class="metric"><div class="metric-val">80<span class="unit">pp</span></div><div class="metric-label">Coder-1.5B 上 SPC 由 +40pp 翻转到 −40pp</div></div>
+</div>
+<div class="figs">
+<div class="fig-note">组件归因热力图：行=控制器，列=任务难度，颜色=通过率。</div>
+<div class="fig-note b">错误类型分布饼图：数值失配 vs 编译错 vs 超时。</div>
+<div class="fig-note c">控制器对比条形图：搜索策略对结果的真实贡献。</div>
+</div>
+</div>
+</section>
+<section class="paper reveal" id="p10">
+<div class="paper-head">
+<div class="paper-meta">
+<span class="paper-no">PAPER · 10</span>
+<span class="badge b-cait">CAIT 2025</span>
+<span class="role">第一作者</span>
+<span class="role">轻量化检测</span>
+</div>
+<h2>Forestpest-YOLO：面向小目标林业害虫的高性能检测框架
+      <span class="en">Forestpest-YOLO: A High-Performance Detection Framework for Small Forestry Pests</span>
+</h2>
+</div>
+<div class="block"><div class="block-label">研究背景</div>
+<p>森林病虫害预警需要在无人机/巡检机上做实时检测，云端回传时延太大且没网。</p>
+<p>同时害虫多为小目标、纹理与背景接近，普通 YOLO 模型在边缘端要么太重、要么漏检严重。</p>
+</div>
+<div class="block"><div class="block-label">核心动机</div>
+<div class="motivation"><p>能不能在 YOLO 基础上做面向"林业小目标 + 边缘部署"的针对性瘦身，让精度与算力同时落地？</p></div>
+</div>
+<div class="block"><div class="block-label">方法 · 面向小目标 + 边缘部署的 YOLO 改造</div>
+<div class="method-deep">
+<div class="method-card gap"><h4>填补的研究缺口</h4>
+<p>林业害虫检测有三个特异困难：目标<strong>极小</strong>（虫体常只占图像几十个像素）、<strong>遮挡严重</strong>（叶片/树枝阻挡）、<strong>与背景颜色高度相似</strong>（保护色）。通用 YOLO 检测器在标准 stride conv 下采样过程中会丢失小目标的高分辨率细节，对林业害虫的漏检率偏高；同时无人机/巡检设备部署对模型体量和算力有硬约束。</p>
+</div>
+<div class="method-card paradigm"><h4>提出的新范式</h4>
+<p><strong>"无损下采样 + 跨阶段特征融合 + 难例聚焦"</strong>三件套：用 SPD-Conv 替代 stride conv 解决下采样信息损失，用 CSPOK 跨阶段块加强多尺度并抑制背景噪声，用 VarifocalLoss 让模型重点学习高质量正样本，三者协同应对小目标 + 遮挡 + 类背景相似这套组合拳。</p>
+</div>
+<div class="method-card"><h4>创新模块逐一拆解</h4>
+<div class="module-list">
+<div class="module-item"><span class="module-tag">①  SPD-Conv · 无损下采样</span><span class="module-desc">用<strong>空间-深度重组</strong>替代 stride=2 卷积：把 2×2 邻域的 4 个像素重新排到通道维度，再做 1×1 卷积压缩。<strong>为什么必须无损？</strong>常规 stride conv 在下采样时直接丢掉 3/4 像素，对几十像素大的虫体相当于"先把目标砍碎再去找"；SPD-Conv 把空间信息搬到通道维度，<strong>一个像素都不丢</strong>，小目标的高分辨率细节得以保留进入主干。</span></div>
+<div class="module-item"><span class="module-tag">②  CSPOK · 跨阶段全方位核块</span><span class="module-desc">在 YOLO 骨干中插入<strong>跨阶段特征融合块</strong>，结合大核与小核动态增强多尺度特征，同时对背景噪声做抑制。<strong>关键考量：</strong>害虫的关键判别特征往往是局部纹理（毛、足、翅），而周围叶片纹理与之相似，需要在多个感受野上同时观察才能区分；CSPOK 的多核设计就是为了在不同尺度上"对比"目标与背景。</span></div>
+<div class="module-item"><span class="module-tag">③  VarifocalLoss</span><span class="module-desc">让模型对<strong>高质量正样本</strong>和<strong>困难负样本</strong>加权学习。<strong>为什么用它而不是 Focal Loss？</strong>Focal Loss 对所有正样本一视同仁；VarifocalLoss 用 IoU 加权，让定位准的正样本贡献更大梯度，<strong>等于告诉模型"这些样本质量高，多学一点"</strong>，对害虫这种小目标的精细定位特别重要。</span></div>
+</div>
+</div>
+<div class="method-card connect"><h4>模块如何串联：完整 Pipeline</h4>
+<span class="flow-label">Data Flow</span>
+<div class="flow-chain">
+<span class="flow-node in">Drone Image</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">SPD-Conv (Lossless Downsample)</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">YOLOv8 Backbone + CSPOK Blocks</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">Multi-Scale Detection Heads</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">VarifocalLoss Training</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node out">Pest Detections</span>
+</div>
+</div>
+<div class="method-card intuition"><h4>核心思路 · 给面试官的直觉解释</h4>
+<p><strong>核心抓手是"信息守恒"</strong>：传统 stride conv 在最容易出问题的地方（小目标）丢失最多信息，SPD-Conv 把这条信息泄漏路径堵上；CSPOK 在最容易混淆的地方（类背景纹理）提供多尺度对比证据；VarifocalLoss 在最该用力学习的地方（高质量样本）加大梯度权重。三者各自堵一个"漏点"，加起来就让原本 30% 漏检的小害虫检测变得可用，同时模型体量还能控制在边缘部署可接受的范围。</p>
+</div>
+</div>
+</div>
+<div class="block"><div class="block-label">主要贡献</div>
+<div class="contrib-grid">
+<div class="contrib"><div class="contrib-num">01</div><div class="contrib-text">面向林业害虫场景的轻量化 YOLO 变体。</div></div>
+<div class="contrib"><div class="contrib-num">02</div><div class="contrib-text">构建并整理林业害虫专用数据集。</div></div>
+<div class="contrib"><div class="contrib-num">03</div><div class="contrib-text">在无人机/边缘设备上完成部署验证。</div></div>
+</div>
+</div>
+<div class="block"><div class="block-label">实验结果</div>
+<div class="results">
+<div class="metric"><div class="metric-val">mAP ↑</div><div class="metric-label">在害虫数据集上稳定领先基线</div></div>
+<div class="metric"><div class="metric-val">FPS ↑</div><div class="metric-label">边缘设备实时帧率</div></div>
+<div class="metric"><div class="metric-val">Params ↓</div><div class="metric-label">模型体量显著缩小</div></div>
+</div>
+<div class="figs">
+<div class="fig-note">网络结构图：轻量骨干 + 小目标检测头。</div>
+<div class="fig-note b">林间无人机检测可视化样例。</div>
+</div>
+</div>
+</section>
+<section class="paper reveal" id="p11">
+<div class="paper-head">
+<div class="paper-meta">
+<span class="paper-no">PAPER · 11</span>
+<span class="badge b-wccis">WCCIS 2026</span>
+<span class="role">第一作者</span>
+<span class="role">图书馆服务机器人 · 自主导航</span>
+</div>
+<h2>DOGe：基于 Unitree Go2 Edu 的图书馆服务机器人自主导航系统
+      <span class="en">Autonomous Navigation System for Library Service Robot Based on Unitree Go2 Edu</span>
+</h2>
+</div>
+<div class="block"><div class="block-label">研究背景</div>
+<p>图书馆是四足服务机器人落地的典型室内场景：要在狭窄书架走廊里自主巡航、动态绕开读者，还要完成"带读者去某区找书"的导览巡检任务。</p>
+<p>但把一套自主导航栈真正跑在 Unitree Go2 Edu 这样的四足平台上并非现成可用——低视角、重复纹理、动态人群都会让通用 SLAM 与导航方案在图书馆里失稳。</p>
+</div>
+<div class="block"><div class="block-label">核心动机</div>
+<div class="motivation"><p>能不能把多模态语义 SLAM、语义建图与动态路径规划整合成一套可在 Go2 Edu 上稳定运行的图书馆自主导航与导览巡检系统？</p></div>
+</div>
+<div class="block"><div class="block-label">方法 · Go2 Edu 上的图书馆自主导航与导览巡检系统</div>
+<div class="method-deep">
+<div class="method-card gap"><h4>填补的研究缺口</h4>
+<p>图书馆 + 四足平台的组合制造了三重工程困难：第一，书架走廊<strong>纹理高度重复</strong>，纯视觉 SLAM 容易回环误匹配、定位漂移；第二，读者<strong>动态走动</strong>，静态地图无法支撑安全避障；第三，"导览/巡检"任务要求机器人不仅能到点，还要<strong>理解区域语义</strong>（哪一排是什么类目）。把这些需求整合成一套能在 Go2 Edu 算力约束下实时运行的系统，是本工作要解决的落地缺口。</p>
+</div>
+<div class="method-card paradigm"><h4>提出的新范式</h4>
+<p><strong>"多模态语义 SLAM + 语义地图 + 动态路径规划"的一体化导航栈</strong>：以多模态语义 SLAM 同时完成定位与语义建图，把图书馆的区域/书架语义写进地图；再由动态路径规划在语义地图上规划巡检/导览路线，并对动态读者实时重规划，最终在 Unitree Go2 Edu 上闭环执行。</p>
+</div>
+<div class="method-card"><h4>创新模块逐一拆解</h4>
+<div class="module-list">
+<div class="module-item"><span class="module-tag">①  多模态语义 SLAM</span><span class="module-desc">融合视觉与深度/激光等多模态观测做<strong>定位 + 建图</strong>，并在建图同时附加语义标签。<strong>为什么要多模态？</strong>图书馆走廊纹理高度重复，纯视觉特征匹配容易回环误判；引入深度/激光几何约束能显著抑制定位漂移，让长走廊里的位姿估计保持稳定。</span></div>
+<div class="module-item"><span class="module-tag">②  语义建图</span><span class="module-desc">把感知到的区域、书架、标识等语义信息<strong>固化进地图</strong>，形成可供任务层查询的语义地图。<strong>关键考量：</strong>导览巡检任务需要的不是"几何上能到某坐标"，而是"语义上知道这是哪个区域/哪排书架"，语义地图正是把几何导航升级成任务级导航的桥梁。</span></div>
+<div class="module-item"><span class="module-tag">③  动态路径规划 + 导览巡检</span><span class="module-desc">在语义地图上做<strong>全局路径规划 + 局部动态避障</strong>，对走动的读者实时重规划，支撑"带读者前往某区"的导览与按线路巡检。<strong>为什么必须动态？</strong>图书馆人流不可预测，静态规划一旦遇到读者就会卡死或碰撞；动态重规划保证机器人在保持安全距离的前提下持续前进。</span></div>
+</div>
+</div>
+<div class="method-card connect"><h4>模块如何串联：完整 Pipeline</h4>
+<span class="flow-label">系统数据流</span>
+<div class="flow-chain">
+<span class="flow-node in">多模态传感（视觉 + 深度/激光）</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">多模态语义 SLAM（定位 + 建图）</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">语义地图（区域 / 书架 / 标识）</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node key">动态路径规划 + 局部避障</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">导览 / 巡检任务调度</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node out">Unitree Go2 Edu 闭环执行</span>
+</div>
+</div>
+<div class="method-card intuition"><h4>核心思路 · 给面试官的直觉解释</h4>
+<p><strong>"先把图书馆变成机器人看得懂的语义地图，再在上面规划路线。"</strong> 图书馆对人类很简单是因为我们脑子里有"哪区是什么、人会走动"这套先验。本系统就是把这套先验工程化：多模态语义 SLAM 解决"重复纹理下也不迷路"，语义建图解决"知道自己在哪个区域、能听懂任务"，动态路径规划解决"有人也能安全绕"。三者拼起来，Go2 Edu 才能真正在图书馆里完成自主导航和导览巡检，而不是只在空旷场地里走直线。</p>
+</div>
+</div>
+</div>
+<div class="block"><div class="block-label">主要贡献</div>
+<div class="contrib-grid">
+<div class="contrib"><div class="contrib-num">01</div><div class="contrib-text">面向图书馆场景的四足机器人自主导航系统，跑在 Unitree Go2 Edu 平台。</div></div>
+<div class="contrib"><div class="contrib-num">02</div><div class="contrib-text">整合多模态语义 SLAM、语义建图与动态路径规划的一体化导航栈。</div></div>
+<div class="contrib"><div class="contrib-num">03</div><div class="contrib-text">完成真实图书馆环境下的导览/巡检端到端实物验证。</div></div>
+</div>
+</div>
+<div class="block"><div class="block-label">实验结果</div>
+<div class="results">
+<div class="metric"><div class="metric-val">SR ↑</div><div class="metric-label">图书馆导览/巡检任务成功率</div></div>
+<div class="metric"><div class="metric-val">定位 ↑</div><div class="metric-label">重复纹理长走廊下的定位稳定性</div></div>
+<div class="metric"><div class="metric-val">Go2 Edu</div><div class="metric-label">真实四足平台部署验证</div></div>
+</div>
+<div class="figs">
+<div class="fig-note">系统总览：多模态感知 → 语义 SLAM → 语义地图 → 动态规划 → 控制。</div>
+<div class="fig-note b">真实图书馆中 Go2 Edu 的导览/巡检执行轨迹。</div>
+</div>
+</div>
+</section><section class="paper reveal" id="p13">
+<div class="paper-head">
+<div class="paper-meta">
+<span class="paper-no">PAPER · 13</span>
+<span class="badge b-tce">IEEE TCE 2026</span>
+<span class="role">第一作者</span>
+<span class="role"> </span>
+<span class="role">4D Gaussian Splatting 压缩</span>
+<span class="role">二轮返修</span>
+</div>
+<h2>Latent4D：用变分自编码器极致压缩 4D 高斯泼溅
+      <span class="en">Latent4D: Extreme Compression of 4D Gaussian Splatting via Variational Autoencoders</span>
+</h2>
+</div>
+<div class="block"><div class="block-label">研究背景</div>
+<p>4D 高斯泼溅（4DGS）在 3DGS 基础上加入时间维度，能高保真重建动态场景，但代价是<strong>存储爆炸</strong>：一段动态场景往往是数百万个高斯 × 随时间变化的属性，动辄数 GB，难以传输、存储和在消费电子终端上回放。</p>
+<p>已有的高斯压缩方法大多针对<strong>静态 3DGS</strong>，没有专门利用动态场景在<strong>时间维度上的强冗余</strong>，压缩比有限。</p>
+</div>
+<div class="block"><div class="block-label">核心动机</div>
+<div class="motivation"><p>动态高斯场景里，相邻时刻、相邻空间的高斯属性高度相似——这种冗余能不能用一个学习到的<strong>低维潜空间</strong>直接吃掉，让原本数 GB 的 4DGS 压到几百 KB，还能解码回可渲染的高斯？</p></div>
+</div>
+<div class="block"><div class="block-label">方法 · 基于 VAE 的 4DGS 潜空间编解码器</div>
+<div class="method-deep">
+<div class="method-card gap"><h4>填补的研究缺口</h4>
+<p>动态场景重建里，4DGS 的存储开销是落地最大的拦路虎：每个高斯不仅有位置/旋转/缩放/不透明度/球谐颜色，还要叠加随时间变化的运动/形变参数，规模随时间线性膨胀。现有压缩工作<strong>主要服务静态 3DGS</strong>（剪枝、量化、码本），把它们逐帧套到 4DGS 上既忽略了<strong>时序冗余</strong>，也难以达到动态场景传输所需的<strong>极致压缩比</strong>。</p>
+</div>
+<div class="method-card paradigm"><h4>提出的新范式</h4>
+<p><strong>"把 4DGS 当数据，用 VAE 学一个紧致潜表示来当编解码器"</strong>：不再逐属性手工量化，而是训练一个变分自编码器，把整套时变高斯属性映射进一个<strong>低维潜空间 z</strong>，存储/传输时只保留压缩后的潜码，渲染时由解码器重建出可直接泼溅的高斯。借助 VAE 学到的连续流形 + 潜码量化，实现<strong>最高 21900× 的压缩比</strong>。</p>
+</div>
+<div class="method-card"><h4>创新模块逐一拆解</h4>
+<div class="module-list">
+<div class="module-item"><span class="module-tag">①  4DGS 属性的可压缩重组</span><span class="module-desc">把每个高斯随时间变化的属性（位置、旋转、缩放、不透明度、球谐颜色 + 时序形变项）<strong>结构化组织</strong>成 VAE 可以吞入的张量形式。<strong>为什么这一步关键？</strong>动态高斯的属性维度异质、量纲差别大，直接喂给网络会让重建误差被某几个分量主导；先做归一化与结构化重组，VAE 才能在所有属性上均衡地学习紧致表示。</span></div>
+<div class="module-item"><span class="module-tag">②  变分潜空间编解码</span><span class="module-desc">编码器把高维高斯属性压到<strong>低维潜变量 z</strong>，解码器再重建出可渲染高斯；训练目标是<strong>重建保真 + KL 正则</strong>的标准 VAE 形式。<strong>为什么用 VAE 而不是直接量化？</strong>VAE 学到的是一个连续、规整的潜流形，相近的动态内容在潜空间里聚拢，天然把时序与空间冗余压进少量潜维度——这正是极致压缩比的来源，也比逐属性硬量化更抗失真。</span></div>
+<div class="module-item"><span class="module-tag">③  潜码量化与极致压缩</span><span class="module-desc">对潜码做<strong>量化 + 紧凑编码</strong>，把 VAE 已经压缩过的潜表示进一步无冗余地落盘。<strong>压缩-保真权衡：</strong>真正决定最终压缩比的不是单看 VAE 维度，而是"潜空间维度 + 潜码量化精度"的组合，21900× 是在可接受重建质量下逼出来的极致点。</span></div>
+</div>
+</div>
+<div class="method-card connect"><h4>模块如何串联：完整 Pipeline</h4>
+<span class="flow-label">编解码流程</span>
+<div class="flow-chain">
+<span class="flow-node in">4DGS 动态高斯场景（数 GB）</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">属性结构化重组</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">VAE Encoder → 潜变量 z</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node key">潜码量化 + 紧凑编码（潜表示落盘）</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node">VAE Decoder 重建高斯</span>
+<span class="flow-arrow">→</span>
+<span class="flow-node out">可泼溅渲染（最高 21900× 压缩）</span>
+</div>
+</div>
+<div class="method-card intuition"><h4>核心思路 · 给面试官的直觉解释</h4>
+<p><strong>"动态高斯里大部分信息是重复的，VAE 负责只记住不重复的那一点点。"</strong> 一段动态场景在相邻时刻、相邻空间上的高斯几乎雷同，逐属性存储等于把同样的信息抄了千百遍。VAE 把这套数据投影到一个低维潜流形上，相似内容在潜空间里挤到一起，于是只需存一个很小的潜码 + 解码器，就能在渲染时把整套高斯"长"回来。这就是为什么能从数 GB 压到几百 KB（21900×）——压缩的不是像素，而是动态高斯背后的<strong>低维结构</strong>。</p>
+</div>
+</div>
+</div>
+<div class="block"><div class="block-label">主要贡献</div>
+<div class="contrib-grid">
+<div class="contrib"><div class="contrib-num">01</div><div class="contrib-text">首次将 VAE 潜空间编解码用于 4DGS 动态场景的极致压缩。</div></div>
+<div class="contrib"><div class="contrib-num">02</div><div class="contrib-text">通过潜空间表示直接吃掉时序与空间冗余，最高达 21900× 压缩比。</div></div>
+<div class="contrib"><div class="contrib-num">03</div><div class="contrib-text">解码后高斯可直接泼溅渲染，面向传输/存储/端侧回放落地。</div></div>
+</div>
+</div>
+<div class="block"><div class="block-label">实验结果</div>
+<div class="results">
+<div class="metric"><div class="metric-val"><span class="count-up" data-to="21900">0</span><span class="unit">×</span></div><div class="metric-label">最高压缩比（4DGS 动态场景）</div></div>
+<div class="metric"><div class="metric-val">VAE</div><div class="metric-label">潜空间编解码器（非逐属性硬量化）</div></div>
+<div class="metric"><div class="metric-val">TCE 2026</div><div class="metric-label">IEEE TCE（ ,）· 二轮返修</div></div>
+</div>
+<div class="figs">
+<div class="fig-note">系统总览：4DGS → 重组 → VAE 编码 → 量化 → 解码 → 渲染。</div>
+<div class="fig-note b">压缩比 vs 重建质量的权衡曲线。</div>
+<div class="fig-note c">原始 4DGS 与解码重建的动态场景对比。</div>
+</div>
+</div>
+</section>
+<section class="paper reveal" id="glossary">
+<div class="paper-head">
+<div class="paper-meta">
+<span class="paper-no">APPENDIX</span>
+<span class="badge b-cgi">附录</span>
+<span class="role">面试速查</span>
+</div>
+<h2>专业名词解释
+      <span class="en">Glossary · Plain-Language Definitions of Every Technical Term</span>
+</h2>
+</div>
+<p class="glossary-intro">这一栏把上面所有论文里出现的专业名词都用大白话讲清楚——是什么、为什么有用、在我的论文里扮演什么角色。按主题分组，可用下面的搜索框即时过滤。</p>
+<div class="gloss-toolbar">
+<div class="gloss-search-wrap">
+<input aria-label="搜索专业名词" class="gloss-search" id="glossSearch" placeholder="输入关键词过滤，例如 DPO、四元数、SLAM、KL…" type="text"/>
+</div>
+<a class="gloss-back-kg" href="#kgraph"><span class="gk-ic">◆</span>返回知识图谱</a>
+</div>
+<div class="gloss-empty" id="glossEmpty">没有匹配的名词，换个关键词试试。</div>
+<div class="gloss-cat">
+<div class="gloss-cat-title">LLM &amp; Alignment <span class="cat-cn">大模型与偏好对齐</span></div>
+<div class="gloss-grid">
+<div class="gloss-item"><div class="gloss-term">LLM<span class="en">Large Language Model</span></div><div class="gloss-def">大语言模型，像 GPT、Qwen 这类用海量文本训练、能理解和生成语言的神经网络。本站多篇论文要么<em>用</em>它（蒸馏、规划、推理），要么<em>评估/守护</em>它。</div></div>
+<div class="gloss-item"><div class="gloss-term">SFT<span class="en">Supervised Fine-Tuning</span></div><div class="gloss-def">监督微调，拿"问题→标准答案"的成对数据直接教模型模仿。优点简单，缺点是只学会"<strong>照着抄</strong>"，学不到"为什么这么答更好"。</div></div>
+<div class="gloss-item"><div class="gloss-term">RLHF<span class="en">RL from Human Feedback</span></div><div class="gloss-def">基于人类反馈的强化学习。让人对模型的多个回答打分排序，再用这些偏好信号把模型"调教"得更符合人类喜好——ChatGPT 变好用的核心技术。</div></div>
+<div class="gloss-item"><div class="gloss-term">DPO<span class="en">Direct Preference Optimization 直接偏好优化</span></div><div class="gloss-def">理解它要先看 RLHF 的麻烦：RLHF 得<strong>先单独训一个奖励模型</strong>给回答打分，再用 PPO 这类强化学习去最大化奖励——两阶段、要在线采样、要调一堆超参，训练既慢又容易崩。DPO 的洞见是：<strong>奖励模型其实可以不显式存在</strong>。它用一段数学推导证明，"最大化奖励 + 不偏离原模型太远"这个 RLHF 目标可以<strong>等价改写成一个关于成对数据的分类损失</strong>——也就是只要喂"好回答 y⁺ vs 坏回答 y⁻"的偏好对，让模型把 y⁺ 的相对概率拉高即可，损失里已经隐含了奖励，无需训练独立奖励模型、也无需在线采样。代价是它仍然<strong>需要一个冻结的参考模型</strong>（原始 SFT 模型）当锚点防跑偏，所以训练时显存里要同时放两个模型。一句话：DPO 把 RLHF 的两阶段强化学习<strong>压成了一步监督式的偏好分类</strong>，更稳、更省、更好复现，是后续 SimPO、Progressive-SimPO 的共同起点。</div></div>
+<div class="gloss-item"><div class="gloss-term">偏好对<span class="en">Preference Pair</span></div><div class="gloss-def">一组"被偏好的回答 y⁺ vs 被拒绝的回答 y⁻"。对齐训练的基本食材，告诉模型"<strong>这个比那个好</strong>"。</div></div>
+<div class="gloss-item"><div class="gloss-term">Bradley-Terry 模型<span class="en">BT Model</span></div><div class="gloss-def">一个把"A 比 B 好多少分"换算成"A 胜过 B 的概率"的经典统计模型，公式是 σ(分差)。几乎所有偏好对齐方法的概率基础。</div></div>
+<div class="gloss-item"><div class="gloss-term">γ-margin<span class="en">奖励间隔</span></div><div class="gloss-def">在偏好概率里强行要求"好回答必须比坏回答<strong>领先 γ 分以上</strong>"才算赢，逼模型把"专业咨询"和"通用废话"的差距拉大，区分更干脆。</div></div>
+<div class="gloss-item"><div class="gloss-term">Credit Assignment<span class="en">信用分配问题</span></div><div class="gloss-def">"一段对话整体不错，到底是<strong>哪一句</strong>的功劳？"——多轮对齐的核心难题。整段一起算会把好句子的功劳摊薄、把坏句子罚过头。</div></div>
+<div class="gloss-item"><div class="gloss-term">梯度扩散 / 失衡<span class="en">Gradient Diffusion</span></div><div class="gloss-def">把多轮对话当一个样本时，反向传播的学习信号被均匀摊到每一轮，<strong>关键好行为被稀释</strong>、坏行为又被过度惩罚，导致学不到细粒度策略。</div></div>
+<div class="gloss-item"><div class="gloss-term">MCTS<span class="en">Monte Carlo Tree Search</span></div><div class="gloss-def">蒙特卡洛树搜索。像下棋时"在脑中推演几步再落子"：把可能的选择展开成一棵树，多次模拟后挑最优分支。AlphaGo 的核心算法之一。</div></div>
+<div class="gloss-item"><div class="gloss-term">Best-of-N (BON)<span class="en">N 选一采样</span></div><div class="gloss-def">让模型生成 N 个候选，挑最好的那个。最朴素的"加搜索"基线。CUDA-Eval 用它当尺子，衡量更复杂的搜索策略到底有没有真增益。</div></div>
+<div class="gloss-item"><div class="gloss-term">CoT<span class="en">Chain-of-Thought 思维链</span></div><div class="gloss-def">让模型把"<strong>解题步骤一步步写出来</strong>"而非直接给答案。ATRIE 让 LLM 先写情感推理链，再蒸馏成韵律目标。</div></div>
+<div class="gloss-item"><div class="gloss-term">知识蒸馏<span class="en">Knowledge Distillation</span></div><div class="gloss-def">用一个大"老师模型"教一个小"学生模型"，把大模型的能力<strong>压进小模型</strong>。ATRIE 把 14B 的情感推理蒸馏进 11.8M 的轻量 Adapter。</div></div>
+<div class="gloss-item"><div class="gloss-term">Adapter<span class="en">适配器</span></div><div class="gloss-def">挂在大模型旁边的<strong>小插件</strong>，只训这一小块、冻住底座。既省算力又不破坏原模型能力。ATRIE 的 P2P 就是个韵律控制 Adapter。</div></div>
+<div class="gloss-item"><div class="gloss-term">Tokenizer<span class="en">分词器</span></div><div class="gloss-def">把文字切成模型能吃的"词元(token)"的工具。不同模型族分词方式不同——CUDA-Eval 特地跨模型族复现，证明结论不是某个分词器的特例。</div></div>
+</div>
+</div>
+<div class="gloss-cat">
+<div class="gloss-cat-title">Generative &amp; Representation <span class="cat-cn">生成模型与特征表示</span></div>
+<div class="gloss-grid">
+<div class="gloss-item"><div class="gloss-term">GAN<span class="en">Generative Adversarial Network</span></div><div class="gloss-def">生成对抗网络：一个"造假者"和一个"鉴别者"互相博弈，逼造假者越来越逼真。强大但<strong>训练不稳</strong>。TCE 红外论文特地<em>弃用</em>它。</div></div>
+<div class="gloss-item"><div class="gloss-term">Mode Collapse<span class="en">模式坍塌</span></div><div class="gloss-def">GAN 的常见病：生成器偷懒，<strong>只会产出几种样子</strong>、丧失多样性。用 Transformer 确定性输出可规避。</div></div>
+<div class="gloss-item"><div class="gloss-term">VAE<span class="en">Variational Autoencoder 变分自编码器</span></div><div class="gloss-def">把高维数据压进一个<strong>规整连续的低维潜空间</strong>、再解码还原的网络。Latent4D 用它把数 GB 的 4D 高斯压到几百 KB。</div></div>
+<div class="gloss-item"><div class="gloss-term">潜空间 / 潜变量<span class="en">Latent Space / Variable</span></div><div class="gloss-def">数据被压缩后所在的<strong>低维抽象空间</strong>，里面每个点(潜变量 z)对应一个还原结果。相似内容在潜空间里会挤到一起，这正是压缩的来源。</div></div>
+<div class="gloss-item"><div class="gloss-term">变分推断<span class="en">Variational Inference</span></div><div class="gloss-def">当真实概率分布算不出来时，<strong>用一个简单分布去逼近它</strong>的数学手段。VEDAL 把"该不该剪掉这个高斯"建模成变分推断问题。</div></div>
+<div class="gloss-item"><div class="gloss-term">ELBO<span class="en">Evidence Lower Bound 证据下界</span></div><div class="gloss-def">变分推断/VAE 的训练目标，由"<strong>重建保真</strong> + <strong>KL 正则</strong>"两项组成，最大化它就等于让近似分布贴近真实分布。</div></div>
+<div class="gloss-item"><div class="gloss-term">KL 正则<span class="en">KL Divergence</span></div><div class="gloss-def">衡量两个概率分布"<strong>差多远</strong>"的指标。当作正则项可约束潜空间别太放飞、保持紧凑，是 ELBO 里的复杂度惩罚项。</div></div>
+<div class="gloss-item"><div class="gloss-term">后验<span class="en">Posterior</span></div><div class="gloss-def">"看到数据<strong>之后</strong>"对某个变量的概率判断。VEDAL 对每个高斯"保留与否"的后验做变分近似。</div></div>
+<div class="gloss-item"><div class="gloss-term">Binary Concrete<span class="en">二值松弛</span></div><div class="gloss-def">把"留/剪"这种<strong>非0即1的硬选择</strong>变成可微的连续概率，好让梯度能传回去训练。VEDAL 靠它让离散剪枝决策变得可学。</div></div>
+<div class="gloss-item"><div class="gloss-term">隐式神经表示<span class="en">Implicit Neural Representation</span></div><div class="gloss-def">不用查表、而是<strong>用一个小神经网络当函数</strong>来表示映射关系（如颜色坐标→数值）。TCE 的 CRM 用它学 RGB→红外的非线性色域映射。</div></div>
+<div class="gloss-item"><div class="gloss-term">自注意力<span class="en">Self-Attention</span></div><div class="gloss-def">Transformer 的核心，让序列里每个元素都能"<strong>看遍全局其他元素</strong>"并按相关性加权。擅长建模长程依赖。</div></div>
+<div class="gloss-item"><div class="gloss-term">Cross-Attention<span class="en">交叉注意力</span></div><div class="gloss-def">让一种信息"<strong>查询</strong>"另一种信息（如文本查图像）。ATRIE 的 Adapter 用它把语义对齐到韵律。</div></div>
+<div class="gloss-item"><div class="gloss-term">Softmax<span class="en">归一化指数</span></div><div class="gloss-def">把一组任意数值<strong>压成加起来为 1 的概率分布</strong>。注意力权重就是 softmax 出来的。BiPT 发现它在二值化下会"坍塌成均匀分布"。</div></div>
+<div class="gloss-item"><div class="gloss-term">傅里叶变换<span class="en">Fourier Transform</span></div><div class="gloss-def">把图像从"空间"换算到"<strong>频率</strong>"视角，看的是整体能量分布。红外热图本质是低频能量图，所以傅里叶域最自然。</div></div>
+<div class="gloss-item"><div class="gloss-term">小波分解<span class="en">Wavelet Transform</span></div><div class="gloss-def">介于空间和频率之间的"<strong>多尺度放大镜</strong>"，能同时保留锐边和缓变。TCE 用它兼顾窗框锐边与墙面渐变。</div></div>
+<div class="gloss-item"><div class="gloss-term">四元数卷积 / MFFM<span class="en">Quaternion Convolution · 我在 TCE 红外论文的融合核心</span></div><div class="gloss-def">四元数是"<strong>一个实部 + 三个虚部 i,j,k</strong>"打包成一组的超复数。我用它来做红外合成里的<strong>多元特征融合（MFFM 模块）</strong>，解决的问题是：RGB→IR 要同时照顾四种异质信息——全局热场（Fourier 分支）、多尺度纹理（Wavelet 分支）、几何对应（Spatial 分支）、边缘锐度（Boundary 分支）。普通做法是把四路特征<strong>Concat 拼起来再卷积</strong>，但拼接只是"摆在一起"，<em>各路之间没有显式的相互作用建模</em>。四元数卷积的精妙在于：把<strong>边界特征当实部、Fourier/Spatial/Wavelet 当三个虚部 i,j,k</strong>，做卷积时走的是<strong>Hamilton 积</strong>（四元数乘法）——它的代数规则会让<strong>四个分量两两交叉相乘、强制耦合</strong>，等于在数学层面逼着"边缘锐度去校正热场分布、纹理去约束几何"，而不是各管各的。还有一个工程红利：四元数卷积<strong>权重在四个分量间共享</strong>，所以参数量极省（整个 MFFM 仅约 195K）。消融证据很硬：它<strong>优于 Concat / Grouped / Attention 等所有对照融合方式</strong>。位置上放在编解码器 bottleneck，对原图全分辨率提取频域+边界后再与深层语义融合，专门补偿下采样丢掉的高频。</div></div>
+<div class="gloss-item"><div class="gloss-term">Hamilton 积<span class="en">四元数乘法</span></div><div class="gloss-def">四元数之间的乘法规则，会让四个分量<strong>相互交叉影响</strong>——这正是四元数卷积能耦合多路特征的数学原因。</div></div>
+<div class="gloss-item"><div class="gloss-term">Sobel 算子<span class="en">Sobel Operator</span></div><div class="gloss-def">一个 3×3 的经典<strong>边缘检测</strong>小窗口，专挑亮度突变处。红外里物体边缘往往是温差最大处，Sobel 充当结构骨架。</div></div>
+<div class="gloss-item"><div class="gloss-term">MDTA<span class="en">Restormer 通道注意力</span></div><div class="gloss-def">来自 Restormer 的一种<strong>在通道维度做全局注意力</strong>的模块，省算力又能抓全局。TCE 的傅里叶/小波/空间分支都接它。</div></div>
+</div>
+</div>
+<div class="gloss-cat">
+<div class="gloss-cat-title">3D / 4D Vision <span class="cat-cn">三维与动态场景重建</span></div>
+<div class="gloss-grid">
+<div class="gloss-item"><div class="gloss-term">NeRF<span class="en">Neural Radiance Field 神经辐射场</span></div><div class="gloss-def">用一个神经网络隐式表示整个 3D 场景、能从任意视角渲染的技术。效果惊艳但渲染慢，催生了后来的高斯泼溅。</div></div>
+<div class="gloss-item"><div class="gloss-term">3DGS<span class="en">3D Gaussian Splatting</span></div><div class="gloss-def">用<strong>几百万个三维"高斯椭球"</strong>显式表示场景，能实时渲染、画质高。代价是模型巨大、上不了手机。VEDAL 给它瘦身。</div></div>
+<div class="gloss-item"><div class="gloss-term">4DGS<span class="en">4D Gaussian Splatting</span></div><div class="gloss-def">在 3DGS 上加<strong>时间维度</strong>，能重建会动的场景。存储更爆炸(随时间线性膨胀)。Latent4D 专门压它。</div></div>
+<div class="gloss-item"><div class="gloss-term">高斯泼溅<span class="en">Splatting</span></div><div class="gloss-def">把一个个高斯椭球"<strong>啪地拍到屏幕上</strong>"叠加成图像的渲染方式，比 NeRF 的逐光线积分快得多。</div></div>
+<div class="gloss-item"><div class="gloss-term">球谐颜色<span class="en">Spherical Harmonics</span></div><div class="gloss-def">用一组球面基函数表示"<strong>同一个点从不同方向看颜色不同</strong>"(高光、反射)。是高斯属性里占空间的大头之一。</div></div>
+<div class="gloss-item"><div class="gloss-term">不透明度<span class="en">Opacity</span></div><div class="gloss-def">每个高斯有多"实"——接近 0 就几乎透明、对画面贡献小。早期剪枝就爱按它一刀切，但 VEDAL 指出这是粗糙的启发式代理。</div></div>
+<div class="gloss-item"><div class="gloss-term">剪枝<span class="en">Pruning</span></div><div class="gloss-def">删掉模型里<strong>不重要的部分</strong>(这里指删高斯)来减体积。难点是"砍错就救不回来"，VEDAL 用概率框架让它可逆可学。</div></div>
+<div class="gloss-item"><div class="gloss-term">时序冗余<span class="en">Temporal Redundancy</span></div><div class="gloss-def">动态场景里<strong>相邻时刻几乎雷同</strong>的重复信息。逐帧硬存等于把同样内容抄千百遍，Latent4D 用 VAE 把它吃掉。</div></div>
+<div class="gloss-item"><div class="gloss-term">码本<span class="en">Codebook</span></div><div class="gloss-def">一本"<strong>常用模式字典</strong>"，存原始数据时只记字典编号而非完整值，达到压缩。传统高斯压缩常用，Latent4D 改用 VAE 潜码。</div></div>
+<div class="gloss-item"><div class="gloss-term">点云<span class="en">Point Cloud</span></div><div class="gloss-def">用一堆<strong>三维空间点</strong>(带坐标/颜色)表示物体表面的数据，激光雷达的直接产物。不规则、稀疏，是 BiPT 的处理对象。</div></div>
+</div>
+</div>
+<div class="gloss-cat">
+<div class="gloss-cat-title">Compression &amp; Efficiency <span class="cat-cn">模型压缩与高效推理</span></div>
+<div class="gloss-grid">
+<div class="gloss-item"><div class="gloss-term">量化<span class="en">Quantization</span></div><div class="gloss-def">把模型里的高精度浮点数<strong>压成低位宽整数</strong>(如 32-bit→8-bit/4-bit/1-bit)，省显存、提速度。代价是可能掉精度。</div></div>
+<div class="gloss-item"><div class="gloss-term">二值化 / 1-bit<span class="en">Binarization</span></div><div class="gloss-def">量化的极限：每个数只用 <strong>+1 或 −1</strong> 表示。压缩率最高但最难——直接套到点云 Transformer 上会崩，BiPT 专门救它。</div></div>
+<div class="gloss-item"><div class="gloss-term">W1A1 / W2A8<span class="en">权重位宽/激活位宽</span></div><div class="gloss-def">"W"是权重、"A"是激活的位数。<strong>W1A1</strong>=权重和激活都 1-bit(全二值，最激进)；W2A8=权重 2-bit/激活 8-bit(更温和的折中)。</div></div>
+<div class="gloss-item"><div class="gloss-term">XNOR + popcount<span class="en">位运算加速</span></div><div class="gloss-def">二值网络的提速魔法：把浮点乘加换成<strong>按位异或同或(XNOR) + 数 1 的个数(popcount)</strong>，一次访存并行处理整字宽。这是二值化省算力的物理来源。</div></div>
+<div class="gloss-item"><div class="gloss-term">STE<span class="en">Straight-Through Estimator</span></div><div class="gloss-def">直通估计器。二值化的 sign 函数没法求导，STE 让<strong>前向走二值、反向时假装它可导</strong>把梯度直接放行，使二值网络能训练。</div></div>
+<div class="gloss-item"><div class="gloss-term">注意力坍塌<span class="en">Attention Collapse</span></div><div class="gloss-def">BiPT 发现的现象：二值化用固定阈值时，重尾的注意力权重<strong>全被压进同一档</strong>，softmax 退化成均匀分布，几何稀疏结构被抹平。SAB 模块专治它。</div></div>
+<div class="gloss-item"><div class="gloss-term">SPD-Conv<span class="en">Space-to-Depth Conv 无损下采样</span></div><div class="gloss-def">Forestpest-YOLO 用它替代 stride 卷积：普通下采样直接<strong>丢掉 3/4 像素</strong>，对几十像素的小虫子是灾难；SPD-Conv 把空间像素搬到通道维，<strong>一个不丢</strong>。</div></div>
+<div class="gloss-item"><div class="gloss-term">FLOPs<span class="en">浮点运算次数</span></div><div class="gloss-def">衡量模型<strong>计算量</strong>的指标，越低越省算力。BiPT 把它降了约 56×。</div></div>
+<div class="gloss-item"><div class="gloss-term">EMA<span class="en">Exponential Moving Average 指数滑动平均</span></div><div class="gloss-def">一种"<strong>新值占小权重、历史占大权重</strong>"的平滑统计，抗抖动。VEDAL 用 EMA(ρ=0.99) 追踪每个高斯的重要性。</div></div>
+<div class="gloss-item"><div class="gloss-term">FP16 / FP32<span class="en">半/单精度浮点</span></div><div class="gloss-def">16-bit / 32-bit 浮点数。FP16 更快更省但精度低。CUDA-Eval 发现大量失败正是模型没处理好 fp16/fp32 的精度语义。</div></div>
+</div>
+</div>
+<div class="gloss-cat">
+<div class="gloss-cat-title">Robotics &amp; Navigation <span class="cat-cn">机器人与具身导航</span></div>
+<div class="gloss-grid">
+<div class="gloss-item"><div class="gloss-term">SLAM<span class="en">Simultaneous Localization and Mapping</span></div><div class="gloss-def">同步定位与建图：机器人一边<strong>搞清自己在哪</strong>、一边<strong>画出环境地图</strong>。室内导航的地基。</div></div>
+<div class="gloss-item"><div class="gloss-term">语义 SLAM<span class="en">Semantic SLAM</span></div><div class="gloss-def">在 SLAM 基础上给地图<strong>贴上"这是书架/那是墙"的语义标签</strong>。DOGe 用多模态语义 SLAM 在重复纹理走廊里不迷路。</div></div>
+<div class="gloss-item"><div class="gloss-term">RGB-D / LiDAR<span class="en">深度相机 / 激光雷达</span></div><div class="gloss-def">RGB-D=彩色图+每像素深度；LiDAR=用激光测距出点云。两者给机器人<strong>几何感知</strong>。4D LiDAR 还带时间维度。</div></div>
+<div class="gloss-item"><div class="gloss-term">log-odds<span class="en">对数几率</span></div><div class="gloss-def">把概率换算成"<strong>对数赔率</strong>"，好处是多次观测可以<strong>直接相加</strong>融合。语义建图用它把多帧观测累积成一张可靠的语义地图。</div></div>
+</div>
+</div>
+<div class="gloss-cat">
+<div class="gloss-cat-title">Detection / Network Modules <span class="cat-cn">检测分割与网络模块</span></div>
+<div class="gloss-grid">
+<div class="gloss-item"><div class="gloss-term">YOLO<span class="en">You Only Look Once</span></div><div class="gloss-def">最流行的<strong>实时目标检测</strong>框架，一次前向就框出所有物体。Forestpest-YOLO 在它基础上做林业小目标改造。</div></div>
+<div class="gloss-item"><div class="gloss-term">PTv3<span class="en">Point Transformer v3</span></div><div class="gloss-def">当前点云理解的强力 Transformer 骨干。BiPT 把它整个二值化(W1A1)做成首个全二值点云 Transformer。</div></div>
+<div class="gloss-item"><div class="gloss-term">CSPOK<span class="en">跨阶段全方位核块 · 我在 Forestpest-YOLO 提出的模块</span></div><div class="gloss-def">林业害虫检测有个特异难点：害虫的判别特征是<strong>局部细纹理</strong>（毛、足、翅纹），而它周围的<strong>叶片/树枝纹理跟它高度相似</strong>（保护色），单一感受野根本分不清"这是虫还是叶子的一小块"。CSPOK 就是为此设计的：①<strong>跨阶段（Cross-Stage）</strong>——借鉴 CSP 结构把特征<strong>分流</strong>，一部分走深层变换、一部分作 shortcut 直连，最后再融合，既保留浅层细节又叠加深层语义，还省算力；②<strong>全方位核（Omni-Kernel）</strong>——同时用<strong>大核和小核多个尺度</strong>去看同一块区域，<em>小核抓虫体本身的精细纹理、大核看周边上下文</em>，让模型能在"局部 vs 上下文"两个尺度上<strong>对比</strong>，把"虫纹理"从"相似的叶纹理"里区分出来，同时对背景噪声做抑制。直觉就是：要判断一小块毛刺是不是虫子，光盯着这一小块不够，还得看它周围的大环境——CSPOK 把这两个视角拼进同一个块里。它和 SPD-Conv（无损下采样、不丢小目标像素）、VarifocalLoss（按 IoU 给高质量样本加权）一起，构成 Forestpest-YOLO 应对"小目标+遮挡+类背景相似"的三件套。</div></div>
+<div class="gloss-item"><div class="gloss-term">VarifocalLoss<span class="en">变焦损失</span></div><div class="gloss-def">训练时按 IoU 给样本加权，<strong>让定位准的高质量样本贡献更大梯度</strong>。比一视同仁的 Focal Loss 更适合小目标精细定位。</div></div>
+<div class="gloss-item"><div class="gloss-term">Focal Loss<span class="en">焦点损失</span></div><div class="gloss-def">经典检测损失，<strong>降低大量简单负样本的权重</strong>、聚焦难例。VarifocalLoss 是它的进化版。</div></div>
+<div class="gloss-item"><div class="gloss-term">SAB<span class="en">Softmax-Aware Binarization · 我在 BiPT 提出的核心模块</span></div><div class="gloss-def">BiPT 全二值化最难啃的骨头是"<strong>注意力坍塌</strong>"，SAB 就是专门解这个的。先说现象：点云邻域注意力权重呈<strong>重尾分布</strong>（少数邻居权重很大、大量邻居接近 0），如果像普通二值化那样用<em>一个固定全局阈值</em>去切，绝大多数权重会被压进同一档，softmax 出来近似<strong>均匀分布</strong>——等于把"该关注谁"的几何稀疏结构整个抹平，性能直接崩。SAB 的两步设计：①<strong>不在二值域硬切，而是先在连续域把 softmax 完整算出来</strong>，保住真实的权重分布形状；②再用<strong>逐 query 自适应阈值</strong> θᵢ = µᵢ + γσᵢ 生成二值 mask（µᵢ、σᵢ 是<em>这一个 query 自己</em>的注意力均值和标准差，默认 γ=0 即取均值）——也就是说<strong>每个 query 按它自己的分布来裁决</strong>谁该留谁该砍，而不是全局一刀切，这样重尾里的稀疏峰值能被保下来。梯度方面：注意力 mask 用<strong>软 STE</strong>（前向走二值、反向经 softmax 雅可比回传），保证可训练。消融最能说明它的价值：S3DIS 上裸二值只有 21.28 mIoU，加上 SAB 升到 25.86，是不崩的第一道关。</div></div>
+<div class="gloss-item"><div class="gloss-term">BiLinearLSR<span class="en">逐层尺度恢复 · 我在 BiPT 提出的模块</span></div><div class="gloss-def">二值化的本质痛点：sign 函数把权重和激活全压成 ±1，<strong>只保留了符号、彻底丢掉了幅值（"程度"）信息</strong>——本来一个很重要的大权重和一个微弱的小权重，二值化后都变成了 +1，模型分不清轻重。BiLinearLSR 的解法很巧：给每个二值投影<strong>附加一个可学习的标量缩放因子 α</strong>，把二值输出乘回一个合适的幅度。关键是 α 的<strong>初始化</strong>不是随便给的，而是 α = std(x·W_fp) / std(x_b·W_b)——即"<em>全精度输出的标准差</em> ÷ <em>二值输出的标准差</em>"，让二值层一上来就把输出的<strong>尺度对齐回接近全精度</strong>的水平，训练再微调。直觉上就是"<strong>二值骨架 + 一个标量幅值修正</strong>"：用 1-bit 决定方向，用一个浮点小尺度补回强度。参数量几乎可以忽略，却能显著回血精度——这是 BiPT 在 W1A1（权重激活都 1-bit）下还能守住 ModelNet40 OA 91.2%（teacher 93.7%，仅降 2.5pp）的重要一环。</div></div>
+<div class="gloss-item"><div class="gloss-term">LayerNorm / SubLN<span class="en">层归一化</span></div><div class="gloss-def">把一层激活<strong>归一化到稳定范围</strong>，防梯度爆炸。SubLN 是 BiPT 在子层前插的归一化，是二值化能收敛的关键(消融增益最大)。</div></div>
+<div class="gloss-item"><div class="gloss-term">RelNorm<span class="en">相对坐标归一化 · 我在 BiPT 提出的模块</span></div><div class="gloss-def">点云 Transformer 靠<strong>相对坐标 Δp</strong>（邻居点相对中心点的位移）来做位置编码，告诉模型"这个邻居在我哪个方向、多远"。问题来了：不同数据集、不同网络层的采样尺度天差地别——室内 S3DIS 用半径约 2m 的球采样、室外 nuScenes 用半径约 50m 的柱采样，<strong>同样一个 Δp 数值在两种场景下的物理含义完全不同</strong>。二值化对数值幅度本就极其敏感，这种<em>跨尺度的量纲漂移</em>会被 sign 函数进一步放大，把几何尺度信息洗掉。RelNorm 的解法：用<strong>每一层自己的"层半径 r(l)"去归一化该层的相对坐标</strong>，把 Δp 统一缩放到一个一致的量纲区间，这样无论室内室外、无论第几层，位置编码看到的都是"<strong>占本层感受野的百分之多少</strong>"这种相对量，而不是绝对米数。它和 RelNorm 解决的是"<em>空间几何尺度</em>"的稳定，配合 SubLN 解决"<em>激活方差</em>"的稳定，共同保证二值网络在多数据集上都能收敛、不被尺度差异带崩。</div></div>
+<div class="gloss-item"><div class="gloss-term">Superpoint<span class="en">超点</span></div><div class="gloss-def">把<strong>邻近相似的点聚成一个"超点"</strong>再处理，降低点云规模。BiPT 用超点训练把 S3DIS 分割进一步提到 63.98%。</div></div>
+<div class="gloss-item"><div class="gloss-term">VAD<span class="en">Valence-Arousal-Dominance</span></div><div class="gloss-def">心理学的<strong>三维情感空间</strong>：愉悦度/唤醒度/支配感。比离散标签(开心/生气)能连续插值。ATRIE 把情感推理落到 VAD 当韵律目标。</div></div>
+</div>
+</div>
+<div class="gloss-cat">
+<div class="gloss-cat-title">Multimodal Safety <span class="cat-cn">多模态安全(NeuroGuard)</span></div>
+<div class="gloss-grid">
+<div class="gloss-item"><div class="gloss-term">MLLM<span class="en">Multimodal LLM 多模态大模型</span></div><div class="gloss-def">能<strong>同时处理图像+文本</strong>的大模型。强大但带来新型安全风险——单模态护栏管不住。</div></div>
+<div class="gloss-item"><div class="gloss-term">跨模态绑定攻击<span class="en">Cross-Modal Binding Attack</span></div><div class="gloss-def">NeuroGuard 针对的攻击：<strong>图安全、文也安全，但绑一起就越界</strong>(如"如何做蛋糕"配化学武器示意图)。单看每项都良性，组合才触发越狱。</div></div>
+<div class="gloss-item"><div class="gloss-term">越狱<span class="en">Jailbreak</span></div><div class="gloss-def">用巧妙输入<strong>绕过模型的安全限制</strong>、诱导它输出有害内容。SIUO、FigStep 都是越狱攻击基准。</div></div>
+<div class="gloss-item"><div class="gloss-term">护栏<span class="en">Guardrail</span></div><div class="gloss-def">挡在模型输入/输出处的<strong>安全过滤器</strong>。传统护栏只看单模态、且重型分类器慢；NeuroGuard 做超低延迟、模型无关的版本。</div></div>
+<div class="gloss-item"><div class="gloss-term">EffRank / 谱熵<span class="en">Effective Rank · NeuroGuard L1 探针</span></div><div class="gloss-def">这是 NeuroGuard 第一层（L1）用的复杂度探针。"<strong>有效秩</strong>"回答的是"<strong>一个表征实际上'摊开'在多少个维度上</strong>"——一个矩阵名义上可能有几百维，但如果信息都挤在少数几个方向，它的<em>有效</em>维度就很低。算法上：对表征做奇异值分解，把奇异值<strong>归一化成一个概率分布</strong>，再算这个分布的<strong>谱熵（spectral entropy）</strong>，熵越高说明能量越均匀地铺在各维度上、有效秩越大、表征越"复杂/丰富"；熵越低说明信息越集中、维度越坍缩。NeuroGuard 在共享投影后用它<strong>估计图文融合表征的复杂度</strong>，作为 7 维证据向量里的一路信号——因为正常的良性图文绑定和被攻击的异常绑定，在"表征复杂度坍不坍缩"上会有可分的差异。它和 MAC/dPLV（方向性）、CDS（时间漂移）互补：EffRank 看<em>结构复杂度</em>，方向信号看<em>绑定角度</em>，CDS 看<em>多轮累积</em>，多路证据合起来才稳。</div></div>
+<div class="gloss-item"><div class="gloss-term">多模态对齐<span class="en">Multimodal Alignment / Cross-Modal Binding</span></div><div class="gloss-def">指 MLLM 把<strong>图像和文本两种模态映射到同一个语义空间、并把它们"绑"在一起理解</strong>的过程——比如让"一张猫的照片"和"猫"这个词在模型内部指向同一个概念。这是所有多模态大模型工作的<strong>底层机制</strong>，也是 NeuroGuard 整篇论文的<strong>立论根基</strong>：正因为 MLLM 会在某些<strong>关键中间层</strong>把图文做跨模态绑定（cross-modal binding），<strong>跨模态绑定攻击</strong>才有机可乘——攻击者让单看安全的图、单看安全的文，<em>在绑定的那一刻</em>组合成不安全语义（如"如何制作蛋糕"配化学武器示意图）。传统单模态护栏只在<em>对齐之前</em>分别审图、审文，自然抓不到这种"<strong>绑定即攻击</strong>"。NeuroGuard 的切入点正是<strong>对准"对齐/绑定"发生的那一层</strong>去监听：冻结 MLLM 当免费特征提取器，取 post-fusion（融合后）隐层表征，用 EffRank/dPLV/MAC/CDS 几路探针判断这次<strong>跨模态绑定的模式是否偏离正常分布</strong>。换句话说，NeuroGuard 不审"内容"、只审"<strong>对齐方式</strong>"——这是它模型无关、超低延迟、且对组合攻击有效的根本原因。（注：对齐在不同语境有两义——这里指<em>图文模态对齐</em>；前面 DPO/SimPO 那类是<em>偏好对齐</em>，让模型行为符合人类偏好，别混淆。）</div></div>
+<div class="gloss-item"><div class="gloss-term">GRU<span class="en">Gated Recurrent Unit</span></div><div class="gloss-def">一种轻量循环神经网络，擅长<strong>处理时序、记住上下文</strong>。NeuroGuard 用 GRU 变体滤掉瞬时模态不一致造成的误报。</div></div>
+<div class="gloss-item"><div class="gloss-term">PLV / dPLV<span class="en">锁相值 / 投影锁相值 · dPLV 是我在 NeuroGuard 的改造</span></div><div class="gloss-def"><strong>PLV（锁相值）</strong>本是神经科学/脑电分析里的经典量，衡量<strong>两个信号的相位是否长期同步</strong>——不管它们幅度大小，只看"步调一致不一致"，输出 0（完全不同步）到 1（完全锁相）。我把它借来检测<strong>图、文两路表征在跨模态绑定时的相位一致性</strong>，原因正是前面 MAC 说的洞察：组合攻击在<em>幅度/相似度</em>上伪装得很好，但<em>相位/方向</em>会露馅，PLV 这种"<strong>只看相位、不看幅度</strong>"的工具天生适合抓这种隐蔽偏差。<strong>dPLV（投影锁相值）</strong>是我做的关键改造：传统 PLV 在<em>时间域</em>沿时序算相位同步，但我面对的不是时间序列、而是<strong>高维隐层表征</strong>，于是把锁相的概念<strong>从时间域迁移到投影域</strong>——先把表征投影到特定方向上，再在投影空间度量图文绑定的角度一致性。这样既保留了 PLV"抗幅度伪装、专抓方向异常"的优点，又能直接作用在 MLLM 的隐状态上。dPLV 是 MAC（多尺度角度一致性）的底层度量原语。</div></div>
+<div class="gloss-item"><div class="gloss-term">MAC / CDS<span class="en">多尺度角度一致性 / 累积偏差分 · 我在 NeuroGuard 提出的核心信号</span></div><div class="gloss-def">这两路是 NeuroGuard 能检出"<strong>跨模态绑定攻击</strong>"的真正杀手锏，理解它们要先抓住一个反直觉的关键洞察：SIUO/FigStep 这类组合攻击（图安全+文安全、绑一起才越界）在<strong>普通的图文相似度空间里根本藏得住</strong>——它们的图文不仅不"违和"，反而<em>绑定得异常好</em>（cos 相似度甚至偏高），所以靠"相似度异常"来检测会完全失效。必须换一个维度看：<strong>方向性</strong>。① <strong>MAC（多尺度角度一致性）</strong>：我把脑电分析里的<strong>锁相值 PLV</strong>从时间域搬到<em>投影域</em>（得到 dPLV），在<strong>多个尺度</strong>上度量图、文表征绑定时的<strong>角度/相位是否一致</strong>。组合攻击虽然在幅度（相似度）上伪装得很好，但它的<em>绑定方向</em>会和正常样本系统性地偏开——MAC 抓的就是这个露馅的方向信号。② <strong>CDS（累积偏差分）</strong>：针对<strong>多轮渐变越狱</strong>（一点点把对话往危险方向带、每一步都不明显），用 <strong>leaky 积分</strong>把每轮的微小偏差<strong>累加追踪</strong>——单看一轮发现不了，但漂移累积起来就会突破阈值。这俩配合 L1 的 EffRank、L2 的 GRU 滤波，最后只把 7 维证据喂给逻辑回归决策。它们也是 NeuroGuard <strong>鲁棒性</strong>的来源：面对自适应 PGD 攻击，扁平 MLP 分类器会被沿少数方向绕过，而方向性+累积信号守得住。</div></div>
+<div class="gloss-item"><div class="gloss-term">PGD 攻击<span class="en">Projected Gradient Descent</span></div><div class="gloss-def">最强的<strong>自适应对抗攻击</strong>之一，沿梯度反复微调输入绕过防御。NeuroGuard 的方向性+累积信号能扛住它，而扁平 MLP 分类器会被绕过。</div></div>
+<div class="gloss-item"><div class="gloss-term">逻辑回归<span class="en">Logistic Regression</span></div><div class="gloss-def">最简单的二分类模型，<strong>画一条线分两类</strong>。NeuroGuard 在 7 维证据向量上用它做最终决策——前面已把高维语义浓缩成少数可解释统计量。</div></div>
+</div>
+</div>
+<div class="gloss-cat">
+<div class="gloss-cat-title">Experiment Methodology <span class="cat-cn">实验方法学(CUDA-Eval)</span></div>
+<div class="gloss-grid">
+<div class="gloss-item"><div class="gloss-term">CUDA / 核函数<span class="en">CUDA Kernel</span></div><div class="gloss-def">CUDA 是英伟达 GPU 的并行编程框架，<strong>核函数(kernel)</strong>是在 GPU 上并行跑的那段代码。CUDA-Eval 研究 LLM 写核函数的能力。</div></div>
+<div class="gloss-item"><div class="gloss-term">SPC<span class="en">Search-Proposal Compatibility · 我在 CUDA-Eval 提出的核心诊断量</span></div><div class="gloss-def">CUDA-Eval 要回答"<strong>给 LLM 加一套搜索策略，到底有没有用、对谁有用</strong>"。业界惯常报"我的 Agent 比 baseline 加速 X×"，但那是把生成器、搜索器、评估器、容差、硬件全耦在一起的黑盒数字，<strong>分不清功劳归谁</strong>。SPC 把这件事量化干净：<strong>SPC = PR(π) − PR(BON)</strong>，即"<em>某搜索控制器 π 的通过率</em>"减去"<em>Best-of-N 朴素基线的通过率</em>"，单位是百分点，范围 [−100, +100] pp。它是一个<strong>边际贡献</strong>量（类似因果推断里的 ATE），只衡量"搜索这一个组件单独带来的增减"，因为分母 BON 已经把"多采样几次"的红利扣掉了。它揭示的核心结论是"<strong>搜索不是普适加成</strong>"：同一个 MCTS 控制器，在 Qwen2.5-7B-Instruct 上是 helpful（14.7% vs BON 6.7%），但在更弱的 Coder-1.5B 上随着搜索预算增大，SPC 会<strong>从 +40pp 一路翻转到 −40pp</strong>（搜索反而拖累）。据此把 (模型, 控制器) 组合分成三种 regime：<em>controller-helpful</em>（搜索真有用）、<em>proposal-bound</em>（瓶颈在生成器、搜索无力）、<em>proposal-saturated</em>（生成器已饱和、加搜索有害）。这把"该投资哪一环"从拍脑袋变成了可测量的决策。</div></div>
+<div class="gloss-item"><div class="gloss-term">因果推断 / ATE<span class="en">Causal Inference / Average Treatment Effect</span></div><div class="gloss-def">回答"<strong>是这个因素真的导致了结果吗</strong>"的统计学。ATE=某变量的平均处理效应。CUDA-Eval 把组件消融当因果实验做，量化每个组件的边际贡献。</div></div>
+<div class="gloss-item"><div class="gloss-term">全因子实验<span class="en">Full Factorial</span></div><div class="gloss-def">把<strong>所有因素的所有组合都跑一遍</strong>(这里 4320 格)，才能干净地分离每个因素的影响。区别于"只调一个看一个"的粗糙比较。</div></div>
+<div class="gloss-item"><div class="gloss-term">数值失配<span class="en">Numerical Mismatch</span></div><div class="gloss-def">代码<strong>编译通过、能跑，但算出来的数和参考答案差太多</strong>。CUDA-Eval 的核心发现：85.6-95% 的失败是这种、而非语法错——瓶颈在数值语义而非代码生成。</div></div>
+<div class="gloss-item"><div class="gloss-term">torch.allclose<span class="en">数值容差比对</span></div><div class="gloss-def">PyTorch 判断两个张量"<strong>是否足够接近</strong>"的函数，靠相对容差 rtol 和绝对容差 atol 控制松紧。统一容差(rtol 1e-3/atol 1e-5)是公平横向比较的前提。</div></div>
+<div class="gloss-item"><div class="gloss-term">pass rate<span class="en">通过率</span></div><div class="gloss-def">生成的核函数里<strong>编译通过且数值正确的比例</strong>。SPC 就是不同策略 pass rate 的差值。</div></div>
+<div class="gloss-item"><div class="gloss-term">warmup<span class="en">预热</span></div><div class="gloss-def">正式计时前<strong>先空跑几次</strong>让 GPU 进入稳定状态，避免首次启动开销污染测速。CUDA-Eval 用 5 warmup + 20 次 CUDA-event 计时。</div></div>
+<div class="gloss-item"><div class="gloss-term">消融实验<span class="en">Ablation Study</span></div><div class="gloss-def"><strong>逐个拿掉某个模块</strong>看性能掉多少，以此证明这个模块真有用。本站多篇论文都用消融验证各模块贡献。</div></div>
+</div>
+</div>
+<div class="gloss-cat">
+<div class="gloss-cat-title">Evaluation Metrics <span class="cat-cn">常见评估指标</span></div>
+<div class="gloss-grid">
+<div class="gloss-item"><div class="gloss-term">PSNR<span class="en">峰值信噪比</span></div><div class="gloss-def">衡量重建图像<strong>与原图差多少</strong>，越高越好(dB)。注意跨模态合成(如 RGB→红外)无像素级对应，PSNR 天然偏低属正常。</div></div>
+<div class="gloss-item"><div class="gloss-term">SSIM<span class="en">结构相似性</span></div><div class="gloss-def">比 PSNR 更贴近人眼地衡量<strong>结构相似程度</strong>(0-1，越高越像)。</div></div>
+<div class="gloss-item"><div class="gloss-term">LPIPS<span class="en">感知相似度</span></div><div class="gloss-def">用神经网络特征衡量两图的<strong>感知差异</strong>，越低越像。比 PSNR/SSIM 更符合人类主观感受。</div></div>
+<div class="gloss-item"><div class="gloss-term">FPS<span class="en">Frames Per Second 帧率</span></div><div class="gloss-def">每秒渲染/处理多少帧，越高越流畅。VEDAL 剪枝后渲染从 148 提到 185 FPS。</div></div>
+<div class="gloss-item"><div class="gloss-term">RTF<span class="en">Real-Time Factor 实时率</span></div><div class="gloss-def">合成 1 秒音频要花多少秒，<strong>小于 1 才算实时</strong>。ATRIE 的 RTF 0.18(约 180ms 合成 1s 音频)。</div></div>
+<div class="gloss-item"><div class="gloss-term">UTMOS<span class="en">客观自然度评分</span></div><div class="gloss-def">用模型自动预测语音的<strong>自然度 MOS 分</strong>(代替人工听感打分)。ATRIE 达 4.28(VITS 为 4.05)。</div></div>
+<div class="gloss-item"><div class="gloss-term">mAP / mAP@50<span class="en">平均精度均值</span></div><div class="gloss-def">目标检测的<strong>综合精度</strong>指标。@50 指 IoU 阈值 0.5。越高越准。</div></div>
+<div class="gloss-item"><div class="gloss-term">IoU<span class="en">Intersection over Union 交并比</span></div><div class="gloss-def">预测框和真实框<strong>重叠程度</strong>(交集/并集，0-1)。检测/分割判对错的基本尺子。</div></div>
+<div class="gloss-item"><div class="gloss-term">mIoU / OA<span class="en">平均交并比 / 总体精度</span></div><div class="gloss-def">分割任务指标：mIoU=各类 IoU 平均；OA=整体分类正确率。BiPT 在 S3DIS mIoU 达 63.98%、ModelNet40 OA 91.2%。</div></div>
+<div class="gloss-item"><div class="gloss-term">AUC / F1<span class="en">曲线下面积 / 调和均值</span></div><div class="gloss-def">分类器质量指标：AUC 越接近 1 区分力越强；F1 是精确率和召回率的<strong>调和平均</strong>。NeuroGuard 多基准 AUC 近 1.0。</div></div>
+<div class="gloss-item"><div class="gloss-term">AG / EPI / HFER<span class="en">高频保真指标</span></div><div class="gloss-def">衡量图像<strong>细节锐度/高频信息</strong>的指标(平均梯度等)。TCE 红外合成在这三项上最接近真实红外。</div></div>
+<div class="gloss-item"><div class="gloss-term">Fleiss κ<span class="en">多标注者一致性</span></div><div class="gloss-def">衡量<strong>多个标注员意见一致程度</strong>的系数(0-1)。ATRIE 的情绪标注 κ=0.78 说明标注质量可靠。</div></div>
+</div>
+</div>
+</section></main>
+</div>
+<footer>
+<div class="grad-line"></div>
+<div>© 2026 Aoduo Li · 李奥多  ·  论文讲解合集  ·  <a href="index.html">返回学术主页</a></div>
+</footer>
+<script>
+(function(){
+  // ===== Reveal on scroll =====
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.classList.add('show');
+        // pipeline steps stagger
+        var steps = e.target.querySelectorAll('.pipeline-step');
+        steps.forEach(function(s,i){
+          setTimeout(function(){ s.classList.add('show'); }, 120 + i*140);
+        });
+        // count-up
+        var nums = e.target.querySelectorAll('.count-up');
+        nums.forEach(function(n){ animateCount(n); });
+        io.unobserve(e.target);
+      }
+    });
+  },{threshold:0,rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('.reveal,.hero').forEach(function(el){ io.observe(el); });
+
+  // ===== Safety net: force-show any reveal block already in view (tall sections never get stuck transparent) =====
+  function sweepReveal(){
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    document.querySelectorAll('.reveal').forEach(function(el){
+      if(el.classList.contains('show')) return;
+      var r = el.getBoundingClientRect();
+      if(r.top < vh && r.bottom > 0){
+        el.classList.add('show');
+        el.querySelectorAll('.count-up').forEach(function(n){ animateCount(n); });
+      }
+    });
+  }
+  window.addEventListener('scroll', sweepReveal, {passive:true});
+  window.addEventListener('resize', sweepReveal);
+  window.addEventListener('load', sweepReveal);
+
+  // ===== Count-up animation =====
+  function animateCount(node){
+    if(node.dataset.done) return;
+    node.dataset.done = '1';
+    var to = parseFloat(node.dataset.to);
+    if(isNaN(to)) return;
+    var dec = parseInt(node.dataset.decimals || '0',10);
+    var dur = 1200;
+    var start = performance.now();
+    function tick(now){
+      var t = Math.min(1,(now-start)/dur);
+      var ease = 1 - Math.pow(1-t,3);
+      var v = to * ease;
+      node.textContent = dec>0 ? v.toFixed(dec) : Math.round(v).toString();
+      if(t<1) requestAnimationFrame(tick); else node.textContent = dec>0 ? to.toFixed(dec) : Math.round(to).toString();
+    }
+    requestAnimationFrame(tick);
+  }
+  // also trigger hero counts immediately
+  document.querySelectorAll('.hero .count-up').forEach(animateCount);
+
+  // ===== Safety net: any count-up already in view always renders its value =====
+  function sweepCounts(){
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    document.querySelectorAll('.count-up').forEach(function(n){
+      if(n.dataset.done) return;
+      var r = n.getBoundingClientRect();
+      if(r.top < vh && r.bottom > 0){ animateCount(n); }
+    });
+  }
+  window.addEventListener('scroll', sweepCounts, {passive:true});
+  window.addEventListener('resize', sweepCounts);
+  sweepCounts();
+
+  // ===== Fast fixed-duration anchor scroll =====
+  var HEADER_OFFSET = 76;
+  function easeOutCubic(p){ return 1 - Math.pow(1 - p, 3); }
+  var scrolling = false;
+  function fastScrollTo(el){
+    var startY = window.pageYOffset || document.documentElement.scrollTop;
+    var targetY = el.getBoundingClientRect().top + startY - HEADER_OFFSET;
+    var dist = targetY - startY;
+    if(Math.abs(dist) < 2){ return; }
+    var dur = Math.min(560, 220 + Math.abs(dist) * 0.16);
+    var t0 = null;
+    scrolling = true;
+    function step(ts){
+      if(t0 === null) t0 = ts;
+      var p = Math.min(1, (ts - t0) / dur);
+      window.scrollTo(0, startY + dist * easeOutCubic(p));
+      if(p < 1){ requestAnimationFrame(step); } else { scrolling = false; }
+    }
+    requestAnimationFrame(step);
+  }
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      var id = a.getAttribute('href').slice(1);
+      if(!id) return;
+      var el = document.getElementById(id);
+      if(!el) return;
+      e.preventDefault();
+      fastScrollTo(el);
+      if(history.replaceState){ history.replaceState(null, '', '#' + id); }
+    });
+  });
+  window.__fastScroll = fastScrollTo;
+
+  // ===== Sidebar active link on scroll =====
+  var links = document.querySelectorAll('.sidebar a[href^="#p"]');
+  var map = {};
+  links.forEach(function(a){
+    var id = a.getAttribute('href').slice(1);
+    var sec = document.getElementById(id);
+    if(sec) map[id] = a;
+  });
+  var sectIO = new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      var id = e.target.id;
+      if(!map[id]) return;
+      if(e.isIntersecting){
+        links.forEach(function(a){ a.classList.remove('active'); });
+        map[id].classList.add('active');
+      }
+    });
+  },{rootMargin:'-30% 0px -60% 0px'});
+  Object.keys(map).forEach(function(id){
+    var s = document.getElementById(id);
+    if(s) sectIO.observe(s);
+  });
+})();
+
+// ===== Auto architecture diagrams from verified flow-chains =====
+(function(){
+  function estW(s){ var w=0; for(var i=0;i<s.length;i++){ w += s.charCodeAt(i)>255 ? 14.5 : 7.8; } return w; }
+  function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  var chains = document.querySelectorAll('.flow-chain');
+  chains.forEach(function(chain, ci){
+    var nodes = [].slice.call(chain.querySelectorAll('.flow-node'));
+    if(nodes.length < 2) return;
+    var W = 700, boxH = 42, gap = 30, padTop = 6, padBot = 6;
+    var n = nodes.length, cx = W/2;
+    var H = padTop + n*boxH + (n-1)*gap + padBot;
+    var mid = 'ah'+ci;
+    var svg = '<svg class="arch-svg" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="架构流程图" preserveAspectRatio="xMidYMid meet">';
+    svg += '<defs><marker id="'+mid+'" markerWidth="11" markerHeight="11" refX="6" refY="3" orient="auto"><path d="M0,0 L6.5,3 L0,6" fill="none" stroke="currentColor" stroke-width="1.6"/></marker></defs>';
+    var y = padTop, centers = [];
+    nodes.forEach(function(node){
+      var txt = node.textContent.trim();
+      var cls = node.classList.contains('in')?'in':node.classList.contains('out')?'out':node.classList.contains('key')?'key':'';
+      var bw = Math.min(648, Math.max(150, estW(txt)+36));
+      var x = cx - bw/2;
+      svg += '<rect class="nb '+cls+'" x="'+x.toFixed(1)+'" y="'+y+'" width="'+bw.toFixed(1)+'" height="'+boxH+'" rx="10"/>';
+      svg += '<text class="'+cls+'" x="'+cx+'" y="'+(y+boxH/2+4.6)+'" text-anchor="middle">'+esc(txt)+'</text>';
+      centers.push(y); y += boxH + gap;
+    });
+    for(var i=0;i<n-1;i++){
+      var y1 = centers[i] + boxH, y2 = centers[i+1];
+      svg += '<line class="ar" x1="'+cx+'" y1="'+(y1+2)+'" x2="'+cx+'" y2="'+(y2-5)+'" marker-end="url(#'+mid+')"/>';
+    }
+    svg += '</svg>';
+    var fig = document.createElement('div');
+    fig.className = 'arch-fig';
+    fig.innerHTML = svg;
+    chain.style.display = 'none';
+    chain.parentNode.insertBefore(fig, chain.nextSibling);
+  });
+})();
+
+// ===== Glossary live search filter =====
+(function(){
+  var input = document.getElementById('glossSearch');
+  if(!input) return;
+  var items = [].slice.call(document.querySelectorAll('.gloss-item'));
+  var cats = [].slice.call(document.querySelectorAll('.gloss-cat'));
+  var empty = document.getElementById('glossEmpty');
+  items.forEach(function(it){ it.dataset.txt = it.textContent.toLowerCase(); });
+  function apply(){
+    var q = input.value.trim().toLowerCase();
+    var anyVisible = false;
+    items.forEach(function(it){
+      var hit = !q || it.dataset.txt.indexOf(q) !== -1;
+      it.style.display = hit ? '' : 'none';
+      if(hit) anyVisible = true;
+    });
+    cats.forEach(function(cat){
+      var its = [].slice.call(cat.querySelectorAll('.gloss-item'));
+      var vis = its.some(function(it){ return it.style.display !== 'none'; });
+      cat.style.display = vis ? '' : 'none';
+    });
+    if(empty) empty.style.display = anyVisible ? 'none' : 'block';
+  }
+  input.addEventListener('input', apply);
+  window.__glossJump = function(q){
+    input.value = q;
+    apply();
+    var sec = document.getElementById('glossary');
+    if(sec){ if(window.__fastScroll){ window.__fastScroll(sec); } else { sec.scrollIntoView(); } }
+  };
+})();
+</script>
+<script>
+// ===== Knowledge Graph (force-directed) =====
+try{
+(function(){
+  var svg = document.getElementById('kgSvg');
+  if(!svg) return;
+  var W = 1240, H = 920, CX = 620, CY = 460;
+
+  // ---- node/link model ----
+  // types: me, dir, paper, mod, concept
+  var N = [
+    {id:'me', l:'李奥多', t:'me'},
+    {id:'d1', l:'LLM对齐·心理', t:'dir'},
+    {id:'d2', l:'3DGS·视觉合成', t:'dir'},
+    {id:'d3', l:'高效AI系统', t:'dir'},
+    {id:'d4', l:'多模态与安全', t:'dir'},
+    {id:'d5', l:'具身智能', t:'dir'},
+    {id:'p3', l:'VEDAL', t:'paper', a:'p3'},
+    {id:'p13', l:'Latent4D', t:'paper', a:'p13'},
+    {id:'p2', l:'TCE红外', t:'paper', a:'p2'},
+    {id:'p4', l:'BiPT', t:'paper', a:'p4'},
+    {id:'p8', l:'CUDA-Eval', t:'paper', a:'p8'},
+    {id:'p5', l:'NeuroGuard', t:'paper', a:'p5'},
+    {id:'p1', l:'ATRIE', t:'paper', a:'p1'},
+    {id:'p11', l:'DOGe', t:'paper', a:'p11'},
+    {id:'p10', l:'Forestpest-YOLO', t:'paper', a:'p10'},
+    // innovation modules (q = 跳转到名词解释的检索词)
+    {id:'m_cora', l:'CoRA-MCTS', t:'mod', q:'CoRA-MCTS'},
+    {id:'m_psimpo', l:'Prog-SimPO', t:'mod', q:'Progressive-SimPO'},
+    {id:'m_vedal', l:'变分剪枝', t:'mod', q:'变分推断'},
+    {id:'m_peg', l:'预测误差门', t:'mod', q:'剪枝'},
+    {id:'m_vae', l:'VAE 编解码', t:'mod', q:'VAE'},
+    {id:'m_lq', l:'潜码量化', t:'mod', q:'量化'},
+    {id:'m_mffm', l:'四元数 MFFM', t:'mod', q:'四元数'},
+    {id:'m_crm', l:'CRM 色域映射', t:'mod', q:'隐式神经表示'},
+    {id:'m_sab', l:'SAB', t:'mod', q:'SAB'},
+    {id:'m_lsr', l:'BiLinearLSR', t:'mod', q:'BiLinearLSR'},
+    {id:'m_rel', l:'RelNorm', t:'mod', q:'RelNorm'},
+    {id:'m_spc', l:'SPC 算子', t:'mod', q:'SPC'},
+    {id:'m_attr', l:'组件归因', t:'mod', q:'因果推断'},
+    {id:'m_mac', l:'MAC/CDS', t:'mod', q:'MAC'},
+    {id:'m_dplv', l:'dPLV', t:'mod', q:'dPLV'},
+    {id:'m_eff', l:'EffRank', t:'mod', q:'EffRank'},
+    {id:'m_p2p', l:'P2P Adapter', t:'mod', q:'Adapter'},
+    {id:'m_vad', l:'VAD 韵律', t:'mod', q:'VAD'},
+    {id:'m_ssg', l:'3D-SSG', t:'mod', q:'3D-SSG'},
+    {id:'m_route', l:'边云路由', t:'mod', q:'边云协同'},
+    {id:'m_slam', l:'语义 SLAM', t:'mod', q:'语义 SLAM'},
+    {id:'m_plan', l:'动态路径规划', t:'mod', q:'DWA'},
+    {id:'m_spd', l:'SPD-Conv', t:'mod', q:'SPD-Conv'},
+    {id:'m_cspok', l:'CSPOK', t:'mod', q:'CSPOK'},
+    {id:'m_vfl', l:'VarifocalLoss', t:'mod', q:'VarifocalLoss'},
+    // shared concepts
+    {id:'c_mcts', l:'MCTS 搜索', t:'concept', q:'MCTS'},
+    {id:'c_var', l:'变分推断/VAE', t:'concept', q:'变分推断'},
+    {id:'c_edge', l:'端侧部署', t:'concept', q:'Jetson'},
+    {id:'c_comp', l:'模型压缩', t:'concept', q:'量化'},
+    {id:'c_attn', l:'Transformer注意力', t:'concept', q:'自注意力'},
+    {id:'c_vlm', l:'视觉语言模型', t:'concept', q:'VLM'},
+    {id:'c_distill', l:'知识蒸馏', t:'concept', q:'知识蒸馏'}
+  ];
+  var L = [
+    // me -> directions
+    ['me','d1'],['me','d2'],['me','d3'],['me','d4'],['me','d5'],
+    // dir -> papers
+    ['d1','p12'],['d2','p3'],['d2','p13'],['d2','p2'],['d3','p4'],['d3','p8'],
+    ['d4','p5'],['d4','p1'],['d5','p7'],['d5','p11'],['d5','p10'],
+    // paper -> modules
+    ['p12','m_cora'],['p12','m_psimpo'],['p12','m_ds'],
+    ['p3','m_vedal'],['p3','m_peg'],
+    ['p13','m_vae'],['p13','m_lq'],
+    ['p2','m_mffm'],['p2','m_crm'],
+    ['p4','m_sab'],['p4','m_lsr'],['p4','m_rel'],
+    ['p8','m_spc'],['p8','m_attr'],
+    ['p5','m_mac'],['p5','m_dplv'],['p5','m_eff'],
+    ['p1','m_p2p'],['p1','m_vad'],
+    ['p7','m_ssg'],['p7','m_route'],
+    ['p11','m_slam'],['p11','m_plan'],
+    ['p10','m_spd'],['p10','m_cspok'],['p10','m_vfl']
+  ];
+  // cross-paper shared concepts (green dashed)
+  var X = [
+    ['c_mcts','p12'],['c_mcts','p8'],
+    ['c_var','p3'],['c_var','p13'],
+    ['c_edge','p12'],['c_edge','p7'],
+    ['c_comp','p3'],['c_comp','p13'],['c_comp','p4'],
+    ['c_attn','p2'],['c_attn','p4'],['c_attn','p5'],['c_attn','p1'],
+    ['c_vlm','p7'],['c_vlm','p11'],['c_vlm','p5'],
+    ['c_distill','p1'],['c_distill','p12']
+  ];
+
+  var byId = {}; N.forEach(function(n,i){ n.i=i; byId[n.id]=n; });
+  var links = [];
+  L.forEach(function(e){ links.push({s:byId[e[0]].i, t:byId[e[1]].i, cross:false}); });
+  X.forEach(function(e){ links.push({s:byId[e[0]].i, t:byId[e[1]].i, cross:true}); });
+  // adjacency for hover focus
+  var adj = N.map(function(){ return {}; });
+  links.forEach(function(lk,li){ adj[lk.s][lk.t]=li; adj[lk.t][lk.s]=li; });
+
+  var COL = {me:'#ff6b9d',dir:'#ffd166',paper:'#4ecdc4',mod:'#a78bfa',concept:'#6fe7b7'};
+  var RAD = {me:30,dir:19,paper:16,mod:9,concept:13};
+  var LEN = {me_dir:200,dir_paper:135,paper_mod:92,cross:230};
+
+  function linkLen(lk){
+    if(lk.cross) return LEN.cross;
+    var a=N[lk.s].t, b=N[lk.t].t;
+    if(a==='me'||b==='me') return LEN.me_dir;
+    if(a==='dir'||b==='dir') return LEN.dir_paper;
+    return LEN.paper_mod;
+  }
+
+  function seed(){
+    // 5 个方向锚定在均匀分布的固定方位（第一个朝上）
+    var dirAng={};
+    ['d1','d2','d3','d4','d5'].forEach(function(id,i){ dirAng[id] = -Math.PI/2 + i*(2*Math.PI/5); });
+    // 从连接关系推父级：dir→paper、paper→mod
+    var dirOfPaper={}, paperOfMod={};
+    L.forEach(function(e){
+      if(e[0].charAt(0)==='d' && e[1].charAt(0)==='p') dirOfPaper[e[1]]=e[0];
+      if(e[0].charAt(0)==='p' && e[1].charAt(0)==='m') paperOfMod[e[1]]=e[0];
+    });
+    // 论文：在所属方向扇区里展开
+    var papersByDir={};
+    N.forEach(function(n){ if(n.t==='paper'){ var d=dirOfPaper[n.id]; (papersByDir[d]=papersByDir[d]||[]).push(n.id); } });
+    var paperAng={};
+    Object.keys(papersByDir).forEach(function(d){
+      var arr=papersByDir[d], base=dirAng[d], spread=0.62;
+      arr.forEach(function(pid,idx){ paperAng[pid] = base + (arr.length>1 ? (idx/(arr.length-1)-0.5)*spread*2 : 0); });
+    });
+    // 模块：贴着父论文角度外扩
+    var modsByPaper={};
+    N.forEach(function(n){ if(n.t==='mod'){ var p=paperOfMod[n.id]; (modsByPaper[p]=modsByPaper[p]||[]).push(n.id); } });
+    var modAng={};
+    Object.keys(modsByPaper).forEach(function(p){
+      var arr=modsByPaper[p], base=paperAng[p]||0, spread=0.34;
+      arr.forEach(function(mid,idx){ modAng[mid] = base + (arr.length>1 ? (idx/(arr.length-1)-0.5)*spread*2 : 0); });
+    });
+    // 共享概念：落在所连论文的角度均值（让绿色跨方向连线自然横跨）
+    var conPapers={};
+    X.forEach(function(e){ (conPapers[e[0]]=conPapers[e[0]]||[]).push(e[1]); });
+    function meanAng(a){ var sx=0,sy=0; a.forEach(function(v){ sx+=Math.cos(v); sy+=Math.sin(v); }); return Math.atan2(sy,sx); }
+    N.forEach(function(n){
+      if(n.t==='me'){ n.x=CX; n.y=CY; n.vx=0; n.vy=0; return; }
+      var ang, r;
+      if(n.t==='dir'){ ang=dirAng[n.id]; r=175; }
+      else if(n.t==='paper'){ ang=paperAng[n.id]; r=325; }
+      else if(n.t==='mod'){ ang=modAng[n.id]; r=450; }
+      else { ang=meanAng((conPapers[n.id]||[]).map(function(p){ return paperAng[p]||0; })); r=245; }
+      n.x = CX + Math.cos(ang)*r + (Math.random()-0.5)*26;
+      n.y = CY + Math.sin(ang)*r + (Math.random()-0.5)*26;
+      n.vx=0; n.vy=0;
+    });
+  }
+  function simulate(iters){
+    var kRep=4200, kSpr=0.04, grav=0.010;
+    for(var it=0; it<iters; it++){
+      for(var i=0;i<N.length;i++){
+        var a=N[i]; if(a.t==='me') continue;
+        for(var j=i+1;j<N.length;j++){
+          var b=N[j];
+          var dx=a.x-b.x, dy=a.y-b.y, d2=dx*dx+dy*dy+0.01, d=Math.sqrt(d2);
+          var f=kRep/d2; var fx=f*dx/d, fy=f*dy/d;
+          a.vx+=fx; a.vy+=fy; if(b.t!=='me'){ b.vx-=fx; b.vy-=fy; }
+        }
+      }
+      links.forEach(function(lk){
+        var a=N[lk.s], b=N[lk.t];
+        var dx=b.x-a.x, dy=b.y-a.y, d=Math.sqrt(dx*dx+dy*dy)+0.01;
+        var L0=linkLen(lk); var f=kSpr*(d-L0); var fx=f*dx/d, fy=f*dy/d;
+        if(a.t!=='me'){ a.vx+=fx; a.vy+=fy; }
+        if(b.t!=='me'){ b.vx-=fx; b.vy-=fy; }
+      });
+      for(var k=0;k<N.length;k++){
+        var n=N[k]; if(n.t==='me'){ n.x=CX; n.y=CY; n.vx=0; n.vy=0; continue; }
+        n.vx += (CX-n.x)*grav; n.vy += (CY-n.y)*grav;
+        n.vx*=0.82; n.vy*=0.82;
+        n.x += Math.max(-25,Math.min(25,n.vx));
+        n.y += Math.max(-25,Math.min(25,n.vy));
+        n.x = Math.max(40, Math.min(W-40, n.x));
+        n.y = Math.max(34, Math.min(H-26, n.y));
+      }
+    }
+  }
+
+  var lineEls=[], nodeEls=[];
+  function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function isLatin(s){ return /^[\x00-\xff]+$/.test(s); }
+  function render(){
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+    lineEls=[]; nodeEls=[];
+    var SVGNS='http://www.w3.org/2000/svg';
+    var gL=document.createElementNS(SVGNS,'g');
+    links.forEach(function(lk){
+      var ln=document.createElementNS(SVGNS,'line');
+      ln.setAttribute('class','kg-link'+(lk.cross?' cross':''));
+      ln.setAttribute('x1',N[lk.s].x); ln.setAttribute('y1',N[lk.s].y);
+      ln.setAttribute('x2',N[lk.t].x); ln.setAttribute('y2',N[lk.t].y);
+      gL.appendChild(ln); lineEls.push(ln);
+    });
+    svg.appendChild(gL);
+    N.forEach(function(n){
+      var g=document.createElementNS(SVGNS,'g');
+      g.setAttribute('class','kg-n'); g.setAttribute('transform','translate('+n.x+','+n.y+')');
+      g.style.color=COL[n.t];
+      var r=RAD[n.t];
+      var c=document.createElementNS(SVGNS,'circle');
+      c.setAttribute('class','shp'); c.setAttribute('r',r);
+      c.setAttribute('fill', n.t==='me'?COL[n.t]:'rgba(0,0,0,0.35)');
+      c.setAttribute('stroke',COL[n.t]); c.setAttribute('stroke-width', n.t==='me'?0:2);
+      if(n.t==='me') c.setAttribute('fill',COL[n.t]);
+      g.appendChild(c);
+      var tx=document.createElementNS(SVGNS,'text');
+      var below = (n.t==='mod'||n.t==='concept'||n.t==='paper');
+      tx.setAttribute('text-anchor','middle');
+      tx.setAttribute('y', below ? (r+13) : 4);
+      tx.setAttribute('font-size', n.t==='me'?15 : n.t==='dir'?12.5 : n.t==='paper'?12 : n.t==='concept'?11 : 10.5);
+      tx.setAttribute('font-weight', (n.t==='me'||n.t==='dir'||n.t==='paper')?'700':'500');
+      if(n.t==='me'){ tx.style.fill='#0e0e1a'; tx.setAttribute('y',5); }
+      else tx.style.fill = below ? '#e8e8f0' : COL[n.t];
+      if(isLatin(n.l)) tx.setAttribute('class','nlatin');
+      tx.textContent=n.l;
+      g.appendChild(tx);
+      gL.parentNode.appendChild(g);
+      nodeEls.push(g);
+      attachHandlers(g,n);
+    });
+  }
+  function updateNode(n){
+    nodeEls[n.i].setAttribute('transform','translate('+n.x+','+n.y+')');
+    Object.keys(adj[n.i]).forEach(function(j){
+      var ln=lineEls[adj[n.i][j]];
+      var lk=links[adj[n.i][j]];
+      ln.setAttribute('x1',N[lk.s].x); ln.setAttribute('y1',N[lk.s].y);
+      ln.setAttribute('x2',N[lk.t].x); ln.setAttribute('y2',N[lk.t].y);
+    });
+  }
+
+  function focusNode(i){
+    svg.classList.add('kg-focus');
+    nodeEls[i].classList.add('on');
+    Object.keys(adj[i]).forEach(function(j){
+      nodeEls[j].classList.add('on');
+      lineEls[adj[i][j]].classList.add('on');
+    });
+  }
+  function clearFocus(){
+    svg.classList.remove('kg-focus');
+    nodeEls.forEach(function(e){ e.classList.remove('on'); });
+    lineEls.forEach(function(e){ e.classList.remove('on'); });
+  }
+
+  function toSvg(evt){
+    var ctm=svg.getScreenCTM().inverse();
+    var pt=svg.createSVGPoint();
+    var src = evt.touches? evt.touches[0] : evt;
+    pt.x=src.clientX; pt.y=src.clientY;
+    var p=pt.matrixTransform(ctm);
+    return p;
+  }
+  var dragNode=null, moved=false;
+  function attachHandlers(g,n){
+    g.addEventListener('mouseenter', function(){ if(!dragNode) focusNode(n.i); });
+    g.addEventListener('mouseleave', function(){ if(!dragNode) clearFocus(); });
+    g.addEventListener('pointerdown', function(e){
+      if(n.t==='me') return;
+      dragNode=n; moved=false;
+      g.setPointerCapture && g.setPointerCapture(e.pointerId);
+      e.preventDefault();
+    });
+    g.addEventListener('click', function(){
+      if(moved) return;
+      if(n.a){ var el=document.getElementById(n.a);
+        if(el && window.__fastScroll){ window.__fastScroll(el); }
+        else if(el){ el.scrollIntoView(); }
+        return; }
+      if(n.q && window.__glossJump){ window.__glossJump(n.q); }
+    });
+  }
+  svg.addEventListener('pointermove', function(e){
+    if(!dragNode) return;
+    var p=toSvg(e); moved=true;
+    dragNode.x=Math.max(40,Math.min(W-40,p.x));
+    dragNode.y=Math.max(34,Math.min(H-26,p.y));
+    updateNode(dragNode);
+  });
+  function endDrag(){ if(dragNode){ dragNode=null; clearFocus(); } }
+  svg.addEventListener('pointerup', endDrag);
+  svg.addEventListener('pointerleave', endDrag);
+  svg.addEventListener('pointercancel', endDrag);
+
+  function build(){ seed(); simulate(420); render(); }
+  build();
+  var btn=document.getElementById('kgReset');
+  if(btn) btn.addEventListener('click', build);
+})();
+}catch(err){ if(window.console&&console.error) console.error('KGraph init failed:', err); }
+</script>
+</body>
+</html>

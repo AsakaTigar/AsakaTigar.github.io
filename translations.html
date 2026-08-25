@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>论文全文翻译 · Aoduo Li 李奥多</title>
+<meta content="李奥多 Aoduo Li 已发表论文全文中文翻译 —— 忠于原文的逐节翻译，便于快速通读与面试准备。" name="description"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27&gt;&lt;text y=%27.9em%27 font-size=%2790%27&gt;📖&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#1d1d2b;--bg-elev:#252540;--bg-soft:#2a2a48;
+  --text:#e8e8f0;--text-muted:#a0a0b8;--text-dim:#7a7a92;
+  --accent:#4ecdc4;--accent-2:#ff6b9d;--accent-3:#ffd166;
+  --border:#333355;--border-soft:#2c2c4a;
+  --grad:linear-gradient(135deg,#4ecdc4 0%,#7367f0 100%);
+  --font-zh:"Noto Serif SC",ui-serif,"Songti SC","Source Han Serif",serif;
+  --font-en:"Space Grotesk","Inter",ui-sans-serif,system-ui,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:auto}
+.doc-sec,.hero{scroll-margin-top:84px}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:var(--font-zh);
+  line-height:1.9;letter-spacing:.01em;
+  background-image:
+    radial-gradient(800px 400px at 80% -10%, rgba(78,205,196,.08), transparent 60%),
+    radial-gradient(600px 400px at -10% 30%, rgba(115,103,240,.08), transparent 60%);
+  background-attachment:fixed;min-height:100vh;
+}
+a{color:var(--accent);text-decoration:none;transition:.2s}
+a:hover{color:var(--accent-2)}
+::selection{background:rgba(78,205,196,.3);color:#fff}
+.topbar{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:rgba(29,29,43,.78);border-bottom:1px solid var(--border)}
+.topbar-inner{max-width:1400px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{font-family:var(--font-en);font-weight:700;font-size:1.05rem;letter-spacing:.04em;display:flex;align-items:center;gap:10px}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:var(--grad);display:grid;place-items:center;color:#0e0e1a;font-weight:800;box-shadow:0 4px 14px rgba(78,205,196,.4)}
+.brand small{color:var(--text-muted);font-weight:400;margin-left:6px;font-family:var(--font-zh)}
+.topbar-links{display:flex;gap:22px;align-items:center;font-family:var(--font-en);font-size:.88rem}
+.topbar-links a{color:var(--text-muted);font-weight:500}
+.topbar-links a:hover{color:var(--accent)}
+.cta{padding:7px 16px;border:1px solid var(--accent);border-radius:999px;color:var(--accent);font-family:var(--font-en);font-size:.82rem}
+.cta:hover{background:var(--accent);color:#0e0e1a}
+.shell{max-width:1400px;margin:0 auto;padding:0 32px;display:grid;grid-template-columns:300px 1fr;gap:48px;position:relative;z-index:1}
+@media(max-width:980px){.shell{grid-template-columns:1fr;padding:0 20px;gap:0}}
+.sidebar{position:sticky;top:78px;align-self:start;height:calc(100vh - 100px);overflow-y:auto;padding:32px 0 64px;scrollbar-width:thin;scrollbar-color:#333 transparent}
+.sidebar::-webkit-scrollbar{width:6px}
+.sidebar::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+.sidebar-title{font-family:var(--font-en);font-size:.7rem;font-weight:700;letter-spacing:.18em;color:var(--text-dim);text-transform:uppercase;border-left:2px solid var(--accent);padding:0 0 10px 12px;margin-bottom:6px}
+.sidebar a{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;color:var(--text-muted);font-size:.9rem;border-radius:6px;transition:.18s;border-left:2px solid transparent;line-height:1.5}
+.sidebar a:hover{background:var(--bg-elev);color:var(--text)}
+.sidebar a.active{color:var(--accent);background:rgba(78,205,196,.08);border-left-color:var(--accent)}
+.side-idx{font-family:var(--font-mono);font-size:.72rem;color:var(--text-dim);min-width:22px}
+.side-pending{color:var(--text-dim);opacity:.55;cursor:default}
+.side-pending:hover{background:transparent;color:var(--text-dim)}
+.side-badge{font-family:var(--font-en);font-size:.6rem;padding:1px 6px;border-radius:6px;margin-left:6px;background:var(--bg-soft);color:var(--text-dim)}
+.side-badge.done{background:rgba(78,205,196,.16);color:var(--accent)}
+@media(max-width:980px){.sidebar{position:relative;top:0;height:auto;padding:24px 0}}
+.hero{padding:80px 0 40px}
+.hero-eyebrow{font-family:var(--font-en);font-size:.78rem;letter-spacing:.3em;color:var(--accent);text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:14px}
+.hero-eyebrow::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--accent),transparent)}
+.hero h1{font-size:clamp(2.2rem,5vw,3.4rem);font-weight:700;line-height:1.18;margin-bottom:18px}
+.hero h1 .gradient{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-sub{color:var(--text-muted);font-size:1.05rem;max-width:720px}
+.notice{margin-top:24px;padding:14px 18px;border-left:3px solid var(--accent-3);background:rgba(255,209,102,.06);border-radius:0 8px 8px 0;color:var(--text-muted);font-size:.9rem;line-height:1.7}
+.doc-sec{padding:60px 0 40px;border-top:1px solid var(--border-soft)}
+.doc-sec:first-of-type{border-top:none}
+.doc-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-family:var(--font-en);font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;margin-bottom:16px}
+.doc-no{font-family:var(--font-mono);color:var(--text-dim)}
+.badge{padding:4px 11px;border-radius:999px;font-weight:700;font-size:.7rem;color:#0e0e1a}
+.b-tce{background:#ffd166}.b-icmr{background:#4ecdc4}.b-cgi{background:#6fe7b7}
+.b-tpami{background:#a78bfa;color:#fff}.b-mm{background:#ff6b9d;color:#fff}
+.b-iros{background:#60a5fa;color:#fff}.b-neurips{background:#fb923c}
+.role{border:1px solid var(--border);padding:3px 10px;border-radius:999px;color:var(--text-muted);background:var(--bg-elev)}
+.doc-title{font-size:clamp(1.5rem,3vw,2rem);font-weight:700;line-height:1.32;margin-bottom:8px}
+.doc-title .en{display:block;font-family:var(--font-en);font-size:.9rem;color:var(--text-dim);font-weight:500;margin-top:8px;line-height:1.5}
+.doc-authors{font-size:.92rem;color:var(--text-muted);margin-bottom:6px}
+.doc-authors b{color:var(--accent)}
+.doc-affil{font-size:.82rem;color:var(--text-dim);margin-bottom:28px;line-height:1.6}
+.doc h3{font-family:var(--font-zh);font-size:1.25rem;font-weight:700;color:var(--accent);margin:36px 0 14px;padding-left:14px;border-left:3px solid var(--accent)}
+.doc h4{font-size:1.05rem;font-weight:600;color:var(--accent-3);margin:26px 0 10px}
+.doc p{font-size:1.02rem;color:var(--text);margin-bottom:16px;text-align:justify}
+.doc .abstract{background:var(--bg-elev);border:1px solid var(--border-soft);border-radius:10px;padding:20px 24px;margin-bottom:18px}
+.doc .abstract p:last-child{margin-bottom:0}
+.doc .kw{font-size:.9rem;color:var(--text-muted);margin-bottom:24px}
+.doc .kw b{color:var(--accent-3)}
+.doc ul,.doc ol{margin:0 0 16px 26px}
+.doc li{font-size:1.02rem;margin-bottom:8px;color:var(--text)}
+.doc .eqn{display:block;background:var(--bg-soft);border:1px dashed var(--border);border-radius:8px;padding:12px 16px;margin:14px 0;font-family:var(--font-mono);font-size:.9rem;color:var(--accent-3);overflow-x:auto;white-space:pre-wrap}
+.doc .tnote{font-size:.86rem;color:var(--text-dim);font-style:italic;border-left:2px solid var(--border);padding-left:12px;margin:14px 0}
+.dtable{width:100%;border-collapse:collapse;margin:18px 0;font-size:.86rem;font-family:var(--font-en)}
+.dtable caption{font-family:var(--font-zh);font-size:.86rem;color:var(--text-muted);text-align:left;margin-bottom:8px;line-height:1.6}
+.dtable th,.dtable td{border:1px solid var(--border);padding:7px 10px;text-align:center}
+.dtable th{background:var(--bg-elev);color:var(--accent);font-weight:600}
+.dtable tr:nth-child(even) td{background:rgba(255,255,255,.015)}
+.dtable .hi{color:var(--accent);font-weight:700}
+.doc-wrap{overflow-x:auto}
+footer{text-align:center;padding:56px 0;color:var(--text-dim);font-size:.82rem;border-top:1px solid var(--border-soft);margin-top:60px}
+footer .grad-line{width:60px;height:2px;background:var(--grad);margin:0 auto 16px;border-radius:2px}
+.totop{position:fixed;right:26px;bottom:26px;z-index:40;width:46px;height:46px;border-radius:50%;background:var(--bg-elev);border:1px solid var(--accent);color:var(--accent);display:grid;place-items:center;cursor:pointer;opacity:0;pointer-events:none;transition:.25s;font-size:1.1rem}
+.totop.show{opacity:1;pointer-events:auto}
+.totop:hover{background:var(--accent);color:#0e0e1a}
+</style>
+</head>
+<body>
+<header class="topbar">
+<div class="topbar-inner">
+<div class="brand"><span class="brand-mark">A</span><span>Aoduo Li <small>· 论文全文翻译</small></span></div>
+<nav class="topbar-links">
+<a href="index.html">← 学术主页</a>
+<a href="papers.html">论文讲解</a>
+<a href="papers.html#kgraph">◆ 知识图谱</a>
+<a href="research.html">研究综述</a>
+<a class="cta" href="mailto:2030728844@qq.com">联系作者</a>
+</nav>
+</div>
+</header>
+<div class="shell">
+<aside class="sidebar" id="sidebar">
+<div class="sidebar-title">论文全文翻译</div>
+<a href="#t-tce"><span class="side-idx">01</span><span>TCE · 红外图像合成<span class="side-badge done">全文</span></span></a>
+<a href="#t-bipt"><span class="side-idx">03</span><span>BiPT · 二值点云 Transformer<span class="side-badge done">全文</span></span></a>
+<a href="#t-vedal"><span class="side-idx">04</span><span>VEDAL · 3DGS 剪枝<span class="side-badge done">全文</span></span></a>
+<a href="#t-neuro"><span class="side-idx">05</span><span>NeuroGuard · 跨模态绑定<span class="side-badge done">全文</span></span></a>
+<a href="#t-atrie"><span class="side-idx">06</span><span>ATRIE · 语音合成<span class="side-badge done">全文</span></span></a>
+<a href="#t-cuda"><span class="side-idx">08</span><span>CUDA-Eval · 组件归因<span class="side-badge done">全文</span></span></a>
+</aside>
+<main class="doc">
+<section class="hero" id="hero">
+<div class="hero-eyebrow">Full-Text Translations</div>
+<h1>论文<span class="gradient">全文翻译</span></h1>
+<p class="hero-sub">这里把我每篇论文从摘要到结论逐节忠实翻译成中文，便于通读全文、对照面试。译文严格依据论文原文，不增删、不改动技术事实。</p>
+<div class="notice">说明：全文翻译工程量较大，正逐篇上线。已完成的论文标注「全文」，其余标「整理中」。公式以原文符号呈现，表格保留关键数据，参考文献从略。</div>
+</section>
+<!-- ============ PAPER 01: TCE Infrared ============ -->
+<section class="doc-sec" id="t-tce">
+<div class="doc-meta">
+<span class="doc-no">PAPER · 01</span>
+<span class="badge b-tce">IEEE TCE</span>
+<span class="role">作者</span>
+<span class="role"> </span>
+</div>
+<h2 class="doc-title">多元特征引导的高频保真红外图像合成
+    <span class="en">Multivariate Feature-Guided Infrared Image Synthesis with High-Frequency Fidelity</span>
+</h2>
+<p class="doc-authors">作者：<b>陈旭航、李奥多</b>（并列第一作者）、董亦航、毛云授、梁泽霄（通讯作者）</p>
+<p class="doc-affil">惠州学院计算机科学与工程学院；广东工业大学先进制造学院；中国科学院深圳先进技术研究院；惠州学院电子信息与电气工程学院。本工作受惠州学院博士启动基金（2025JB008）与广东省基础与应用基础研究基金（2024A1515140010）资助。</p>
+<div class="abstract">
+<p><b>摘要</b>——可见光图像与红外图像由两种不同的传感器采集，作为多模态数据，能够提供互补信息，在消费电子领域的价值与日俱增。其应用从智能手机和安防摄像头中增强的夜视能力，到消费类车辆中的高级驾驶辅助系统，覆盖面很广。然而，专用红外成像硬件的高昂成本，限制了它在消费市场的广泛普及。为解决这一问题，利用深度学习从随处可得的可见光传感器生成红外图像，提供了一种具有成本效益的、纯软件的解决方案。尽管生成对抗网络（GAN）在图像转换上展现出潜力，但它们常常受训练不稳定之苦，并可能产生伪影。此外，现有方法往往忽视了频域信息，而频域对于渲染精细细节至关重要，忽视它会导致图像结构保真度差。为克服这些局限，我们提出了<b>谱变换增强网络（STE-Net）</b>，这是一种端到端、基于 Transformer 的架构，通过同时利用频域和空域的多元特征来合成高保真红外图像。STE-Net 把傅里叶变换与小波变换的特征同边界信息、空间信息融合在一起，保留了消费级应用所必需的锐利细节。我们的方法还采用了神经隐式表示，在更高维空间中学习可见光与红外两个模态之间的复杂映射。实验结果表明，STE-Net 能生成质量更优的红外图像，为新一代消费电子中的高级成像功能铺平了道路。</p>
+<p class="kw"><b>关键词</b>：红外成像、图像转换、神经隐式表示</p>
+</div>
+<h3>I. 引言</h3>
+<p>红外成像正在成为消费电子版图中的一项关键技术，提供了超越可见光谱的能力。在智能手机中，它能实现增强的弱光摄影和安全的人脸识别；对于智能家居设备，它能提供可靠的人体检测以服务安防系统，而不像可见光摄像头那样可能损害隐私。此外，在汽车领域，红外传感器对于高级驾驶辅助系统（ADAS）中稳健的行人检测以及座舱内驾驶员监测都至关重要。消费产品对此类高级功能的需求正在迅速增长。然而，集成专用的硬件红外传感器仍是一道显著的成本门槛，往往使这些功能局限于高端设备。因此，开发能够从标准、廉价的可见光摄像头生成高质量红外图像的算法解决方案，是消费电子行业的一项关键挑战。</p>
+<p>深度学习近期的进展，尤其是生成模型，在跨模态图像合成上已展现出卓越的成功。例如，生成对抗网络（GAN）已被有效用于热红外图像着色等任务，提升了用于人工判读及其他下游任务的视觉输出。这些模型从大规模数据集中学习可见光与红外域之间的复杂映射，提供了一条绕开昂贵硬件的路径。然而，基于 GAN 的方法是出了名地难训练，并可能引入降低图像质量的视觉伪影。一种常见的失败模式是缺乏高频细节，导致物体边界模糊、纹理不真实——这对于视觉质量至上的消费应用而言是不可接受的。此外，许多现有模型在异常检测和故障分类上表现欠佳，而这正是消费电子制造中的一个关键环节。</p>
+<p>为应对这些挑战，我们提出谱变换增强网络（STE-Net），一种端到端、基于 Transformer 的模型，专为适配消费设备的高保真可见光到红外图像转换而设计。我们的架构有两项核心创新：多元特征融合模块（MFFM）与颜色重映射模块（CRM）。MFFM 使用四元数卷积策略，整合来自傅里叶域、小波域、空域的特征以及边界信息。这使模型能够保留生成锐利、清晰图像所必需的高频细节，相比现有图像增强技术是一项显著改进。CRM 则利用多层感知机（MLP）来学习两个模态之间错综复杂的颜色映射，从而避免其他方法中常见的颜色失真。</p>
+<p>我们的主要贡献如下：</p>
+<ol>
+<li>我们提出 STE-Net，专为可见光到红外图像转换设计。STE-Net 不仅在定量评估指上超越了现有方法，还展现出更优的视觉保真度。</li>
+<li>我们引入 MFFM，通过四元数卷积策略有效整合来自不同域的多元特征，以增强特征表达，尤其是高频信息。这确保了关键细节的保留，从而促进准确的可见光到红外图像合成。</li>
+<li>我们提出 CRM，利用 MLP 将可见光颜色映射到更高维空间，帮助学习红外与可见光图像之间错综复杂的颜色转换关系。</li>
+</ol>
+<p>之所以选择基于 Transformer 的架构而非传统的基于 GAN 的方法，出于几方面考虑。第一，Transformer 通过自注意力天然地捕捉长程依赖，这对于建模受全场景上下文（如环境温度、材料属性）影响的全局热辐射模式至关重要。第二，对于 ADAS 行人检测这类对安全敏感的消费应用，确定性的输出至关重要。第三，通过去除对抗训练范式，我们可以直接使用像素级、结构级和感知级损失来优化重建质量，而不会出现模式坍塌。</p>
+<h3>II. 相关工作</h3>
+<p>图像到图像的转换，尤其是可见光到红外图像的转换，已取得显著进展。早期工作如 Pix2Pix 引入了用于成对转换的条件 GAN；CycleGAN 通过循环一致性损失实现了非成对训练。具体到可见光到红外（V2IR）任务，ThermalGAN 面向行人重识别，BCI 采用多尺度金字塔，ClawGAN 建立了跨域连接。更近期地，VQ-InfraTrans 将向量量化与混合 Transformer 结合用于 RGB 到红外的转换；IMST 引入了用于轻量级 V2IR 转换的隐式多光谱 Transformer；DiffV2IR 则借助视觉语言理解利用扩散模型。这些进展显示出一种超越传统 GAN 范式、走向 Transformer 与扩散架构的趋势。</p>
+<h3>III. 方法</h3>
+<p>本节详述我们提出的谱变换增强网络（STE-Net）的架构与组件，该网络面向高保真的可见光到红外图像转换。图 1 给出了网络架构的示意概览。与传统基于 GAN 的方法不同，STE-Net 采用基于 Transformer 的编码器-解码器框架，具备多元特征融合模块（MFFM）以及通过多层感知机（MLP）实现的新颖颜色重映射模块（CRM）。这一设计强调细致纹理的保留与准确的颜色映射，二者对于高质量红外图像生成至关重要。</p>
+<h4>A. 编码器-解码器 Transformer 结构</h4>
+<p>STE-Net 采用基于 Transformer 的编码器-解码器结构，以有效提取并表示多尺度图像特征。编码器逐步对输入图像下采样，捕捉从全局到局部、从抽象到具体的特征，形成一个完整的特征金字塔。解码器利用可学习核卷积上采样来重建图像，同时整合多尺度特征。</p>
+<p>编码器-解码器流程组织如下：尺寸为 256×256×3 的输入可见光图像首先被投影为 256×256×C 的特征图（其中 C=48）。编码器包含三个阶段：阶段 1 为 256×256×C，阶段 2 经由 pixel-unshuffle 与 1×1 卷积做 2 倍下采样后为 128×128×2C，瓶颈阶段 3 为 64×64×4C。解码器使用转置卷积（核大小 2、步长 2）镜像这一结构。对应编码器与解码器阶段之间的跳跃连接促进了信息流动。最终输出是一张尺寸为 256×256×1 的单通道红外图像。</p>
+<p>鉴于 Transformer 对局部细节不够敏感，我们引入了一个混合特征提取器。它在编码器-解码器框架的前端和后端都集成了多头注意力与局部注意力机制，以增强模型同时捕捉全局与局部依赖的能力。多头注意力通过并行探索图像的不同子空间来捕捉多样的特征模式，而局部注意力则通过聚焦于特定图像区域来细化细节信息。</p>
+<h4>B. 多元特征融合模块（MFFM）</h4>
+<p>鉴于高频信息在红外图像生成中的重要性，我们提出多元特征融合模块（MFFM），它把来自多个来源的频域与空域特征结合起来，以强化高频特征表示并保留关键细节。此外，MFFM 采用四元数卷积，将多元特征融合为统一的四元数表示，实现权重共享与特征交互。这一策略不仅保留了域间相关性，还通过高维变换增强了整体特征表达。</p>
+<p>在 MFFM 中，输入数据经由四条并行分支处理，分别是傅里叶变换、空间域、小波变换和边界信息提取。除边界信息提取分支外，其余分支均采用多 Dconv 头转置注意力（MDTA）来提取特征。MDTA 通过动态卷积头增强特征提取，能更有效地捕捉细节。边界分支之所以不采用 MDTA，是因为由 Sobel 算子提取的边界特征本质上是局部的（3×3 邻域）；施加全局自注意力反而会模糊精确的边缘定位。而其余三条分支（傅里叶、空间、小波）包含分布式的频率信息，能从全局上下文聚合中受益，边界则充当清晰、局部化的结构锚点。</p>
+<p>傅里叶变换是一项基础技术，它将空间域数据转换为频域数据，从而能够分析频率信息。其变换可由式（1）数学表达（F(u,v) 为频域图像的复数值，表示频率 (u,v) 处的谱信息；f(x,y) 为空间域图像在坐标 (x,y) 处的像素强度；N、M 分别为图像的宽和高；j 为虚数单位）：</p>
+<span class="eqn">F(u,v) = Σ_{x=0}^{N-1} Σ_{y=0}^{M-1} f(x,y)·e^{-j2π(ux/N + vy/M)}
+f(x,y) = (1/NM) Σ_{u=0}^{N-1} Σ_{v=0}^{M-1} F(u,v)·e^{j2π(ux/N + vy/M)}        (1)</span>
+<p>小波变换分支采用小波变换将输入分解为低频与细节分量（LL、LH、HL、HH），如式（2）所示（f 为输入图像；h、g 为卷积滤波器；T 为转置；∗ 表示卷积；[::2,::2] 表示隔一取一的下采样）：</p>
+<span class="eqn">LL = f∗h∗hᵀ[::2,::2],   LH = f∗g∗hᵀ[::2,::2]
+HL = f∗h∗gᵀ[::2,::2],   HH = f∗g∗gᵀ[::2,::2]              (2)</span>
+<p>随后，我们执行四元数卷积策略以融合多元特征。首先，将四条分支的输出拼接起来：用 Sobel 算子提取的边界信息作为实部，其余三种特征表示（傅里叶、空间、小波）作为虚部，构成四元数表示 S：</p>
+<span class="eqn">S = cat(B, F, E, H) = B + Fi + Ej + Hk               (3)</span>
+<p>其中 B、F、E、H 分别代表边界、傅里叶、空间、小波信息，i、j、k 是四元数的虚数单位。通过把特征映射到这一更高维的四元数空间，MFFM 能够实现一种强调高频细节的综合表示。将边界信息指定为实部是经过深思熟虑的：在四元数代数中，实部充当调制整体幅度的“基”分量，而虚部则编码“方向性”的变化；边界信息代表着根本的结构骨架，因此天然适合作为这一基础调制因子。</p>
+<p>为有效地从四元数特征中提取并组合特征，我们构造了一个符合数学逻辑的适配卷积核 W 来执行卷积运算。具体地，核 W 表示为 W = W_b + W_f·i + W_e·j + W_h·k，其中 W_b、W_f、W_e、W_h 是核的实部与虚部；相应地偏置 M 表示为 M = M_b + M_f·i + M_e·j + M_h·k 作为补充。接着，我们用 Hamilton 积 W⊗S 计算核 W 与输入特征 S 之间的卷积。Hamilton 积定义为：</p>
+<span class="eqn">W⊗S = (W_bB − W_fF − W_eE − W_hH)
+     + (W_fB + W_bF − W_hE + W_eH)i
+     + (W_eB + W_hF + W_bE − W_fH)j
+     + (W_hB − W_eF + W_fE + W_bH)k              (4)(5)</span>
+<p>通过引入偏置 M，我们得到四元数卷积特征融合的最终输出 O = W⊗S + M（式 6）。在四元数卷积之后，再使用一个普通卷积层和一个 Sigmoid 激活函数，以实现对特征的自适应加权。这使得多元特征的整合更加精细，高效地增强了高频信息。</p>
+<p>MFFM 被置于编码器的最深层（瓶颈处）。它在原始输入图像上操作，以全分辨率提取傅里叶、小波和边界特征，再通过四元数卷积将这些特征与深层语义特征融合，从而补偿因连续下采样而在瓶颈处最为缺失的高频信息。由于跳跃连接已经把浅层富含细节的特征向后传播，将 MFFM 放在瓶颈处既避免了冗余，又最大化了互补性的增益。</p>
+<h4>C. 颜色重映射模块（CRM）</h4>
+<p>为在可见光到红外转换中实现准确的颜色映射，我们引入颜色重映射模块（CRM）。受隐式神经表示启发，CRM 以多层感知机（MLP）为骨干，学习可见光域与红外域之间复杂的颜色空间变换。CRM 在两个不同层级处理特征信息：从原始图像提取的浅层特征，以及来自重建图像的深层特征。这些多层级特征被展平为向量表示，经过带残差连接的多层 MLP。这种双流架构使 MLP 既能学习低层级的颜色映射，又能学习高层级的语义变换，从而有效地弥合两个图像模态之间的域间差异。</p>
+<p>每个 MLP 子网络（f 与 g）由 3 个全连接层构成，隐藏维度为 [256,128,64]，使用 ReLU 激活和残差连接。潜空间 Z 的维度为 128，通过超参数搜索选定。与在固定空间网格上操作的标准卷积或基于 MLP 的映射层不同，CRM 将颜色映射视为更高维潜空间中的一个连续隐式函数：先通过 f 把 3 通道可见光信息投影到 128 维潜空间 Z，再通过 g 重映射 1 通道红外。形式化地：</p>
+<span class="eqn">f(I_v) = MLP_f(I_v) → Z                  (7)
+g(Z)   = MLP_g(Z) → I_r                  (8)
+I_r    = Φ(I_v) = g(f(I_v))              (9)</span>
+<p>通过把这些 MLP 作为隐式神经表示来训练，CRM 有效地学到了源图像与目标图像之间潜在的颜色映射关系。这使得能够生成具有自然颜色过渡的、视觉上逼真的红外图像，确保可见光图像中的结构与细节信息在红外转换中得以保留。</p>
+<h4>D. 损失函数</h4>
+<p>为引导训练过程、确保图像保真度与视觉质量，我们采用三种损失函数的组合：Smooth L1 损失（L_smooth）、结构相似性指数损失（L_SSIM）、以及学习感知图像块相似度损失（L_LPIPS）。Smooth L1 损失能有效平衡小误差与大误差，降低离群值对总损失的影响，从而提升模型的稳健性；SSIM 损失更能反映人眼对图像质量的感知，尤其是在结构保持方面；LPIPS 从多层提取特征、逐通道归一化后按权重缩放计算 L2 距离，贴近人类感知。总损失为三者等权相加：</p>
+<span class="eqn">L_total(x,y) = L_smooth(x,y) + L_SSIM(x,y) + L_LPIPS(x,y)    (13)</span>
+<h3>IV. 实验结果与讨论</h3>
+<h4>A. 实现细节</h4>
+<p>我们在一块 NVIDIA V100 GPU 上使用 PyTorch 框架实现 STE-Net。输入图像被缩放到 256×256 像素。我们使用 AdamW 优化器，初始学习率为 2×10⁻⁴，动量参数 β₁=0.9、β₂=0.999，并采用 CosineAnnealingLR 调度器进行学习率衰减。模型训练 100 个 epoch，批大小为 4。</p>
+<h4>B. 数据集</h4>
+<p>为确保模型的稳健性和泛化能力，我们合并了 4 个数据集的训练集：LLVIP、RoadScene、M3FD 和 FLIR。这些数据集涵盖了广泛的场景、光照条件和物体类型，有利于全面的模型训练。评估时，我们使用 LLVIP、RoadScene、M3FD、FLIR 的合并测试集。其中 LLVIP 包含 15,488 对在极弱光条件下采集的精确对齐的可见光-红外图像对，专为行人检测设计；RoadScene 提供 221 对涵盖各类道路场景（含车辆和行人）的图像对；M3FD 由 8,400 张用于融合、检测及基于融合的检测任务的图像组成，另有 600 张专用于场景融合，覆盖六个目标类别；FLIR 致力于推动可见-热融合算法的发展，我们用自动对齐算法构建了一个包含 5,142 对对齐可见光-红外图像对的数据集。</p>
+<h4>C. 评估指标</h4>
+<p>我们采用 4 个广泛使用的图像质量评估指标：峰值信噪比（PSNR，越高表示失真越小）、结构相似性指数（SSIM，越接近 1 表示相似度越高）、平均绝对误差（MAE，预测与真值像素差的平均）、学习感知图像块相似度（LPIPS，越低表示感知相似度越高）。</p>
+<h4>D. 与最先进方法的比较</h4>
+<p><b>1) 图像生成性能：</b>我们将所提模型与五种最先进（SOTA）的红外图像转换方法，以及三种近期方法 VQ-InfraTrans、IMST、DiffV2IR 进行了比较。表 I 的定量结果表明，在各类数据集上，我们提出的模型始终优于其他领先的红外图像生成方法。从视觉对比可见，与其他方法相比，STE-Net 在所有数据集上生成的红外图像结构更细致、纹理与真实红外图像的一致性更高，这与表 I 的定量结果一致。具体而言，Munit、pix2pix、CycleGAN 和 ClawGAN 难以实现准确的颜色转换，常产生缺乏真实红外特性的、类似灰度的输出，这种不足在高对比度区域（如 M3FD 和 LLVIP 数据集中绿框标出的车辆轮胎）尤为明显。这是因为可见光与红外图像在低频信息上存在显著差异，导致这些模型过度关注低频特征的颜色变化。BCI 虽然在四个数据集上展现出相对准确的颜色映射，但在复杂场景中显出局限——例如在 RoadScene 和 FLIR 数据集中，BCI 的输出呈现模糊的建筑边缘、高频细节不够锐利，导致物体边界定义不清、细节区纹理清晰度下降。这很可能源于 GAN 训练的不稳定性叠加细节提取不足。相比之下，我们提出的 STE-Net 借助 MFFM 和 CRM 模块大幅改善了特征表示，有效提升了颜色映射精度，生成了更准确的红外图像。</p>
+<div class="doc-wrap">
+<table class="dtable">
+<caption>表 I　各类图像转换方法在多个数据集上的定量比较（每格为 PSNR↑ / SSIM↑ / MAE↓ / LPIPS↓）。</caption>
+<tr><th>方法</th><th>LLVIP</th><th>RoadScene</th><th>M3FD</th><th>FLIR</th></tr>
+<tr><td>CycleGAN</td><td>3.24 / 0.00 / 156.2 / 0.63</td><td>1.96 / -0.02 / 182.8 / 0.54</td><td>3.52 / -0.02 / 182.8 / 0.54</td><td>3.16 / 0.00 / 155.9 / 0.52</td></tr>
+<tr><td>Pix2Pix</td><td>4.75 / -0.16 / 132.9 / 0.78</td><td>4.59 / 0.01 / 133.5 / 0.69</td><td>5.46 / 0.09 / 114.9 / 0.78</td><td>5.41 / 0.09 / 117.9 / 0.63</td></tr>
+<tr><td>Munit</td><td>9.30 / 0.07 / 74.9 / 0.48</td><td>6.86 / 0.13 / 104.5 / 0.52</td><td>7.46 / 0.11 / 93.2 / 0.46</td><td>6.16 / 0.18 / 109.7 / 0.57</td></tr>
+<tr><td>ClawGAN</td><td>10.35 / 0.19 / 66.4 / 0.57</td><td>11.18 / 0.34 / 59.3 / 0.46</td><td>10.79 / 0.33 / 61.8 / 0.43</td><td>10.73 / 0.35 / 61.5 / 0.45</td></tr>
+<tr><td>BCI</td><td>12.52 / 0.33 / 43.9 / 0.44</td><td>13.69 / 0.33 / 43.9 / 0.44</td><td>12.04 / 0.36 / 53.1 / 0.56</td><td>9.87 / 0.39 / 63.5 / 0.51</td></tr>
+<tr><td class="hi">本文 (Ours)</td><td class="hi">13.87 / 0.43 / 40.7 / 0.39</td><td class="hi">15.76 / 0.44 / 34.6 / 0.35</td><td class="hi">14.55 / 0.54 / 36.9 / 0.33</td><td class="hi">17.76 / 0.47 / 26.9 / 0.31</td></tr>
+</table>
+</div>
+<p><b>2) 高频保真度评估：</b>为评估各模型在高频细节生成上的表现，我们在 LLVIP、M3FD、RoadScene、FLIR 四个数据集上，将生成红外图像与真实红外图像的高频强度分布进行了比较。与其他方法相比，STE-Net 在所有数据集上始终取得最低的 MSE，证明其在捕捉高频细节上的优越保真度。此外，STE-Net 生成的高频波形与真实红外图像高度吻合，说明它能以最小偏差再现细粒度细节。高频分量通过高斯高通滤波器分离：I_high = I − GaussianBlur(I, k=15, σ=3.0)。为进一步量化高频保真度，我们引入三个额外指标：平均梯度（AG）、边缘保持指数（EPI）和高频能量比（HFER）。如表 II 所示，STE-Net 在所有三项指标上均取得所有方法中的最高分，且数值最接近真实红外图像。</p>
+<div class="doc-wrap">
+<table class="dtable">
+<caption>表 II　高频保真度指标比较（AG / EPI / HFER，均越高越好）。</caption>
+<tr><th>方法</th><th>AG</th><th>EPI</th><th>HFER</th></tr>
+<tr><td>CycleGAN</td><td>2.14</td><td>0.312</td><td>0.285</td></tr>
+<tr><td>Pix2Pix</td><td>2.87</td><td>0.358</td><td>0.324</td></tr>
+<tr><td>Munit</td><td>3.42</td><td>0.421</td><td>0.398</td></tr>
+<tr><td>ClawGAN</td><td>4.15</td><td>0.487</td><td>0.452</td></tr>
+<tr><td>BCI</td><td>5.23</td><td>0.612</td><td>0.567</td></tr>
+<tr><td>VQ-InfraTrans</td><td>4.89</td><td>0.578</td><td>0.534</td></tr>
+<tr><td>IMST</td><td>5.12</td><td>0.598</td><td>0.551</td></tr>
+<tr><td class="hi">本文 (Ours)</td><td class="hi">6.38</td><td class="hi">0.723</td><td class="hi">0.682</td></tr>
+<tr><td>真实红外 (Real IR)</td><td>6.72</td><td>0.781</td><td>0.714</td></tr>
+</table>
+</div>
+<p><b>3) 计算效率分析：</b>为回应对计算开销的关注，我们报告了所有对比方法的参数量、FLOPs 和推理时间（输入尺寸 256×256，单块 V100）。STE-Net 以适中的参数量（26.83M，第 4 小）取得了最佳的整体性能，达成了有利的平衡。MFFM 主要依赖数学变换（傅里叶、小波）而非学习得到的权重，引入的参数开销极小。本文方法参数 26.83M、FLOPs 89.34G、推理 22.5ms。</p>
+<h4>E. 下游任务：行人检测</h4>
+<p>行人检测是红外成像的一项关键应用。为评估所生成红外图像的实用价值，我们使用一个在红外图像上微调过的预训练 YOLOv5 模型来执行行人检测，再比较各图像转换模型生成的红外图像的检测性能；同时，将在真实红外图像上的直接检测作为性能上界。具体而言，YOLOv5s 在 COCO 上预训练，随后仅在 LLVIP 红外训练集上微调 100 个 epoch（批大小 16、SGD 优化器、学习率 0.01、余弦调度）。微调后的检测器被直接应用于 LLVIP 测试集生成的红外图像，不做任何进一步适配或域对齐，以确保检测性能直接反映转换质量，而非检测器的适配偏差。表 IV 表明，STE-Net 在不同 IoU 阈值（mAP@50 与 mAP@95）下取得了最高的精确率、召回率与平均精度（mAP）。这一优越表现凸显了 STE-Net 在保留关键行人特征、生成适用于真实场景的逼真红外图像方面的有效性。Munit、pix2pix、CycleGAN、ClawGAN 难以识别行人，仅在特定条件下偶尔识别出少数；BCI 则明显受噪声和伪影所限，行人边界非常模糊，导致即便识别出行人，检测框的位置或大小也会有偏差。相比之下，我们方法生成的红外图像在行人检测任务中展现出更高的可靠性。</p>
+<div class="doc-wrap">
+<table class="dtable">
+<caption>表 IV　不同模型在行人检测下游任务上的对比表现（IR 行为性能上界）。</caption>
+<tr><th>方法</th><th>Precision</th><th>Recall</th><th>mAP@50</th><th>mAP@95</th></tr>
+<tr><td>CycleGAN</td><td>0.142</td><td>0.138</td><td>0.083</td><td>0.031</td></tr>
+<tr><td>Pix2Pix</td><td>0.104</td><td>0.076</td><td>0.071</td><td>0.024</td></tr>
+<tr><td>Munit</td><td>0.250</td><td>0.198</td><td>0.161</td><td>0.060</td></tr>
+<tr><td>ClawGAN</td><td>0.240</td><td>0.204</td><td>0.160</td><td>0.062</td></tr>
+<tr><td>BCI</td><td>0.497</td><td>0.334</td><td>0.285</td><td>0.009</td></tr>
+<tr><td class="hi">本文 (Ours)</td><td class="hi">0.668</td><td class="hi">0.457</td><td class="hi">0.46</td><td class="hi">0.178</td></tr>
+<tr><td>真实红外 (上界)</td><td>0.774</td><td>0.537</td><td>0.589</td><td>0.269</td></tr>
+</table>
+</div>
+<h4>F. 消融研究</h4>
+<p>为全面考察所提 STE-Net 框架中各组件的影响，我们在多个数据集的合并测试集上进行了大量消融实验，分为四种配置：1）基线结构——不含 CRM 与 MFFM 的基础编码器-解码器 Transformer 架构，作为评估核心 Transformer 特征提取能力的对照；2）移除 CRM——保留 MFFM、去掉 CRM，评估 CRM 在颜色空间变换与跨频纹理保持上的作用；3）移除 MFFM——保留 CRM、去掉 MFFM，评估 MFFM 对多尺度特征整合与结构细节保留的贡献；4）完整模型——同时含两个模块。结果显示，仅含基础编码器-解码器（无 MFFM 与 CRM）的基线在 PSNR 和 SSIM 上表现最差，说明它在维持全局图像质量和结构细节上能力有限，在 MAE 和 LPIPS 上同样次优。相比之下，同时含两个模块的完整模型在所有指标上都取得最优表现。</p>
+<p>在保留 CRM 的同时移除 MFFM，会导致多项指标明显退化。SSIM 下降、LPIPS 升高尤其反映出模型保留结构细节与高频特征的能力受损。这可归因于 MFFM 的缺失——它本应通过融合傅里叶、小波和空域特征来强化高频分量的表示。PSNR 的下降则表明，没有 MFFM，模型难以维持准确的热强度分布，尤其在细节精细、边界锐利的区域。同样地，移除 CRM 也会带来显著的性能退化。CRM 借助神经隐式表示，把 3 通道 RGB 信息压缩为 1 通道红外表示，有效弥合可见光与红外模态间的域差异；其双流架构同时处理原始图像的浅层特征与重建图像的深层特征，使模型既能学习低层颜色映射又能学习高层语义变换。没有这一高效的压缩与映射机制，模型难以维持一致的热映射，表现为 PSNR 下降、MAE 升高。</p>
+<h4>G. 扩展消融研究</h4>
+<p>为进一步考察设计选择，我们在合并测试集上又做了六组消融实验：</p>
+<p><b>1) MFFM 放置位置：</b>我们评估了把 MFFM 放在不同编码器阶段的影响。阶段 3（瓶颈）取得了性能与效率的最佳折中——把 MFFM 放在所有阶段仅带来边际增益（+0.03 PSNR），却显著增加计算成本（阶段 1：14.21 PSNR；阶段 2：14.38；阶段 3 本文：14.60；全阶段：14.63）。</p>
+<p><b>2) 特征融合策略：</b>四元数卷积优于所有替代方案，且参数比基于注意力的融合更少（Concat+Conv：14.32 PSNR / 245K；分组卷积：14.28 / 178K；注意力融合：14.41 / 312K；四元数（本文）：14.60 / 195K），证明经由 Hamilton 积的结构化交叉交互的贡献超越了简单的多分支聚合。</p>
+<p><b>3) 四元数分量配置：</b>把边界信息用作实部取得最佳性能（边界（本文）14.60；傅里叶 14.43；空间 14.38；小波 14.41 PSNR），支持了我们的设计理据。</p>
+<p><b>4) 潜空间维度：</b>维度 128 提供最佳折中——维度 256 增加 33% 参数却仅带来 +0.02 PSNR 的边际收益，维度 64 因容量受限损失 0.19 PSNR（32：14.22；64：14.41；128 本文：14.60；256：14.62）。</p>
+<p><b>5) CRM 映射策略：</b>CRM 显著优于更简单的方案（直接 1×1 卷积：14.18；标准 MLP：14.31；单流 MLP：14.39；CRM（本文）：14.60 PSNR），证明隐式神经表示在该任务上的优势。</p>
+<p><b>6) 分解式消融分析：</b>我们把消融分解为频域保真度指标（AG、HFER）与颜色/热一致性指标（Delta-E、热相关性）。MFFM 主要提升 AG（+30%）和 HFER（+28%），证实其频率保真作用；CRM 主要降低 Delta-E（-19%）并提升热相关性（+12%），验证其颜色映射作用。</p>
+<h3>V. 结论</h3>
+<p>本文提出了 STE-Net，一种端到端、基于 Transformer 的高质量可见光到红外图像转换模型。多元特征融合模块（MFFM）通过四元数卷积，把傅里叶变换与小波变换同边界、空间线索结合起来，保留了消费级成像所必需的精细细节；颜色重映射模块（CRM）使用 MLP 学习可见光与红外图像之间复杂的颜色变换，改善了面向消费应用的热表示。在多个数据集上的大量实验表明，STE-Net 在 PSNR、SSIM、MAE 和 LPIPS 上始终超越最先进方法。在实用层面，我们的方法让智能手机和安防摄像头无需昂贵的专用传感器即可实现可负担的红外成像；其在 ADAS 行人检测等下游任务上的成功，展示了它的现实价值。通过弥合低成本可见光传感器与高质量红外成像之间的鸿沟，STE-Net 支持了下一代消费电子（包括智能家居设备、可穿戴设备和物联网系统）中的高级热成像。未来工作将面向更具挑战的条件（如极端光照、复杂纹理）并提升边缘和移动端部署的效率，让更多人能用上先进的红外成像能力。</p>
+<p class="tnote">以上为 IEEE TCE 论文《Multivariate Feature-Guided Infrared Image Synthesis with High-Frequency Fidelity》全文中译，依据原文逐节翻译；公式以原文符号呈现，参考文献从略。</p>
+</section>
+<!-- ============ PAPER 04: VEDAL ============ -->
+<section class="doc-sec" id="t-vedal">
+<div class="doc-meta">
+<span class="doc-no">PAPER · 04</span>
+<span class="badge b-cgi">CGI 2026</span>
+<span class="role">第一作者</span>
+<span class="role">3D Gaussian Splatting</span>
+</div>
+<h2 class="doc-title">VEDAL：面向 3D 高斯泼溅剪枝的变分误差驱动异步学习
+    <span class="en">VEDAL: Variational Error-Driven Asynchronous Learning for 3D Gaussian Splatting Pruning</span>
+</h2>
+<p class="doc-affil">CGI 2026 投稿论文（评审阶段匿名提交）。</p>
+<div class="abstract">
+<p><b>摘要</b>——3D 高斯泼溅（3DGS）以实时渲染达成了卓越的新视角合成质量，但因数以百万计的高斯基元而受过高内存占用之苦。现有剪枝方法依赖启发式重要性分数或同步批量更新，导致压缩次优、训练不稳。我们提出 <b>VEDAL</b>，一个把高斯剪枝形式化为<b>变分自由能最小化</b>的有原则框架。我们的方法引入：(1) 一个<b>预测误差门控机制</b>，基于每个高斯的重建不确定性异步地激活剪枝；(2) 一个<b>变分不确定性头</b>，把剪枝决策建模为带可学习先验的潜变量。自由能目标通过信息论视角，自然地在重建保真度与模型复杂度之间取得平衡。在 Mip-NeRF 360、Tanks&amp;Temples 和 Deep Blending 上的大量实验表明，VEDAL 实现了 <b>5.2× 压缩、PSNR 仅下降 0.31 dB</b>，在更高压缩比下比 PUP 3D-GS 高 +0.05 dB、在相当质量下比 LightGaussian 高 +0.35 dB，同时以 185 FPS 维持实时渲染。</p>
+<p class="kw"><b>关键词</b>：3D 高斯泼溅、神经渲染、模型剪枝、变分推断、场景压缩</p>
+</div>
+<h3>1. 引言</h3>
+<p>3D 高斯泼溅（3DGS）通过对各向异性高斯基元做基于瓦片（tile）的 alpha 混合，实现了实时新视角合成。然而，自适应稠密化会产生数以百万计的高斯（每个场景 1–4 GB），限制了在内存受限设备上的部署。其中许多是冗余的，这促使我们追求有原则的压缩。</p>
+<p>现有方法使用启发式重要性分数和同步移除，忽视了不同高斯的收敛速率差异巨大这一事实：纹理区域的基元很快稳定，而镜面或遮挡区域的基元需要多得多的迭代。与神经网络剪枝中所有权重都见到每个样本不同，每个高斯只接收依赖视角的梯度，从而产生异质的收敛。我们引入<b>收敛条件变分推断</b>：仅在每个变量的重建信号稳定之后，才逐变量地激活 ELBO 的 KL 正则项。VEDAL 包含：</p>
+<ol>
+<li>一个<b>预测误差门</b>：维护每个高斯留一法（leave-one-out）重要性的 EMA 估计，并在每个估计收敛后异步地激活其剪枝资格（第 3.3 节）。</li>
+<li>一个<b>变分不确定性头</b>：把每个合格高斯的保留决策建模为伯努利潜变量，并用一个诱导稀疏的 KL 先验优化 ELBO（第 3.4 节）。</li>
+</ol>
+<p>我们推导出一个闭式的"保留-误差对应关系"（命题 1）：最优保留概率是"重要性与 KL 权重之比"的 sigmoid，这正为收敛感知的门控提供了动机。在 Mip-NeRF 360、Tanks&amp;Temples 和 Deep Blending 上的实验显示 5.2× 压缩、PSNR 下降 0.31 dB，在 185 FPS 下优于所有基线。</p>
+<p><b>贡献：</b>(1) 面向 3DGS 剪枝的收敛条件变分推断，附带一个保留-误差定理；(2) 一个异步的预测误差门；(3) 一个用于学习保留决策的变分不确定性头；(4) 在三个基准上达到最先进的压缩-质量权衡。</p>
+<h3>2. 相关工作</h3>
+<p><b>3D 高斯泼溅。</b>3DGS 通过带球谐函数的各向异性高斯基元渲染。其扩展工作涉及表面质量、锚点、抗锯齿和动态场景，但稠密化会产生数百万基元（每个约 236 字节），造成内存瓶颈。</p>
+<p><b>剪枝。</b>LightGaussian 按显著性排序；Compact3D 学习二值掩码；Mini-Splatting 在稠密化时约束数量；PUP 3D-GS 使用 Hessian 敏感度；MaskGaussian 学习概率掩码——它与我们的伯努利后验最为接近，但缺乏收敛感知的门控。SVRGS 对学习到的掩码施加空间可变正则，与我们追求非均匀稀疏的目标一致，但依赖手工先验而非 ELBO 推导出的压力。还有工作通过不透明度正则做梯度驱动的自然选择、或以不透明度作剪枝代理，其稀疏信号是启发式的，而我们的则扎根于变分自由能。Clean-GS 通过语义掩码移除漂浮物，与我们学习到的保留正交、可作为变分头的输入先验互补。上述所有方法都同步地移除，忽视了每个高斯各自的收敛。</p>
+<p><b>属性压缩。</b>量化、结构化方法、免训练码本方法（FlexGaussian）以及免优化的前馈压缩，减少的是每个高斯的存储而非数量；生成式效率方法与我们互补。我们在 4.6 节与 FlexGaussian 结合。</p>
+<p><b>变分剪枝。</b>变分 Dropout 和贝叶斯压缩通过 ELBO 剪枝权重，假设梯度独立同分布。但在 3DGS 中，依赖视角的梯度造成异质收敛；我们的收敛条件扩展仅在每个变量的信号稳定后才逐变量激活 KL（命题 1）。</p>
+<h3>3. 方法</h3>
+<h4>3.1 预备知识</h4>
+<p>3DGS 把场景建模为 N 个各向异性高斯 {Gᵢ}，每个高斯有位置 μᵢ∈ℝ³、协方差 Σᵢ=RᵢSᵢSᵢᵀRᵢᵀ（旋转 Rᵢ、对角缩放 Sᵢ）、不透明度 αᵢ 和球谐颜色系数 cᵢ。渲染使用按深度排序的 alpha 混合：C(p)=Σ_{i∈N(p)} cᵢαᵢ∏_{j<i}(1−αⱼ)。训练最小化 +="" l_recon="(1−λ)L₁" p="" λ·l_d-ssim。<="">
+<h4>3.2 收敛条件变分推断</h4>
+<p>我们引入潜在二值变量 z={zᵢ}（zᵢ=1 保留，zᵢ=0 剪枝）。给定训练图像 D，边缘似然涉及一个组合求和 log p(D|G)=log Σ_z p(D|G,z)p(z)（式 1）。我们优化证据下界（ELBO）：</p>
+<span class="eqn">log p(D|G) ≥ E_{q(z)}[log p(D|G,z)] − KL(q(z)‖p(z))      (2)
+                  └─ 重建项 ─┘            └─ 复杂度项 ─┘</span>
+<p><b>因子化后验。</b>q(z)=∏ᵢ Bernoulli(zᵢ; ρᵢ)，其中 ρᵢ=σ(f(Gᵢ)) 由变分头（第 3.4 节）对全部 N 个高斯产生。<b>稀疏先验。</b>p(z)=∏ᵢ Bernoulli(zᵢ; π)，π&lt;0.5，得到每个高斯的 KL：D_i=ρᵢ·log(ρᵢ/π)+(1−ρᵢ)·log((1−ρᵢ)/(1−π))（式 3）。</p>
+<p><b>收敛条件化。</b>标准变分剪枝对所有变量同时施加 KL，但在 3DGS 中，每个高斯的重要性只有在足够的视角覆盖之后才可靠。我们把 KL 的激活条件化在一个收敛谓词 gᵢ(t)∈{0,1} 上（第 3.3 节）：仅对已收敛的高斯集合 A(t)={i: gᵢ(t)=1} 计算 KL（式 4）。</p>
+<p><b>保留-误差对应关系（命题 1）。</b>设 Δᵢ=L_recon(G∖{Gᵢ})−L_recon(G)。在带 KL 权重 λ_KL 和先验 π 的门控 ELBO 下，最优保留概率满足：</p>
+<span class="eqn">ρᵢ* = σ( Δᵢ/λ_KL + log(π/(1−π)) )         (命题 1)</span>
+<p>证明梗概：对每个高斯的负 ELBO Fᵢ(ρᵢ) 求导并解 ∂Fᵢ/∂ρᵢ=0（关于 ρᵢ 凸），即得此 sigmoid 形式（完整证明见补充材料）。该 sigmoid 揭示：当 Δᵢ 含噪（收敛前）时，保留概率会振荡；只在 Δᵢ 收敛后才激活 KL，可确保决策稳定——这正是下面门控的动机。<b>耦合假设：</b>命题 1 把 Fᵢ(ρᵢ) 视为独立，忽略了透射率耦合。我们在每个场景 20 个随机 k=50 邻域上系统量化了这一点：可加的 Δᵢ 高估真实损失约 7.8±2.1%（Lego）、9.2±2.8%（Garden，深度复杂度更高）、6.5±1.9%（Chair，稀疏）。高估与平均不透明度重叠相关（r=0.74），最坏情形在稠密镜面簇中为 14%。这种保守偏差是良性的：门会比最优更具保护性，绝不会造成过早剪枝。</p>
+<h4>3.3 预测误差门</h4>
+<p>对每个 Gᵢ，我们维护其留一法重要性的 EMA：ē_i^(t)=ρ·ē_i^(t-1)+(1−ρ)·e_i^(t)，ρ=0.99（式 5），其中 e_i^(t) 是在缓存瓦片缓冲中把 Gᵢ 的不透明度置零时、逐像素 L₁+L_D-SSIM 的变化（球谐颜色冻结，在 Gᵢ 投影足迹覆盖的所有像素上评估）。<b>高效近似：</b>精确的留一法需要 O(N) 次渲染。我们从瓦片光栅器缓存 cᵢαᵢTᵢ（Tᵢ=∏_{j<i}(1−αⱼ)），用一阶近似（忽略下游透射率修正），每 100="" 3%。表="" 7="" 96%；用精确留一法替换近似只改变最终="" <0.03="" db。<b="" psnr="" rs≥0.91，门决策一致性="" spearman="" 在不同场景与训练阶段验证了该近似：所有检查点="" 次迭代刷新一次，开销="">门控：自适应阈值 τ(t)=Percentile_p({ē_i^(t)})，p=0.3，限制合格比例。门 gᵢ(t)=[ē_i(t)&lt;τ(t)]·[t&gt;t_warmup]（t_warmup=3000）异步激活：易区域高斯早早合格，镜面/遮挡的则保持受保护。门反转（高斯跌破阈值后又升回）在所有情形下 &lt;2%。该门对高度半透明高斯（αᵢ&lt;0.1）最保守，它们的 eᵢ 含噪、很少在 15K 前合格；极端镜面的 EMA 约在 20K 稳定。这一一致模式确认默认值（p=0.3, t_warmup=3000）无需逐场景调参即可泛化。</i}(1−αⱼ)），用一阶近似（忽略下游透射率修正），每></p>
+<h4>3.4 变分不确定性头</h4>
+<p>一个轻量 MLP 为每个高斯计算保留概率：ρᵢ=σ(MLP([μᵢ, sᵢ, αᵢ, ēᵢ]))，sᵢ=diag(Sᵢ)∈ℝ³（式 6），含两个隐藏层（64 单元、ReLU；约 5K 参数）。该头对全部 N 个高斯评估，无论门状态如何，以确保 L_sparse 梯度流向未门控的高斯，并在它们的门激活前对其预先调节。<b>松弛与掩码：</b>使用 Binary Concrete：z̃ᵢ=σ((log ρᵢ−log(1−ρᵢ)+g₁−g₂)/τ_gs)，τ_gs 由 1.0 退火到 0.1。我们选 Binary Concrete 而非 STE（梯度偏置失配：Lego 上 −0.13 dB）和 REINFORCE（方差大：−0.07 dB 且 1.4× 训练时间）。掩码不透明度：门控时 α̃ᵢ=αᵢ·z̃ᵢ，否则 αᵢ。推理时 zᵢ=[ρᵢ&gt;0.5]。位置感知 MLP 学到空间平滑的 ρᵢ，防止相邻高斯被灾难性地共同剪除（k=5 近邻簇被全剪 &lt;1.2%，k=10 时 &lt;0.5%）。</p>
+<h4>3.5 训练目标</h4>
+<span class="eqn">L_total = L_recon + λ_KL·L_KL + λ_sparse·L_sparse        (7)</span>
+<p>其中 L_recon=(1−λ)L₁+λL_D-SSIM 使用掩码不透明度 α̃ᵢ，L_KL 是收敛条件化的 KL（式 4），L_sparse=(1/N)Σᵢρᵢ 提供温和的全局稀疏压力。L_KL 仅作用于门控高斯，L_sparse（λ_sparse=0.001）作用于全部，防止 ρᵢ→1 的坍缩。默认值：λ_KL=0.01，π=0.3，ρ=0.99，t_warmup=3000。训练：7K 的 3DGS 初始化 + 23K 微调（关闭稠密化）；训练后移除 ρᵢ&lt;0.5 的高斯。</p>
+<h3>4. 实验</h3>
+<h4>4.1 设置</h4>
+<p><b>数据集：</b>Mip-NeRF 360（9 个场景）、Tanks&amp;Temples（2 个）、Deep Blending（2 个）；消融用 NeRF Synthetic。<b>指标：</b>PSNR、SSIM、LPIPS（VGG）、压缩比、FPS、文件大小。<b>基线：</b>LightGaussian、Compact3D、Mini-Splatting、PUP 3D-GS、MaskGaussian——全部在统一协议下：同样 7K 初始化（关闭稠密化）、23K 微调、相同学习率与数据划分、3 个随机种子、RTX 4090。重新在 Garden 上联合调 PUP 3D-GS 的学习率与 Hessian 得 27.14 dB（比默认 +0.02），确认我们的协议没有为难基线。FlexGaussian 与本方法正交（见 4.6 节）。</p>
+<h4>4.2 主要结果</h4>
+<p>VEDAL 实现 5.2× 压缩（734→141 MB）、PSNR 仅降 0.31 dB（表 1），在更高压缩比下比 PUP 3D-GS 高 +0.05 dB（p=0.03）。感知层面的差距比 PSNR 显示的更大：LPIPS 比 MaskGaussian 与 PUP 3D-GS 都改善 0.005，在图中表现为更锐利的边缘；在复杂场景上增益最强（Bicycle +0.08、Garden +0.07 dB），那里异质收敛最为关键。表 2 在 T&amp;T（+0.13 dB，5.4×）和 DB（+0.15 dB，5.5×）上确认了这一点。</p>
+<div class="doc-wrap">
+<table class="dtable">
+<caption>表 1　Mip-NeRF 360（3 个种子均值；压缩比与文件大小相对未剪枝 3DGS：3.25M 高斯、734 MB）。</caption>
+<tr><th>方法</th><th>PSNR</th><th>SSIM</th><th>LPIPS</th><th>#G (M)</th><th>压缩比</th><th>MB</th><th>FPS</th></tr>
+<tr><td>3DGS</td><td>27.48</td><td>.815</td><td>.214</td><td>3.25</td><td>1.0×</td><td>734</td><td>148</td></tr>
+<tr><td>LightGaussian</td><td>26.82</td><td>.798</td><td>.237</td><td>0.81</td><td>4.0×</td><td>183</td><td>185</td></tr>
+<tr><td>Compact3D</td><td>26.95</td><td>.801</td><td>.231</td><td>0.72</td><td>4.5×</td><td>163</td><td>190</td></tr>
+<tr><td>Mini-Splatting</td><td>27.05</td><td>.804</td><td>.228</td><td>0.76</td><td>4.3×</td><td>172</td><td>187</td></tr>
+<tr><td>PUP 3D-GS</td><td>27.12</td><td>.807</td><td>.224</td><td>0.68</td><td>4.8×</td><td>153</td><td>192</td></tr>
+<tr><td>MaskGaussian</td><td>27.15</td><td>.808</td><td>.222</td><td>0.65</td><td>5.0×</td><td>147</td><td>188</td></tr>
+<tr><td class="hi">VEDAL (本文)</td><td class="hi">27.17</td><td class="hi">.810</td><td class="hi">.219</td><td class="hi">0.63</td><td class="hi">5.2×</td><td class="hi">141</td><td class="hi">185</td></tr>
+</table>
+</div>
+<h4>4.3 消融研究</h4>
+<p>表 3：变分头相比硬剪枝增益 +0.13 dB；移除 L_sparse 损失 0.16 dB。在匹配的 21× 压缩下，VEDAL 比同步剪枝在 NeRF Synthetic 上高 +0.26~0.29 dB、在 Mip-NeRF 360 上高 +0.23 dB。为隔离异步机制，我们把门控施加到 PUP 的 Hessian 分数上（保留我们的变分头）：这个"PUP+异步"变体在 Garden 上把 PUP 提升 +0.09 dB，确认异步贡献独立于我们具体的 eᵢ。</p>
+<div class="doc-wrap">
+<table class="dtable">
+<caption>表 3（节选）　组件消融（Lego；"硬剪"=无变分头的确定性阈值剪枝）。</caption>
+<tr><th>配置</th><th>PSNR</th><th>SSIM</th><th>LPIPS</th><th>压缩比</th></tr>
+<tr><td>3DGS（仅门控，无 KL）</td><td>32.00</td><td>.964</td><td>.039</td><td>1.0×</td></tr>
+<tr><td>同步变分（无门）</td><td>23.89</td><td>.856</td><td>.183</td><td>21.2×</td></tr>
+<tr><td>异步门 + 硬剪枝</td><td>24.02</td><td>.858</td><td>.181</td><td>20.5×</td></tr>
+<tr><td>VEDAL 去掉 L_sparse</td><td>23.05</td><td>.838</td><td>.199</td><td>27.2×</td></tr>
+<tr><td class="hi">VEDAL（完整）</td><td class="hi">23.21</td><td class="hi">.842</td><td class="hi">.195</td><td class="hi">25.2×</td></tr>
+</table>
+</div>
+<h4>4.4 定性结果</h4>
+<p>图 3：LightGaussian 丢失精细细节，PUP 3D-GS 与 MaskGaussian 模糊高频边缘，VEDAL 在最高压缩下最好地保留了纹理。图 4：VEDAL 取得最小的 MAE，且残差误差集中在边缘而非大片区域。</p>
+<h4>4.5 敏感性分析</h4>
+<p>λ_KL 是主要旋钮（1.7 dB / 2.3×）；p 和 π 较稳健（&lt;0.6 dB、0.2 dB）。趋势在 Lego（合成）和 Garden（真实）上一致。</p>
+<h4>4.6 与属性压缩结合</h4>
+<p>把 VEDAL（5.2×）与 FlexGaussian 结合，得到 27.2× 总压缩、0.43 dB 下降（27 MB、189 FPS）。VEDAL 减少高斯数量，FlexGaussian 压缩属性，二者正交互补。</p>
+<div class="doc-wrap">
+<table class="dtable">
+<caption>表 5　与 FlexGaussian 结合（Mip-NeRF 360）。</caption>
+<tr><th>流程</th><th>PSNR</th><th>大小 (MB)</th><th>总压缩比</th><th>FPS</th></tr>
+<tr><td>3DGS（未剪枝）</td><td>27.48</td><td>734</td><td>1.0×</td><td>148</td></tr>
+<tr><td>仅 FlexGaussian</td><td>27.31</td><td>89</td><td>8.2×</td><td>151</td></tr>
+<tr><td>仅 VEDAL</td><td>27.17</td><td>141</td><td>5.2×</td><td>185</td></tr>
+<tr><td class="hi">VEDAL + FlexGaussian</td><td class="hi">27.05</td><td class="hi">27</td><td class="hi">27.2×</td><td class="hi">189</td></tr>
+</table>
+</div>
+<h4>4.7 计算开销</h4>
+<p>VEDAL 增加 12% 训练时间（+4 分钟）和 0.4 GB GPU 内存。每次迭代分解：3DGS 渲染 72%、门 eᵢ 评估 8%、变分头前向/反向 6%、损失计算 14%。推理与剪枝后的 3DGS 完全相同（头被丢弃）。</p>
+<h3>5. 结论</h3>
+<p>VEDAL 把 3DGS 剪枝形式化为收敛条件变分推断：一个异步预测误差门确保在基于 ELBO 的稀疏压力施加之前重要性估计已经稳定，一个变分不确定性头则在闭式理论基础（命题 1）的支撑下学习保留概率。在三个基准上的实验展示了 5.2× 压缩、0.31 dB PSNR 下降、相对五个基线的一致改进（统计显著，p&lt;0.05）、185 FPS 实时渲染，以及与属性压缩结合时的 27× 总压缩。<b>局限：</b>(1) 因子化后验忽略了 MLP 隐式空间平滑之外的高斯间依赖；(2) 剪枝期间稠密化被禁用，联合的"增长-剪枝"调度可能更好地分配高斯；(3) 门的百分位 p 是固定的，训练中自适应调度 p 可能带来进一步增益。<b>未来工作：</b>扩展到动态 4D 高斯、把语义先验（如 Clean-GS）整合进变分头的输入特征，以及探索用于空间一致块剪枝的组结构 KL 先验。</p>
+<p class="tnote">以上为 CGI 2026 投稿论文《VEDAL: Variational Error-Driven Asynchronous Learning for 3D Gaussian Splatting Pruning》全文中译，依据原文逐节翻译；公式以原文符号呈现，部分表格节选关键行、参考文献从略。</p>
+</i}(1−αⱼ)。训练最小化></p></section>
+<!-- ============ PAPER 05: NeuroGuard ============ -->
+<section class="doc-sec" id="t-neuro">
+<div class="doc-meta">
+<span class="doc-no">PAPER · 05</span>
+<span class="badge b-mm">AAAI 2027</span>
+<span class="role">第一作者</span>
+<span class="role">多模态安全</span>
+</div>
+<h2 class="doc-title">NeuroGuard：面向多模态大模型安全的跨模态绑定异常检测
+    <span class="en">NeuroGuard: Cross-Modal Binding Anomaly Detection for Multimodal LLM Safety</span>
+</h2>
+<p class="doc-affil">投稿论文（评审阶段匿名提交）。</p>
+<div class="abstract">
+<p><b>摘要</b>——多模态大模型面临一个<b>组合式安全缺口</b>：单独看都无害的图文对，组合起来却可能产生有害输出——即"安全输入、不安全输出"（Safe Inputs, Unsafe Output, SIUO）问题。我们提出 <b>NeuroGuard</b>，一个用于检测异常跨模态绑定的 <b>&lt;3 ms 监控器</b>（在 LLaVA/Qwen 上端到端 45/40 ms）。干净的 SIUO 式基准其实已经饱和：在所测数据集/骨干（&gt;1 万实例）上，NeuroGuard 和一个扁平 MLP 都达到 AUC=1.0，所以我们把重点放在<b>部署鲁棒性</b>上。NeuroGuard 在边界 mixup 下取得 F1=1.00，在锯齿状（zigzag）PGD 下保持 ΔEarlyDR=0，在 20 轮渐进升级场景上 DR@20 从（0% 前置误报时的）18% 跨到（10% 前置误报时的）65%，并通过随机子空间集成（RSE）把 κ=16 子空间替换攻击的检出率从 0% 恢复到 84%、耗时 8.1 ms。直接的 OmniGuard/UniGuard 更弱也更慢（F1=0.62/0.58，1.8/1.5 秒），而 NeuroGuard→OmniGuard 级联保持 F1=0.99、只转发 5% 的查询、并把延迟降到 0.12 秒（15×）。</p>
+<p class="kw"><b>关键词</b>：多模态安全、多模态大模型、跨模态绑定、异常检测、推理时护栏、对抗鲁棒性</p>
+</div>
+<h3>1. 引言</h3>
+<p>LLaVA、Qwen2-VL 等多模态大模型（MLLM）正越来越多地被部署为联合处理图像与文本的通用助手。这种多模态接口扩大了安全攻击面：图文对的语义并非其各单模态部分之和，看似无害的输入可能相互作用、诱发有害行为。一个代表性的失败模式是"安全输入、不安全输出"（SIUO）：例如一张厨房刀具的图片和一句关于"减压技巧"的文本查询，各自孤立看都无伤大雅，但二者组合却可能引出自残指令。SIUO 之所以棘手，在于它是<b>组合性</b>的——任一模态都不显式不安全，因此单模态过滤器和基于关键词的规则没有可靠的触发点。</p>
+<p>另有两个相关设定进一步考验当前防御。<b>视觉安全信息泄漏（VSIL）</b>把不安全意图主要嵌在文本里、而图像保持无害，使攻击者得以绕过视觉侧的防护；<b>多轮安全退化</b>则在多轮中逐步改变对话上下文（"温水煮青蛙"策略），使不安全意图难以定位到任一单独输入。这些设定有一个共同结构：安全性由<b>跨模态绑定状态及其随时间的演化</b>决定，而非单模态内容本身。</p>
+<p>现有 MLLM 防御通常分为训练时对齐或推理时护栏。训练时方法代价高、且在分布偏移下可能削弱能力；推理时方法更易部署，但常面临安全-效用权衡：调到高灵敏度的检测器可能过度拦截良性查询，而宽松的检测器又可能漏掉细微的跨模态组合与缓慢的多轮漂移。这就引出一个不同于普通单轮分类的部署目标。设 τ 为对话中第一个不安全的轮次，一个可部署的护栏应同时支持：(D1) 在 CPR（良性通过率）约束下分离不安全组合；(D2) 低的良性前缀误报 Pr[det&lt;τ]；(D3) 决策分数在有界扰动下的稳定性；(D4) 暴露"哪种跨模态关系失败了"的可审计证据。一个扁平 MLP 能在缓存特征上解决 D1，但并不显式编码 D2–D4。</p>
+<p>我们把这些现象建模为一个针对中间表示的<b>跨模态异常检测</b>问题。NeuroGuard 是在冻结的 MLLM 特征上的一组可复现的特征空间统计量，而非一个生物学上忠实的模型。我们提出 NeuroGuard，一个四层推理时防御，结合了复杂度估计（L1）、自适应滤波（L2）、带累积偏差追踪的多尺度角度一致性（L3，MAC/CDS）和决策融合（L4）。我们的经验起点是反直觉的：在当前 LLaVA/Qwen SIUO 基准上，冻结的缓存特征已经达到 AUC=1.0；而表 3 中较低的迁移设定 F1（0.944/0.938）反映的是来自 VLSBench 的工作点迁移，而非表示能力的局限——四个平衡的 SIUO 校准样本即可弥合这一差距（表 4）。一个扁平 MLP 也能匹配这种单轮可分性，所以主要瓶颈不是表示能力，而是<b>可部署的监控</b>。该 MLP 的 PGD 梯度场有效秩为 1，意味着攻击可以沿少数方向规避它。这促成了一个<b>攻击正交的监控原则</b>：在一条与可能的攻击目标在计算上相异的路径上计算护栏统计量。NeuroGuard 用投影域的 dPLV/MAC 和有状态的 CDS 实现这一点。</p>
+<p>主要贡献：<b>(1) 发现。</b>在所测 SIUO 式数据集与骨干上，冻结特征在五个基准（&gt;1 万实例）上达到 AUC=1.0，表明当前评估设定已饱和而非问题已解决；NG 与 MLP 的单轮差距是校准效应（四个样本即可弥合）。我们因此提供边界 mixup、子空间替换、渐进升级压力测试作为更难的初步评估协议。<b>(2) 原则与方法。</b>我们阐明攻击正交监控原则：当护栏的决策面在计算上与被攻击的头解耦时，跨目标对抗退化可被大幅降低；NeuroGuard 用投影域方向一致性（dPLV/MAC）、有状态偏差累积（CDS），以及一个用于判断这种解耦何时减弱的 κ 诊断来实现。<b>(3) 评估。</b>两个主骨干（LLaVA-1.5、Qwen2-VL）加 InternVL2 作探针，跨五个基准（SIUO、VLSBench、MM-SafetyBench、FigStep、COCO），含自适应 PGD、边界 mixup、子空间替换、20 轮渐进升级、锯齿对抗多轮等压力测试，并与 LlavaGuard-7B、提示式 LLaVA-1.5 裁判、字幕序列化的 Nemotron-SG-8B、OmniGuard/UniGuard 直接运行及级联做匹配比较。</p>
+<h3>2. 相关工作</h3>
+<p><b>多模态安全与护栏。</b>组合性风险（SIUO）、VSIL 和越狱促成了训练时对齐与推理时护栏（如 ProGuard、UniGuard、OmniGuard、DefenSee）两类工作。已有工作通过安全张量弥合跨模态安全、或验证多跳多模态声明，凸显了组合语义的挑战。这些方法常在召回与效用之间权衡、或缺乏显式的多轮状态；NeuroGuard 则把目标对准冻结特征上的绑定统计量。<b>测试时与粒度安全。</b>近期工作探索主动式多模态防护、MLLM 测试时安全对齐（如 GuardAlign）、上下文感知解码引导、细粒度安全推理，以及用于调和安全与效用的推理时特征投影。NeuroGuard 与 GuardAlign 式的测试时对齐互补：我们在生成之前于冻结特征上监控内部跨模态绑定，而非为对齐去修改生成时的激活。<b>异常检测与时序安全。</b>MLLM 异常检测器（VMAD/MMAD 等）关注外部缺陷，我们则监控 MLLM 自身内部的绑定异常。<b>跨模态异常检测。</b>CPIR、HiProbe-VAD、KAnoCLIP 等也依赖多模态一致性，但针对外部异常识别，而非带有状态多轮监控的内部组合安全绑定。</p>
+<h3>3. 方法：NeuroGuard 框架</h3>
+<h4>3.1 问题表述</h4>
+<p>设计理据（用标准 ML 术语表述）：L1 用谱熵投影到一个共享子空间；L2 是带自适应限速的门控循环滤波器；L3 用 atan2 圆形坐标做角度一致性度量（dPLV/MAC）配合 leaky 累积和积分（CDS）；L4 是 7 维特征向量上的逻辑回归。考虑一段对话 C={(x_{v,k}, x_{t,k})}，其中 x_{v,k}、x_{t,k} 是第 k 轮的视觉与文本输入。设 f_{v,k}=φ(x_{v,k})、f_{t,k}=ψ(x_{t,k}) 为 MLLM 的中间表示。NeuroGuard 输出一个安全分 S(C)∈[0,1]，值越大表示交互越安全，当 S(C)&lt;θ_exec 时拦截。对首个不安全轮次为 τ 的对话（单轮 SIUO 即 τ=1），定义检测轮次 det=inf{k: S_k(C)&lt;θ_exec}（式 1），若未报警则 det=∞。后续用到的对话级读数为：DR=Pr[det≥τ]、EarlyDR=Pr[det≤τ]、FApre=Pr[det&lt;τ]（式 2）。这些指标把"最终检出"与"在良性热身轮上的过早报警"区分开。我们从 f 计算诊断信号并融合：S(x_v,x_t)=σ(ρ(f), MAC(f_v,f_t), CDS(·))（式 3），其中 ρ 是复杂度估计器，MAC 是多尺度方向一致性指数，CDS 追踪时序偏差累积。MLLM 骨干始终冻结；NeuroGuard 以免训练规则模式或仅在缓存特征上训练的轻量校准模式运行。</p>
+<h4>3.2 第 1 层：共享投影与复杂度估计</h4>
+<p><b>流形投影。</b>把高维视觉与文本特征投影到共享子空间：z_v=ReLU(W_v f_v+b_v)、z_t=ReLU(W_t f_t+b_t)（式 4），d 为投影维度。规则模式下 W 在初始化后固定；校准模式下与决策头一起优化，同时保持 MLLM 冻结。<b>复杂度估计。</b>我们通过逐 token 投影表示 F 上的谱熵估计有效维度。设 σ₁,…,σ_d 为奇异值，归一化为 p_i=σ_i/Σσ_j，得到基于熵的有效秩 EffRank(F)=exp(−Σ p_i log p_i)（式 6），以及归一化复杂度 C(F)=log EffRank(F)/log d（式 7）。C≈1 表示分布式活动，C≪1 表示秩坍缩。</p>
+<h4>3.3 第 2 层：门控循环滤波器</h4>
+<p>第 2 层在功能上是一个带自适应冷却（cooldown）的 GRU 变体。候选激活 h̃ 对拼接投影做线性读出（类比 GRU 的候选状态），而 δ 惩罚模态分歧：h̃=σ(W[z_v;z_t]+b)，δ=γ·‖z_v−z_t‖²（式 8）。冷却状态 c 与门输出 g 更新为式 9。关键在于 g 本身不是报警：更大的 g 抑制孤立跨模态失配的循环延续，降低瞬时分歧带来的假阳性，而持续的异常绑定仍会被下游的 MAC/CDS 与最终融合层暴露。与标准 GRU 不同，冷却 c 显式抑制强激活之后的再触发（指数衰减），防止纯 EMA 会放行的振荡式假报警——补充材料表明去掉这个门会使 Qwen 在第 1 轮就误报。</p>
+<h4>3.4 第 3 层：方向一致性与偏差累积</h4>
+<p><b>多子空间角度表示。</b>即便视觉与文本在特定子空间分歧，全局余弦相似度也可能仍然很高。因此我们把两个模态投影到 m 个学习到的 2D 子空间，在每个子空间内比较其角度差。给定 L2 归一化特征，应用共享投影器 h_α=f̂_α W（式 10），把 h 拆为 u_α、v_α，并通过 φ_α(s)=atan2(v_{α,s}, u_{α,s}) 逐分量计算相位（式 11）。每个尺度 s 用独立投影器。<b>子空间角度一致性与 dPLV。</b>对每个尺度，令 Δφ=φ_v−φ_t，定义复一致性系数 Z(s)=(1/d)Σ e^{iΔφ}（式 12）。这复用了脑电分析里锁相值 PLV 的函数形式，但在学习到的投影维度上平均（而非时间点）。其模与实部分别捕捉一致性与对齐：PLV(s)=|Z(s)|，A(s)=Re(Z(s))=(1/d)Σcos(Δφ)（式 13）。方向性 PLV 抑制"相位一致但反向对齐"的对：dPLV(s)=PLV(s)·(A(s)/|A(s)|+1)/2（式 14）。多尺度角度一致性分（MAC）跨尺度融合 dPLV：MAC=Σ softmax(w)_s·dPLV(s)（式 15），其中 w 与决策头联合学习，且 0≤dPLV≤1。<b>随机子空间集成（RSE）。</b>大预算子空间替换在防御者依赖单一固定投影几何时最强，因此我们用 RSE：在 W 的 R 个随机正交旋转上评估同一冻结监控器，再用 10% 截尾均值聚合。<b>在线偏差追踪。</b>为捕捉缓慢的多轮退化，我们追踪 MAC 相对会话局部基线的偏差（而非假设固定的全局极性），并把这些偏差累积成累积偏差分（CDS）：d_k=|MAC_k−μ_{k-1}|/√(σ²_{k-1}+ε)（式 16），通过 leaky 积分累积：CDS_k=λ·CDS_{k-1}+d_k，0&lt;λ&lt;1（式 17）；运行统计量经 EMA 更新（式 18）。微小但持续的偏差会几何式累积，即便没有任何单轮极端也能越过告警阈值。在 50/100 轮良性前缀压力测试中，不重置的 EMA 会把 FA-pre 抬到 7/15%，而周期性重置可保持在 1/2%，因此对很长的会话我们以有界状态更新为部署默认。</p>
+<h4>3.5 第 4 层：决策融合</h4>
+<p>第 4 层把诊断融合成单一安全分。我们构造一个 7 维证据向量：u(C)=[C_v, C_t, MAC, cos(z_v,z_t), δ, CDS, g]（式 19），各特征按校准集做 z-score 归一化。逐信号分离度（KS）、学习到的逻辑回归权重、置换重要性（PI）表明：MAC 与 CDS 合计占 PI 的 72%，全局余弦贡献 11%——单独不足、但融合后互补，能抓住非典型的低余弦 SIUO 案例（从 u 中移除余弦会使 F1 由 0.944 降到 0.931）。<b>学习模式</b>下：S(C)=σ(w_exec·u(C)+bias)（式 20），即一个在缓存特征上训练、MLLM 冻结的 7 维逻辑回归，仅对轻量参数（投影器+决策头）以 L2 正则最小化 BCE。规则模式用显式安全/不安全谓词（见补充）。<b>新颖性：</b>我们把 PLV 从时间域适配到投影域，并贡献一个结合攻击正交角度监控（MAC）、有状态 CDS、RSE 与基于 κ 的 NG-base/NG-E 切换的部署配方。</p>
+<h3>4. 实验</h3>
+<h4>4.1 设置</h4>
+<p><b>模型与特征：</b>面向 LLaVA-1.5、Qwen2-VL 和 InternVL2-8B。所有正文结果使用一次完整冻结多模态前向的最终层 post-fusion 隐状态，分别在图像 token 位置和当前轮文本 token 位置做 mean-pool。逐层扫描（8–32 层）显示该选择并不脆弱：NeuroGuard 在 LLaVA 上维持 F1/AUC 0.89–0.95/0.95–0.99、Qwen 上 0.87–0.94/0.94–0.99，最终层接近峰值。<b>数据集：</b>(1) VLSBench（2,241 个视觉-语言安全对）、(2) MM-SafetyBench（1,680 个排版攻击样本）、(3) SIUO（167 个跨 9 领域的组合跨模态安全案例）、(4) COCO val2017（5,000 张真实良性图）；并额外定义 CPR-2：COCO 图配良性但非指示性提示。<b>基线：</b>七个共享同一冻结骨干协议的特征空间基线——余弦相似度、欧氏距离、[f_v;f_t] 上的单隐层 MLP、谱熵、跨模态护栏、马氏距离、kNN（κ=50）；以及部署层的响应级防御 OmniGuard、UniGuard，外加 LlavaGuard-7B、提示式 LLaVA-1.5 裁判、字幕序列化的 Nemotron-SG-8B，和 NeuroGuard→OmniGuard 级联。<b>指标：</b>F1、CPR（良性通过率）、AUC-ROC、Cohen's κ；多轮另报 DR、Early DR、FA-pre。</p>
+<h4>4.2 RQ1：单轮检测与权衡</h4>
+<p>NeuroGuard 在安全与 CPR 上都领先。在 CPR-2 弱绑定对照上通过率保持高位（LLaVA 0.950，Qwen 1.000），说明该方法并非只是在检测低语义重叠。<b>SIUO 跨模态检测：</b>注意余弦/欧氏基线在 LLaVA 上 F1=0，因为 SIUO 组合使 f_v 与 f_t 之间的余弦相似度很高（模态"绑定得太好"），在原始相似度空间里与良性对无法区分——这正是 dPLV 要暴露的方向性偏移。表 4 重新厘清了 RQ1：迁移时的差距主要由工作点迁移主导，0.994±0.001 的 4-shot F1（1000 次蒙特卡洛试验）确认恢复并非幸运划分。2×2 交换分析确认任一模态单独都不能解释可分性（仅图/仅文 AUC 0.58/0.78，组合 1.00）。<b>NeuroGuard 对比 MLP：</b>单轮持平，部署分化。AUC 层面两者在缓存 SIUO 上都达 1.0；部署才是分水岭：在 PGD ε=0.30 下 MLP 跌到 0.905 而 NG 保持 0.988；在多轮 LLaVA 中无状态 MLP 的 FA-pre=0.61 而 NG 保持 0.00；锯齿攻击下对 MLP logits 的 CUSUM 损失 34.5 pp 而 NG 损失 0 pp；在特征空间边界样本（mixup）上 MLP 坍缩到 F1=0.00（AUC=0.564），而 NeuroGuard 维持 F1=1.00（AUC=0.987）。<b>分布外视觉越狱（FigStep）：</b>在 500 个 FigStep 排版越狱样本配 500 张 COCO 良性图上、用各自校准的工作点（不重调），NeuroGuard 检出全部 500 次（DR=100%、F1=1.00），而 MLP 漏 30 个（DR=94%、F1=0.97）。<b>与部署层护栏比较：</b>在匹配的 SIUO/COCO 上，GuardAlign 是除 NeuroGuard 外最强的直接参照（F1/AUC 0.992/0.998）但运行需 1.9 秒；NeuroGuard 更快更稳，而 NG→GuardAlign 级联以 0.12 秒保住 GuardAlign 的 F1。</p>
+<div class="doc-wrap">
+<table class="dtable">
+<caption>表 3（节选）　SIUO 跨模态检测（LLaVA 84+84）。NeuroGuard 行使用 VLSBench→SIUO 阈值迁移工作点；表 4 显示缓存特征再校准可弥合这一表观差距。</caption>
+<tr><th>方法</th><th>P</th><th>R</th><th>F1</th><th>AUC</th><th>CPR</th></tr>
+<tr><td class="hi">NeuroGuard</td><td class="hi">0.925</td><td class="hi">0.964</td><td class="hi">0.944</td><td class="hi">0.981</td><td class="hi">0.957</td></tr>
+<tr><td>kNN (κ=50)</td><td>0.881</td><td>0.904</td><td>0.892</td><td>0.947</td><td>0.939</td></tr>
+<tr><td>MLP ([f_v;f_t])</td><td>0.936</td><td>1.000</td><td>0.931</td><td>1.000</td><td>1.000</td></tr>
+<tr><td>余弦 / 欧氏</td><td>0.867</td><td>0.000</td><td>0.000</td><td>0.892</td><td>0.988</td></tr>
+</table>
+</div>
+<div class="doc-wrap">
+<table class="dtable">
+<caption>表 4　缓存特征 SIUO 再校准。F1_transfer 复用 VLSBench→SIUO 迁移工作点；F1_4-shot 用 2 不安全+2 安全样本校准、在余下样本上做 1000 次随机试验。</caption>
+<tr><th>骨干</th><th>AUC_cached</th><th>F1_transfer</th><th>F1_4-shot</th></tr>
+<tr><td>LLaVA-1.5</td><td>1.000</td><td>0.944</td><td class="hi">0.994 ± 0.001</td></tr>
+<tr><td>Qwen2-VL</td><td>1.000</td><td>0.938</td><td class="hi">1.000 ± 0.000</td></tr>
+</table>
+</div>
+<h4>4.3 RQ2：多轮韧性</h4>
+<p><b>文本级真实轨迹：</b>我们用真实 COCO 良性图与真实 SIUO/VLSBench 不安全意图构造 7 轮轨迹（3–4 轮良性热身后接不安全轮），每个骨干评 150 个场景、覆盖突变/渐变/上下文注入三种漂移。无状态 MLP 逐轮基线 DR=1.00 但 FA-pre=0.61（LLaVA）；NeuroGuard 的价值在对抗压力下显现——锯齿攻击下 CUSUM 损失 34.5 pp 而 NG 损失 0 pp。在 20 轮渐进升级（线性增大的不安全 mixup、5% FPR 校准）中，NeuroGuard 的累积 CDS 在平均第 11.2 轮以 0% 误报检出，而 MLP+CUSUM 在第 14.1 轮以 6% 误报——早 2.9 轮且零假阳性。在此零误报工作点上，NeuroGuard 有意以召回换精度：DR@20=18% 对 MLP+CUSUM 的 58%；放宽到 5% FA-pre 使 DR@20 升到 42%（平均检测轮 9.3），10% FA-pre 升到 65%（平均检测轮 7.8）。这条可调的工作曲线让运营者按部署风险容忍度选择精度-召回权衡。</p>
+<div class="doc-wrap">
+<table class="dtable">
+<caption>表 6　RQ2 多轮（每模型 150 场景、3 种漂移）。</caption>
+<tr><th>方法</th><th>骨干</th><th>DR</th><th>FA-pre</th></tr>
+<tr><td class="hi">NeuroGuard</td><td>LLaVA-1.5</td><td class="hi">1.00</td><td class="hi">0.00</td></tr>
+<tr><td class="hi">NeuroGuard</td><td>Qwen2-VL</td><td class="hi">1.00</td><td class="hi">0.00</td></tr>
+<tr><td>MLP（逐轮）</td><td>LLaVA-1.5</td><td>1.00</td><td>0.61</td></tr>
+<tr><td>MLP（逐轮）</td><td>Qwen2-VL</td><td>1.00</td><td>0.00</td></tr>
+</table>
+</div>
+<h4>4.4 RQ3：鲁棒性与部署</h4>
+<p><b>组件消融（表 8）：</b>移除方向一致性造成最大的单轮下降（F1 0.944→0.861）；L1 把 F1 从 0.909 提到 0.944；稳定门防止过早触发（否则 Qwen 第 1 轮误报）；CDS 把 LLaVA 平均检测轮从 5.65 提前到 3.50。因此 MAC/CDS 承载核心信号，L1/L2 主要稳定阈值与早轮行为。<b>种子扫描与部署开销：</b>10 个种子上 LLaVA F1 0.944±0.000、Qwen 0.938±0.006；仅监控开销 2.67±2.75 ms/查询，含冻结前向的端到端延迟 LLaVA/Qwen 为 45/40 ms，远低于响应级护栏。每个活跃会话只存 5 个 FP64 标量（μ、σ²、CDS、c、g），即 40 字节：1 万会话需 400 KB、100 万会话需 40 MB。<b>自适应攻击鲁棒性：</b>所有 PGD 攻击都是在缓存中间特征上、对冻结骨干有完整梯度访问的白盒攻击。自适应 PGD 下 NeuroGuard 在 LLaVA 上各 ε 都很强（DR=0.988），NG-E 把更难的 Qwen 区间稳定在 0.976（即便 NG-base 在 ε=0.30 跌到 0.354），而 MLP 在同预算下跌到 0.905/0.901。子空间替换攻击由 RSE 直接针对（表 9：RSE-8 把 κ=16 的 DR 从 0% 恢复到 84%）。</p>
+<div class="doc-wrap">
+<table class="dtable">
+<caption>表 5　部署层护栏比较（匹配 SIUO/COCO）。NeuroGuard 延迟为仅监控，含冻结前向的端到端为 45 ms(LLaVA)/40 ms(Qwen)。</caption>
+<tr><th>方法</th><th>类型</th><th>SIUO F1</th><th>FigStep F1</th><th>COCO 准确率</th><th>延迟</th></tr>
+<tr><td class="hi">NeuroGuard</td><td>特征</td><td class="hi">1.000</td><td class="hi">1.00</td><td>95.7%</td><td class="hi">&lt;3 ms</td></tr>
+<tr><td>GuardAlign</td><td>测试时对齐</td><td>0.992</td><td>—</td><td>99.6%</td><td>1.9 s</td></tr>
+<tr><td>OmniGuard</td><td>响应级</td><td>0.620</td><td>—</td><td>99.5%</td><td>1.8 s</td></tr>
+<tr><td>UniGuard</td><td>响应级</td><td>0.580</td><td>—</td><td>99.2%</td><td>1.5 s</td></tr>
+<tr><td>Nemotron-SG-8B</td><td>文本(字幕)</td><td>0.133</td><td>0.750</td><td>99.8%</td><td>2.3 s</td></tr>
+<tr><td>LlavaGuard-7B</td><td>生成式</td><td>0.112</td><td>0.447</td><td>98.0%</td><td>7 s</td></tr>
+<tr><td class="hi">NG→GuardAlign</td><td>混合</td><td class="hi">0.992</td><td>—</td><td>—</td><td>0.12 s</td></tr>
+</table>
+</div>
+<h3>5. 讨论</h3>
+<p><b>对抗范围与 RSE。</b>攻击正交监控之所以能在跨目标锯齿 PGD 下保持 ΔEarlyDR=0，是因为 MAC/CDS 的证据路径在计算上与被攻击的 MLP 头解耦。补充扫描支持 RSE-8 作为默认加固点；满秩扰动（κ=d）对任何冻结特征监控器都不可防御。<b>局限：</b>(1) 尽管有 FigStep 的 OOD 覆盖，新型组合风险类型仍可能需要重校准；(2) MAC/CDS 承载大部分可分性，L1/L2 主要稳定阈值与早轮行为，很长的会话可能受益于周期性重置；(3) 更广的骨干覆盖仍需隐状态访问。</p>
+<h3>6. 结论</h3>
+<p>干净基准的饱和把问题从单轮可分性转移到边界、多轮和子空间压力。NeuroGuard 用攻击正交的 MAC/CDS 监控和 40 字节的每会话状态应对这些维度，而 NeuroGuard→OmniGuard 级联保持 F1=0.99 并把延迟削减 15×。未来的 MLLM 安全基准应优先考虑长程漂移、对抗迁移和部署压力测试。</p>
+<p class="tnote">以上为论文《NeuroGuard: Cross-Modal Binding Anomaly Detection for Multimodal LLM Safety》全文中译，依据原文逐节翻译；公式以原文符号呈现，部分表格节选关键行、参考文献从略。</p>
+</section>
+<!-- ============ PAPER 06: ATRIE ============ -->
+<section class="doc-sec" id="t-atrie">
+<div class="doc-meta">
+<span class="doc-no">PAPER · 06</span>
+<span class="badge b-icmr">ACM ICMR 2026</span>
+<span class="role">第一作者</span>
+<span class="role">语音合成</span>
+</div>
+<h2 class="doc-title">ATRIE：面向角色驱动语音合成的鲁棒推理与情感自适应调优
+    <span class="en">ATRIE: Adaptive Tuning for Robust Inference and Emotion in Persona-Driven Speech Synthesis</span>
+</h2>
+<p class="doc-affil">ACM ICMR 2026 论文（评审阶段匿名提交）。</p>
+<div class="abstract">
+<p><b>摘要</b>——高保真的角色音色合成是沉浸式多媒体应用的基石，尤其是与动漫角色和数字人交互的场景。然而，现有系统难以在多样的情感语境下保持一致的角色特质。为弥合这一缺口，我们提出 <b>ATRIE</b>，一个采用<b>人格-韵律双轨（Persona-Prosody Dual-Track, P2-DT）</b>架构的统一框架。我们的系统把生成解耦为一条静态的<b>音色轨</b>（通过标量量化）和一条动态的<b>韵律轨</b>（通过分层流匹配），并从一个 14B 参数的 LLM 教师中蒸馏而来。这一设计实现了稳健的身份保持（零样本说话人验证 EER：0.04）与丰富的情感表达。在我们扩展的 AnimeTTS-Bench（50 个角色）上评估，ATRIE 在生成与跨模态检索（mAP：0.75）上都达到了最先进的性能，为角色驱动的多媒体内容创作确立了一种新范式。</p>
+<p class="kw"><b>关键词</b>：文本转语音、动漫角色、大语言模型、人格理解、情感表达</p>
+</div>
+<h3>1. 引言</h3>
+<p>虚拟角色在消费电子中的快速增长——从游戏伙伴、VTuber 到智能助手——催生了对个性化、富表现力语音合成的强烈需求。仅 2023 年 VTuber 市场就已超过 25 亿美元，凸显了高保真角色语音生成的需求。动漫角色语音合成尤其具有挑战性，要求高质量语音同时具备一致的人格和上下文恰当的情感表达。当前的文本转语音（TTS）技术难以同时满足这两个目标，要么生成自然但情感扁平的语音，要么生成富表现力却角色不一致的合成。这一缺口在长篇内容中最为明显——跨越数百句话维持连贯人格很困难，现有系统常生成"平均化"的韵律，丢失角色独特的发声模式。我们的初步分析显示，基线系统在生成高唤醒情感时角色一致性下降 15–20%。</p>
+<p>人格感知 TTS 的挑战有三重。第一，<b>语义-声学鸿沟</b>：人格由语义定义（文本描述、对话上下文），而韵律是声学的，需要跨模态对齐。第二，<b>情感-人格纠缠</b>：情感被人格调制，所以同一句愤怒的话，对内敛角色和对冲动角色应该听起来不同。第三，<b>计算效率</b>：消费设备上的实时使用要求快速推理，排除了用十亿参数模型做声学生成。</p>
+<p>大语言模型（LLM）的出现提供了一个有吸引力的解决方案：它们对文本中的角色人格和情感细微差别展现出精妙的理解。然而，直接把 LLM 用于 TTS 合成有挑战：LLM 在离散语义空间中运作，而韵律需要连续声学控制，且其沉重的计算负担排除了在消费设备上的实时部署。为应对这些挑战，我们提出 ATRIE，一个弥合语义角色理解与声学实现之间鸿沟的统一框架。核心洞察是：把 LLM 丰富的人格理解能力<b>蒸馏进一个轻量适配器模块</b>，使其能实时调制现有 TTS 系统，而推理时无需庞大的 LLM。主要贡献：</p>
+<ol>
+<li>我们提出首个面向人格感知 TTS 的 LLM 推理蒸馏框架，把 14B 参数 LLM 精妙的情感推理迁移进一个 11.8M 参数的轻量适配器。与从声学特征学习通用韵律的风格因子化方法不同，我们的方法利用 LLM 的语义理解产出可解释、上下文感知的韵律目标，直接攻克情感-人格纠缠。</li>
+<li>我们提出人格-韵律双轨（P2-DT）架构，把静态身份（经标量量化）与动态韵律（经分层流匹配）分离；与既往因子化编解码方法不同，它在保持持久角色身份锚点的同时仍支持丰富的情感变化。</li>
+<li>我们提出 AnimeTTS-Bench，一个含 50 个角色、采用严格零样本协议的综合基准，展示 ATRIE 在语音合成（CCS 0.86、EEA 0.84、RTF 0.18）和跨模态人格检索（mAP 0.75）上的强劲表现，在以人格为中心的指标上确立了新的最先进水平。</li>
+</ol>
+<h3>2. 相关工作</h3>
+<p>我们把现有 TTS 方法归为四类范式：传统端到端、基于 LLM 的零样本、因子化风格/韵律、角色感知系统。<b>端到端 TTS</b>（Tacotron、FastSpeech 2、VITS）奠定了高质量合成的基础，扩散模型（Grad-TTS、Diff-TTS）进一步提升自然度但推理慢；这些模型依赖显式风格标签，难以处理动漫角色所需的细腻情感状态。<b>基于 LLM 的零样本 TTS</b>（VALL-E、AudioLM、Mega-TTS 2、CosyVoice、NaturalSpeech 3）把 TTS 当作语言建模任务，但常缺乏细粒度韵律可操控性，且把低层表示与高层人格特质连接起来仍是开放挑战——这正是 ATRIE 直接解决的。<b>因子化风格与韵律控制</b>（StyleTTS 2、F5-TTS、NaturalSpeech 3）以无监督方式从声学信号解耦说话人身份与韵律风格；ATRIE 的关键区别在于：它利用 LLM 推理生成<b>语义扎根</b>的韵律目标，从而实现经自然语言人格描述的可解释控制、上下文感知的情感推断，以及把推理能力蒸馏进轻量适配器（11.8M 参数 vs 14B LLM）的高效推理。<b>角色感知与情感 TTS</b>（MSEmotts、EmoVoice）引入显式情感控制，但把情感当作孤立的类别标签；P2VA 开创了人格感知合成，但每个新角色都需微调。ATRIE 的根本不同在于：用 LLM 思维链推理推断上下文恰当的情感、对未见角色与情感组合做零样本泛化、并引入对比对齐机制显式学习人格判别性的韵律表示。</p>
+<h3>3. 方法</h3>
+<h4>3.1 概述</h4>
+<p><b>人格定义。</b>我们把"人格（Persona）"定义为身份特质与性格特质的组合。身份特质（音色、音高范围、语速）是从参考音频导出的静态特征，由我们的<b>音色轨</b>建模；性格特质（如"傲娇""开朗"）是决定动态韵律模式的语义描述，由我们的<b>韵律轨</b>建模。我们的跨模态检索任务是"文本到音频"：给定一段自然语言人格描述（如"一个声音略带沙哑的开朗女孩"），从音频库中检索匹配的角色声音。ATRIE 由两个阶段构成：(1) <b>离线蒸馏阶段</b>，一个教师 Persona-LLM 生成丰富的情感推理依据（rationale）与 VAD 目标；(2) <b>在线推理阶段</b>，一个轻量 P2P 适配器预测这些特征以引导 GPT-SoVITS v4 骨干。</p>
+<h4>3.2 离线知识蒸馏</h4>
+<p><b>教师模型。</b>我们采用 Qwen2.5-14B 作为教师 Persona-LLM。给定输入文本与人格配置，教师生成：(1) 一条解释情感推理的思维链 rationale；(2) 数值化的韵律目标 p={音高、能量、时长、停顿…}。<b>CoT 到目标的映射。</b>蒸馏的关键是从 LLM 的文本推理中提取定量信号。我们提示 LLM 输出包含 VAD 分数和相对韵律标量的结构化 JSON。文本 rationale 经一个冻结的 Sentence-BERT 编码成 768 维嵌入 h。适配器以混合损失训练：</p>
+<span class="eqn">L_distill = ‖p̂ − p‖² + λ_sem·‖h_adapter − h‖²        (1)
+            └ 韵律 MSE ┘     └─ 语义对齐 ─┘</span>
+<p>其中 p̂ 是适配器预测的韵律向量，h_adapter 是其中间表示。<b>LLM 生成目标的验证。</b>我们通过两种机制验证 LLM 生成目标的有效性：(1) 用独立分类器测下游任务表现——EEA 用 emotion2vec、CCS 用在 VoxCeleb 上预训练的 ECAPA-TDNN；(2) 消融实验显示，移除 LLM 教师会使 CCS 降 7.0%、EEA 降 16.7%。此外，跨 5 种提示变体和不同解码温度的稳定性分析显示 VAD 输出的 Pearson 相关 &gt;0.92，表明对提示措辞和采样随机性鲁棒。<b>学生 P2P 适配器。</b>适配器（11.8M 参数、4 层 Transformer）弥合语义-声学鸿沟，用交叉注意力层对齐变长语义 token 与音素级声学帧，同时四个并行韵律预测头估计音高(F0)、能量、时长、停顿。</p>
+<h4>3.3 对比人格对齐</h4>
+<p>为确保生成的韵律保留角色身份，我们在 MSE 重建损失之外用对比损失优化适配器：</p>
+<span class="eqn">L_contrast = − log [ exp(sim(z, z⁺)/τ) / Σ exp(sim(z, z⁻)/τ) ]    (2)</span>
+<p>其中 z 是生成的韵律嵌入，z⁺ 是参考库中的锚点人格嵌入，z⁻ 是其他角色的负样本，τ 是温度系数。这迫使适配器学到一个人格判别性的韵律空间。</p>
+<h4>3.4 人格-韵律双轨架构（P2-DT）</h4>
+<p>为解决说话人身份与情感表达的纠缠，ATRIE 引入双轨混合架构，把生成解耦为两条并行流。<b>第 1 轨：音色轨（全局身份）。</b>为维持角色身份稳定，我们用预训练说话人验证模型提取全局音色嵌入 z，再用一个 512 条目码本的标量量化（SQ）将其量化，作为扩散骨干的稳定、时不变锚点。<b>第 2 轨：韵律轨（分层流匹配）。</b>为动态身份表达，我们采用一个 8 个流步的分层流匹配预测器。它从 LLM 教师蒸馏而来，在人格描述 c 的条件下预测时变的韵律流（音高、能量、节奏）：x_t = v_θ(x_t, t; c)（式 3），其中 v_θ 是受个人语境 c 支配的速度场。<b>融合。</b>静态音色与动态韵律流在骨干的方差适配器（variance adaptor）中融合，从而合成在统计上与目标角色无法区分（高 CCS）、同时展现丰富情感变化（高 EEA）的语音。</p>
+<h4>3.5 TTS 骨干：GPT-SoVITS v4</h4>
+<p>我们采用 GPT-SoVITS v4 作为合成骨干。与标准 VITS 不同，它是混合架构，含三个关键组件：(1) GPT 式语义 token 预测器（300M 参数、12 层），在韵律信号条件下从文本自回归生成语义 token；(2) 基于 VITS 的声学解码器（200M 参数），用条件流匹配生成梅尔频谱；(3) CNHuBERT 参考编码器，提取 256 维说话人嵌入。骨干在约 1000 小时多说话人中文有声书数据上以 48 kHz 预训练。我们的韵律标量在方差适配器层注入（在时长预测器之后、流解码器之前），实现即插即用的韵律控制，无需改动任何骨干权重。</p>
+<h4>3.6 参考音频选择</h4>
+<p>我们维护一个含 2,154 条标注音频、按情感类别组织的参考库。给定 Persona-LLM 给出的目标情感状态，选择 VAD 距离最近的参考：r* = argmin_{r∈R} ‖VAD(r) − VAD_target‖²（式 4），各参考片段的 VAD 分数预先算好。</p>
+<h4>3.7 实现细节</h4>
+<p>ATRIE 用 PyTorch 2.4 实现。教师 LLM（Qwen2.5-14B）离线生成风格目标；P2P 适配器（4 层 Transformer、隐藏维 512、8 头、11.8M 参数）用 AdamW（lr=1e-4）训练 100 个 epoch，余弦退火。总损失 L=L_distill + λ_con·L_contrast（损失权重 λ_sem=0.5、λ_con=0.3、温度 τ=0.07；音色轨 SQ 码本 512、嵌入维 256；韵律轨 8 流步、CFG 尺度 2.0）。<b>推理流程：</b>系统以流式方式运行，支持低延迟应用——文本经 Persona-LLM 得语义嵌入，P2P 适配器给出控制参数，选最匹配参考，GPT-SoVITS 生成语义 token，再经声码器合成音频。</p>
+<h3>4. 实验</h3>
+<h4>4.1 实验设置</h4>
+<p><b>数据集 AnimeTTS-Bench。</b>我们发布 AnimeTTS-Bench，一个面向人格感知情感 TTS 的基准。统计：来自 3 个角色（ATRI：傲娇机器人；角色 B：开朗；角色 C：内敛）的 2,154 句专业录制日语语料，总时长 4.2 小时；每句由 3 名标注员标注 8 种情感类别之一（Fleiss κ=0.78）。划分：角色分层的 80/10/10 训练/验证/测试；关键的是测试人格描述含训练中未见的新特质组合（如"傲娇+尴尬" vs 训练的"傲娇+愤怒"）以评估泛化。<b>泄漏防护与零样本协议：</b>(a) CCS 用仅在 VoxCeleb2 上预训练的 ECAPA-TDNN（与 AnimeTTS-Bench 角色完全不相交），不在我们数据上微调；(b) EEA 用在通用情感语料上预训练的 emotion2vec；(c) 测试语料与训练数据无文本、声学或角色重叠，构成真正的零样本评估。<b>扩展数据集：</b>我们把基准扩展到 50 个角色、覆盖多样原型（52 小时），分为 30 个已见（训练）和 20 个未见（零样本测试）以评估分布外泛化。<b>基线：</b>FastSpeech 2、VITS、VALL-E、CosyVoice 2，全部在 AnimeTTS-Bench 上重训以公平比较。</p>
+<h4>4.2 评估指标</h4>
+<p><b>角色一致性分（CCS）：</b>用预训练 ECAPA-TDNN 提取说话人嵌入，计算生成与参考音频的余弦相似度（式 5，越高越好）。<b>情感表达准确率（EEA）：</b>用预训练情感分类器 emotion2vec 测量生成音频预测情感与目标情感匹配的准确率（式 6）。其余指标：UTMOS（自然度）、MCD（梅尔倒谱失真）、RTF（实时率），遵循标准定义。</p>
+<h4>4.3 主要结果</h4>
+<p>表 1 给出对比表现。ATRIE 取得最佳权衡：CCS 比 CosyVoice 2 高 12%，同时快 3.6 倍。定性上，对"兴奋"情感样本的频谱比较显示：真值有丰富谐波结构和动态音高轮廓，基线产生平滑的音高曲线和模糊的高频细节（"扁平"语音），而 ATRIE 成功重建了陡峭的音高变化（上升语调）并保留谐波细节，与真值高度吻合。</p>
+<div class="doc-wrap">
+<table class="dtable">
+<caption>表 1　AnimeTTS-Bench 主结果（UTMOS↑/CCS↑/EEA↑/MCD↓/RTF↓）。</caption>
+<tr><th>方法</th><th>UTMOS</th><th>CCS</th><th>EEA</th><th>MCD</th><th>RTF</th></tr>
+<tr><td>FastSpeech 2</td><td>3.75</td><td>0.60</td><td>0.55</td><td>6.82</td><td>0.05</td></tr>
+<tr><td>VITS</td><td>4.05</td><td>0.65</td><td>0.62</td><td>5.21</td><td>0.08</td></tr>
+<tr><td>VALL-E</td><td>4.10</td><td>0.71</td><td>0.66</td><td>5.01</td><td>0.80</td></tr>
+<tr><td>CosyVoice 2</td><td>4.38</td><td>0.76</td><td>0.72</td><td>3.90</td><td>0.65</td></tr>
+<tr><td class="hi">ATRIE (本文)</td><td class="hi">4.28</td><td class="hi">0.86</td><td class="hi">0.84</td><td class="hi">4.10</td><td class="hi">0.18</td></tr>
+</table>
+</div>
+<p><b>跨角色泛化（零样本）：</b>在同一配音演员语料的额外两个角色上评估，无需额外微调，平均 CCS 0.84、EEA 0.81，相对基线 +8.5%，证明人格感知控制机制能跨角色原型泛化。<b>严格评估协议：</b>采用 Seed-TTS Eval 协议，CCS=1−EER（用在 VoxCeleb2 上训练、未在我们数据上微调的跨数据集 ECAPA-TDNN 验证器）；EER=0.04 反映了跨多样情感状态的稳健同人格一致性。</p>
+<h4>4.4 效率：延迟分解</h4>
+<p>在一块 NVIDIA RTX 4090（FP16）上分析实时性。完整推理流程分解为：文本编码（5 ms）、P2P 适配器前向含交叉注意力与韵律预测（35 ms）、GPT-SoVITS 语义 token 生成（40 ms）、VITS 声学解码含 HiFi-GAN 声码器（100 ms）。合成 1 秒音频总延迟 180 ms，对应 RTF=0.18。关键在于：14B 参数 LLM 仅在离线蒸馏时使用、推理时不需要，使消费级硬件部署成为可能。在单块 RTX 3090 上 RTF 升到 0.25，仍支持实时流式应用。</p>
+<h4>4.5 检索应用</h4>
+<p>为展示 ATRIE 对多媒体检索的贡献，我们把 P2-DT 框架当作跨模态人格索引器，形式化为"文本到人格检索"任务：自然语言人格描述作查询，库由 50 个角色的 2,154 条音频组成（其中 20 个训练未见），文本与音频都投影到共享 256 维空间、用余弦相似度检索；为严格测分布外泛化，评估只在 20 个未见角色上进行。结果（表 2）显示，通用编码器（CLAP 等）虽能捕捉宽泛语义，却无法考虑细微人格特质；ATRIE 蒸馏出的空间弥合了这一缺口，在以人格为导向的检索上确立了新的最先进水平（mAP 0.75，远超 LAION-CLAP 的 0.55）。</p>
+<div class="doc-wrap">
+<table class="dtable">
+<caption>表 2　未见角色上的跨模态检索（严格 OOD 划分，节选）。</caption>
+<tr><th>方法</th><th>mAP</th><th>R@1</th><th>R@5</th><th>R@10</th><th>MRR</th></tr>
+<tr><td>CLAP (Large)</td><td>0.42</td><td>0.32</td><td>0.58</td><td>0.71</td><td>0.46</td></tr>
+<tr><td>MuLan</td><td>0.52</td><td>0.41</td><td>0.68</td><td>0.79</td><td>0.55</td></tr>
+<tr><td>LAION-CLAP</td><td>0.55</td><td>0.44</td><td>0.70</td><td>0.81</td><td>0.58</td></tr>
+<tr><td class="hi">ATRIE (本文)</td><td class="hi">0.75</td><td class="hi">0.62</td><td class="hi">0.88</td><td class="hi">0.94</td><td class="hi">0.73</td></tr>
+</table>
+</div>
+<h3>5. 消融研究</h3>
+<p>表 3 给出移除或替换各组件的结果。<b>对比人格对齐：</b>移除对比损失使 CCS 降 8.1%，证实它对防止情感调制时人格坍缩的关键作用——没有它，模型退回"平均化"韵律。<b>思维链推理：</b>用直接情感预测替换结构化 CoT 提示使 EEA 降 14.3%，验证多步推理对细腻情感推断的重要性。<b>教师消融：</b>移除 LLM（改用 VAD 回归器）CCS 降 7.0%、EEA 降 16.7%；改用 7B LLM CCS 降 3.5%。<b>参考音频选择：</b>用随机或固定参考严重退化性能（打乱人格 CCS 降 17.4%），证实情感恰当的参考选择对高质量、人格一致的合成必不可少。<b>敏感性分析：</b>(1) 速度调制范围 [0.8,1.2] 在表现力与自然度间最优；(2) 温度高于 0.8 引入伪影、低于 0.4 输出过于单调；(3) 参考库每类超过 500 样本后收益递减。</p>
+<div class="doc-wrap">
+<table class="dtable">
+<caption>表 3（节选）　消融研究（CCS 列为相对完整 ATRIE 的变化）。</caption>
+<tr><th>变体</th><th>CCS</th><th>EEA</th><th>ΔCCS</th></tr>
+<tr><td class="hi">完整 ATRIE</td><td class="hi">0.86</td><td class="hi">0.84</td><td>—</td></tr>
+<tr><td>− LLM（改 VAD 回归器）</td><td>0.80</td><td>0.70</td><td>−7.0%</td></tr>
+<tr><td>改用 7B LLM</td><td>0.83</td><td>0.78</td><td>−3.5%</td></tr>
+<tr><td>− 思维链</td><td>0.81</td><td>0.72</td><td>−5.8%</td></tr>
+<tr><td>− 对比损失</td><td>0.79</td><td>0.80</td><td>−8.1%</td></tr>
+<tr><td>随机参考</td><td>0.76</td><td>0.62</td><td>−11.6%</td></tr>
+<tr><td>打乱人格</td><td>0.71</td><td>0.58</td><td>−17.4%</td></tr>
+</table>
+</div>
+<h3>6. 讨论</h3>
+<p><b>局限：</b>LLM 的首 token 延迟（约 500 ms）可能影响交互式应用，推测解码可缓解；当前评估聚焦动漫语音模式，扩展到其他语言需语言特定的韵律建模；质量依赖参考库覆盖。<b>失败案例：</b>对 VAD 画像相似的情感（如"兴奋" vs "愤怒"），LLM 偶尔选错参考（约 8% 高唤醒样本）；对很长句子（&gt;50 字），单参考方案可能无法维持一致的情感强度。<b>用户研究：</b>15 名有动漫配音评估经验的参与者对 20 个样本评分，ATRIE 强烈占优——声音一致性 4.2 vs 基线 3.4（p&lt;0.01），情感真实性 4.0 vs 2.9（p&lt;0.001），78% 的参与者整体更偏好 ATRIE，称其"更像那个角色"、有"恰当的情感细腻度"。<b>伦理考量：</b>我们倡导对所有合成音频做声学水印、部署 deepfake 检测、克隆声音需用户同意；AnimeTTS-Bench 仅含虚构角色声音，不发布能在未经同意下克隆真人声音的模型。</p>
+<h3>7. 结论</h3>
+<p>我们提出 ATRIE，一个弥合语义人格理解与声学实现鸿沟的、面向高保真角色一致语音合成的新框架。通过把 14B 参数 Persona-LLM 与轻量人格到韵律（P2P）控制机制协同，系统在以人格为中心的指标上达到最先进：角色一致性分 +10.3%、情感表达准确率 +29.2%、F0-RMSE 降低 27.3%，同时维持高效推理（RTF=0.18）。我们的关键贡献包括：证明 LLM 引导的思维链推理能有效推断细腻情感状态以做韵律控制、引入一种无需重训即可调制现有 TTS 骨干的零样本适配器范式、并为人格感知 TTS 确立可复现的评估协议。</p>
+<p class="tnote">以上为 ACM ICMR 2026 论文《ATRIE: Adaptive Tuning for Robust Inference and Emotion in Persona-Driven Speech Synthesis》全文中译，依据原文逐节翻译；公式以原文符号呈现，部分表格节选关键行、参考文献从略。</p>
+</section>
+<!-- ============ PAPER 08: CUDA-Eval ============ -->
+<section class="doc-sec" id="t-cuda">
+<div class="doc-meta">
+<span class="doc-no">PAPER · 08</span>
+<span class="badge b-neurips">NeurIPS 2026</span>
+<span class="role">第一作者</span>
+<span class="role">LLM × CUDA</span>
+</div>
+<h2 class="doc-title">分解 LLM 生成的 CUDA 代码：提议、搜索与环境兼容性
+    <span class="en">Dissecting LLM-Generated CUDA: Proposal, Search, and Environment Compatibility</span>
+</h2>
+<p class="doc-affil">投稿第 40 届神经信息处理系统大会（NeurIPS 2026，评审阶段匿名提交）。</p>
+<div class="abstract">
+<p><b>摘要</b>——CUDA 核函数生成是对语言模型搜索的严苛压力测试：每个候选都必须能编译、保持数值语义、并改善硬件实测延迟。近期的全栈 CUDA 智能体把提议训练、搜索控制、技能增强环境、验证与剖析反馈、奖励塑形和长程交互折叠进单一端到端流水线，使人无法看清到底是哪个组件在真正承担作用。我们把 LLM 生成的 CUDA 当作一个<b>组件归因问题</b>，在一个共享的 30 任务 KernelBench 切片（10 个 L1、10 个 L2、10 个 L3）上跑两个大规模受控消融，所有候选都在真实硬件上编译和计时。主矩阵（E1）固定环境、评估器和容差，变化四个控制器（BON、GREEDY、ITER、MCTS）、三个预算（B∈{1,3,10}）、四个种子和三个 Qwen 系列提议模型（Coder-1.5B、Coder-7B、Instruct-7B），全部 4,320 个单元（cell）跑完。三个观察组织起结果：第一，<b>数值失配（而非编译或运行时失败）主导账本</b>——85.6–95.0% 的单元数值错误，实质硬件加速（s≥2×）仍然罕见（≤0.49% 的单元），且 L3 任务在全部 12 个 模型×控制器 块上以 0% 通过——所以控制器和反馈必须通过数值接近度起作用，而非仅通过编译或速度。第二，控制器相对单元内 BoN 参考的增益（lift）在一个模型族内、一个固定配置下取遍全部三种符号：Inst-7B 是控制器有益的（MCTS/ITER 14.7%/14.4% vs BON/GREEDY 6.7%/5.0%），Coder-7B 是提议受限的（每个控制器都比 BoN-B=10 低 2.5–5.0 pp），Coder-1.5B 在 17.5–19.4% 处聚集于 1.94 pp 内。E2（2,160 单元）和 E3（B=60、三个提议、96 单元）测试提示级干预能否弥合差距：CUDA-Agent 式技能提示（M1）或技能加验证/剖析反馈（M3）在 E2 上最多移动 +1.7 pp，且在小的 B=60 压力探测中不优于最小环境。DeepSeek-Coder-7B 和 Llama-Code-7B 的跨族运行复现了提议受限子区域，配对的 120 单元 A100/A800/H100 子网格得到正确性 Spearman ρ≥0.93、加速比 ρ≥0.78。在所测控制器和提示级变体下，剩余瓶颈位于上游的提议行为和数值保真。</p>
+<p class="kw"><b>关键词</b>：GPU 程序搜索、LLM 代码生成、KernelBench、组件归因、蒙特卡洛树搜索</p>
+</div>
+<h3>1. 引言</h3>
+<p>近期的全栈 CUDA 系统把提议预训练、控制器搜索、技能提示、验证、剖析反馈、奖励塑形和交互预算折叠进单一端到端流水线，并在 KernelBench 上报告强劲的聚合数字。社区因此留下一个方法论缺口：当六个纠缠的组件被联合训练、联合评估时，归因给其中任何一个本质上是未定的。自然的补充是一项带硬件实测结果的受控研究——这正是本文所提供的。我们把问题当作<b>组件归因</b>。我们变化的四个轴是提议模型、搜索控制器、反馈环境和预算；任务切片、评估器、容差、硬件、计时框架和种子调度在各单元间保持固定。最终证据是一个跨 E1、E2、E3、跨族复现和跨硬件一致性的 9,816 个主评估单元的单元级账本。主要贡献：</p>
+<ol>
+<li><b>带 4 层测量流水线的归因框架。</b>我们把 LLM 生成的 CUDA 分解为提议行为、控制器搜索、反馈环境、任务可解性、预算和评估器成本，并以一个矩阵内 BoN-B=10 基线报告每个组件的边际贡献。</li>
+<li><b>完整的 4,320 单元主矩阵（E1）。</b>三个 Qwen 系列提议模型 × 四个控制器 × 三个预算 × 四个种子 × 三十个 KernelBench 任务；每个模型保留其完整的 1,440 单元子矩阵、零缺失单元。</li>
+<li><b>单一模型族内观察到的控制器兼容性曲面。</b>同一架构在三个规模上把其三个子矩阵置于同一 SPC 曲面的三个定性不同区域：提议饱和（Coder-1.5B，控制器并列于 17–19%）、提议受限（Coder-7B，每个控制器都低于其 BoN-B=10 基线）、控制器有益（Inst-7B，MCTS/迭代与 BoN/贪心之间 +9 pp 聚合差距）。我们把这些标签当作描述性的而非预测性分类法。</li>
+<li><b>数值失配主导失败分布。</b>L3 任务在全部 12 个 模型×控制器 块上以 0% 通过；每个块 L2 PR 保持 ≤2.5%；主导失败模式是数值失配而非编译或超时（Instruct-7B M0 账本上 85.6–95.0% 的单元）。这把数值接近度（而非仅编译）识别为控制器和反馈必须通过的主通道。</li>
+<li><b>提示级 CUDA 智能体反馈的负归因结果（E2、E3）。</b>加 CUDA-Agent 式技能提示（M1）或技能加验证/剖析反馈（M3）在 E2 上最多移动 +1.7 pp，在小的 B=60 压力探测中不优于最小环境。因此全栈智能体所弥合的差距来自测试时循环之外。</li>
+<li><b>跨族与跨硬件确认。</b>两个非 Qwen 的 7B 代码检查点（2,880 单元）在相同协议下复现提议受限区，配对的 120 单元 A100/A800/H100 子网格得到正确性 Spearman ρ≥0.93、加速比 ρ≥0.78。提议受限子区域因此不绑定于单一分词器或宿主 GPU。</li>
+</ol>
+<h3>2. 相关工作</h3>
+<p><b>GPU 程序搜索与 LLM 驱动的程序生成。</b>经典调度编译器（TVM、Ansor、Halide、Triton）论证了激进的调度搜索能解锁巨大的硬件增益；Codex、AlphaCode、Code Llama 系列的代码 LLM 推动了执行感知样本选择的平行论证；近期 LLM 上搜索的方法（Reflexion、Tree of Thoughts、Self-Refine、FunSearch、RethinkMCTS、AlphaEvolve）都论证同一骨干可经外层搜索更有用。除 FunSearch 和 AlphaEvolve 外，这条线的评估通常是文本或通用代码上的功能性 pass@k；我们则在真实 GPU 上编译并计时每个 CUDA 候选，并把搜索控制器的边际贡献从提议模型中隔离出来。<b>CUDA 生成、KernelBench 与提议训练检查点。</b>KernelBench 引入了我们用作任务源的 GPU 核函数生成基准；CUDA-LLM、CUDA-L1、Kevin 等并行工作训练专门的 CUDA 提议或在基模型上加多轮 RL，其共同设计选择是把能力推入提议权重，从而模糊了提议-控制器边界——这正是我们框架试图解开的。<b>全栈智能体 CUDA 系统。</b>Sakana CUDA、CudaForge、Caesar 把大提议模型与检索、剖析反馈和多轮 rollout 耦合，发布强劲的端到端 KernelBench 数字；我们不把其中任何一个当作同变量受控的基线，而是把全栈 CUDA 智能体性能当作其组件贡献由我们的受控消融来隔离的现象。</p>
+<h3>3. 问题、指标与归因框架</h3>
+<p><b>任务与逐候选测量。</b>一个任务是 Tᵢ=(f_ref, Xᵢ, εᵢ)，含参考模块、验证张量池和任务级数值容差。对候选 c，正确性与加速比为：</p>
+<span class="eqn">Correct(c,Tᵢ) = 1[ max_{x∈Xᵢ} ‖f_c(x) − f_ref(x)‖ ≤ εᵢ ],   s(c,Tᵢ) = t̄_ref / t̄_c    (1)</span>
+<p>计时为 5 次预热 + 20 次 CUDA-event 运行下的平均墙钟时间；正确性用 <b>torch.allclose（rtol=10⁻³、atol=10⁻⁵）</b>。<b>控制器（L1）。</b>BON 采样 B 个独立同分布候选、返回最优；ITER 在反馈下顺序精炼、无分支；GREEDY 是单谱系编辑器、总是推进当前最优；MCTS 用 UCT 选择（c_uct=1.414）展开搜索树、深度上限 6、每节点 4 次扩展、价值折扣 0.95、patience-10 早停。四个控制器共享相同的任务提示、评估器反馈模式、容差和上下文预算，只在候选调度和状态暴露上不同。<b>环境模式（L2 提示增强）。</b>评估框架本身固定，变化的是展示给提议模型的文本上下文：M0 是最小模式（任务签名+上一候选，无技能文本无剖析输出）；M1 加结构化 CUDA 技能块（优化启发式与定性指导，无测量）；M3 在 M1 之上加验证裁决和剖析摘要（实测核函数计时+最近候选的失败/加速反馈）。<b>主要指标（L3）。</b>通过率 PR、门控奖励 S̄、控制器增益 ControllerLift(π,B)=PR(π,B)−PR(BON,B)（式 3、4）。<b>搜索-提议兼容性（L4）。</b>为概括某控制器在给定提议和预算下是否有益，定义：</p>
+<span class="eqn">SPC(π,M,B) = PR(π,M,B) − PR(BON,M,B) ∈ [−100,+100] pp        (5)</span>
+<p>即相对同 (M,B) 单元内 BoN 参考的控制器增益。其符号把每个单元划为有益（SPC&gt;0）、中性（SPC≈0）或有害（SPC&lt;0）。我们把 SPC 当作描述量而非预测算子。后文显示 SPC 在 Qwen 族上取遍三种符号，且在该基准切片上对固定 M 关于 B 非单调。</p>
+<h3>4. 实验设置</h3>
+<p><b>E1：三模型仅控制器主矩阵。</b>含三个提议模型（Qwen2.5-7B-Instruct、Coder-7B、Coder-1.5B）、四个控制器、预算 B∈{1,3,10}、种子 {42,0,1,2}，全部 4,320 单元完成（每模型 1,440 单元、无缺失）。所有提议经本地 HTTP 端点在异构 8-GPU 宿主（4×Titan RTX + 4×V100）上服务。<b>E2：环境归因。</b>同一任务切片，两个提议模型 × 三个控制器（BoN、迭代、MCTS）× 三个环境模式（M0、M1、M3）× 预算 B∈{10,30} × 两个种子，共 2,160 单元，隔离技能提示和剖析反馈的边际贡献。计时框架：60 秒编译超时、30 秒运行超时、5 次预热、20 次 CUDA-event 计时；总计 466 worker-小时（8 路并发约 60 墙钟小时）。</p>
+<h3>5. E1：三模型受控主矩阵</h3>
+<p><b>同一 Qwen 族内观察到三种兼容性模式。</b>表 1 的三个子矩阵落在 SPC 曲面的三个定性不同区域。<b>Coder-1.5B 提议饱和：</b>四个控制器在 17.50–19.44% PR 处聚集于 1.94 pp，全都低于单元内 BoN-B=10 的 25.83%，但方法内差异太小，控制器选择实际上无关紧要。<b>Coder-7B 提议受限：</b>BoN-B=10 以 7.50% 居块首，每个活跃控制器都低于它——ITER 降到 2.50%、MCTS 到 3.06%、GREEDY 到 3.33%。<b>只有 Instruct-7B 控制器有益：</b>MCTS/ITER（14.72%/14.44%）是 BON/GREEDY 簇（6.67%/5.00%）的两倍，L1 PR 达 42.5%/41.7%。SPC 算子把单一族内的符号变化记为 SPC(MCTS)=+3.89、−4.44、−6.39 pp（分别在 Inst-7B、Coder-7B、Coder-1.5B 上）。</p>
+<div class="doc-wrap">
+<table class="dtable">
+<caption>表 1　三模型 4,320 单元主矩阵：各提议模型与控制器的 PR(%)（每行 n=360）。三块暴露同一观察到的兼容性曲面。</caption>
+<tr><th>控制器</th><th>Inst-7B PR</th><th>Coder-7B PR</th><th>Coder-1.5B PR</th></tr>
+<tr><td>BON</td><td>6.67</td><td>5.00</td><td>17.50</td></tr>
+<tr><td>GREEDY</td><td>5.00</td><td>3.33</td><td>19.44</td></tr>
+<tr><td>ITER</td><td>14.44</td><td>2.50</td><td>18.06</td></tr>
+<tr><td>MCTS</td><td class="hi">14.72</td><td>3.06</td><td>19.44</td></tr>
+<tr><td>兼容性区</td><td class="hi">控制器有益</td><td>提议受限</td><td>提议饱和</td></tr>
+</table>
+</div>
+<p><b>计算成本很重要。</b>PR 排名隐藏了巨大的成本差。在控制器有益的 Instruct-7B 子块上，MCTS 和 ITER 达到几乎相同的 PR（14.72% vs 14.44%），但 MCTS 烧 380.8 秒墙钟、平均仅 2.61 个提议，而 ITER 为 237.2 秒、4.67 个提议——所以成本归一化效率 η(ITER)=0.037 &gt; η(MCTS)=0.023 一旦把成本放进分母就翻转了排名。<b>控制器单独的搜索不跨区泛化。</b>矩阵中三分之二的 (提议,控制器) 单元 SPC&lt;0：在 Coder-7B 或 Coder-1.5B 上没有控制器产生聚合增益。难度轴同理：L3 PR 在全部 12 个单元上为 0%，L2 PR 在全部 12 个上 ≤2.5%，达到 s≥2× 的单元在每块都罕见（≤0.49%/模型）。控制器轴单独无法重建全栈 CUDA 智能体发布的头条通过率。</p>
+<h3>6. 提议行为主导，而非提议规模</h3>
+<p><b>聚合提议规模无预测力。</b>三个 Qwen 族模型跨 1.5B 到 7B 参数。聚合 PR 关于规模非单调：Coder-1.5B（18.61%）&gt; Instruct-7B（10.21%）&gt; Coder-7B（3.47%）。7B 代码预训练检查点在同一任务切片上比非代码预训练的 7B 模型低 6.7 pp、比代码预训练的 1.5B 模型低 15.1 pp，说明 7B 规模的代码预训练以参数量或代码 token 暴露无法捕捉的方式与该 CUDA 分布交互。<b>配对跨模型交换。</b>10 任务 Inst-7B vs Coder-7B 子集（240 个匹配单元）的控制器配对 McNemar 检验确认聚合结果：交换到 Coder-7B 时 PR 降 10.0 pp（全预算 χ²=6.75，p=0.009）；四个控制器都朝同一方向移动，符合提议主导。<b>控制器兼容性对预算也非单调。</b>5 个 L1 任务、三个预算的规模测试暴露了一个聚合矩阵抹平的预算条件符号反转：在 Coder-1.5B 上，SPC(MCTS) 在 B≤3 时 =+40 pp，但在 B=10 时翻成 −40 pp——同一模型、同样五个任务上仅由更大预算驱动的 80-pp 摆动。<b>跨族复现提议受限区。</b>在 DeepSeek-Coder-7B 和 Llama-Code-7B（各 1,440 单元）上重跑协议，把两个非 Qwen 7B 代码检查点都置于与 Qwen Coder-7B 相同的提议受限区：每个控制器都低于单元内 BoN-B=10 参考、SPC 一致为负（−1.7 到 −5.9 pp）。</p>
+<h3>7. 环境归因：轻量反馈不够</h3>
+<p>E2 压力测试"缺失要素是反馈而非搜索"的读法。它固定提议和控制器、只变提示级反馈：M0、M1（技能块）、M3（技能块+验证/剖析摘要）。<b>答案在很大程度上是否定的。</b>两个提议模型上的环境增益都很小、从不弥合 E1 的区差距：BON 在 M0/M1/M3 间持平，ITER 最多增 +1.7 pp，MCTS 没被拯救。L3 PR 在每个 (模型,控制器,环境) 单元上保持 0%，每个 M1/M3 增益的 bootstrap 95% CI 都含零。<b>预算压力探测（E3）扩展到三个提议。</b>把预算提到 B=60、ITER 在 6 个近前沿 L2 + 2 个最易 L3 任务上：M0 下有帮助，但同预算下 M3 在这个小压力探测中不优于最小环境（三个提议规模上 M3 一致比 M0 低 6.25 pp）。<b>建设性的提议侧检查（Coder-7B + SFT）。</b>在 Coder-7B 上对记录的 M3 轨迹做一次短 SFT，在同 30 任务切片上达 9.2% PR——相对 M0 基线 +1.7 pp（95% bootstrap CI [−2.0,+5.5]）。CI 跨零，故仅作为试点信号报告。</p>
+<h3>8. 机制分析</h3>
+<p><b>失败模式、控制器动态与未解band。</b>数值失配主导每个控制器的 M0 账本：BON/GREEDY 在 93.3%/95.0% 的单元数值错误，MCTS 90.8%，ITER 85.6%。编译和运行时失败是少数模式，所以 Instruct-7B 上控制器有益的差距最好读作<b>数值接近度差距</b>：ITER 相对 BON 把数值错误份额降低 7.7 pp。<b>数值接近度恒等式。</b>数值失配份额不只与控制器有益差距相关，而是几乎耗尽它：在 Instruct-7B 上，PR(ITER)−PR(BON)=14.4%−6.7%=7.7 pp，而 数值错误(BON)−数值错误(ITER)=93.3%−85.6%=7.7 pp。编译和运行时失败几乎不动，所以 ITER 的全部增益由把单元移出数值错误桶、移进正确桶来解释。这解释了为何提示级剖析反馈令人失望：它只在编译和运行之后起作用。三十个任务中二十一个在 M0 下对所有控制器未解；九个已解任务由八个 L1 任务和一个 L2 任务组成。该未解 band 因此是任何所测控制器或提示级环境能恢复之物的硬上限。<b>局限：</b>4,320 单元主矩阵是 Qwen 内的；非 Qwen 检查点只扩展提议受限区。E1 单元在异构 8-GPU 宿主上轮询运行，所以加速比混合设备，主要主张依赖逐单元正确性加单元内控制器对比。L3 PR 在全部 12 个主矩阵 模型×控制器 块上为 0%，L2 PR 保持 ≤2.5%。</p>
+<div class="doc-wrap">
+<table class="dtable">
+<caption>表 2　失败模式分布（M0，Instruct-7B 跨预算与种子聚合，每控制器 n=360）。数值失配主导每个控制器。</caption>
+<tr><th>控制器</th><th>快且正确</th><th>慢但正确</th><th>数值错误</th></tr>
+<tr><td>BON</td><td>5.8%</td><td>0.8%</td><td>93.3%</td></tr>
+<tr><td>GREEDY</td><td>3.1%</td><td>1.9%</td><td>95.0%</td></tr>
+<tr><td>ITER</td><td>9.2%</td><td>5.3%</td><td class="hi">85.6%</td></tr>
+<tr><td>MCTS</td><td>7.2%</td><td>1.9%</td><td>90.8%</td></tr>
+</table>
+</div>
+<p class="tnote">以上为 NeurIPS 2026 投稿论文《Dissecting LLM-Generated CUDA: Proposal, Search, and Environment Compatibility》全文中译，依据原文逐节翻译；公式以原文符号呈现，部分表格节选关键行、参考文献从略。</p>
+</section>
+<!-- ============ PAPER 04: BiPT ============ -->
+<section class="doc-sec" id="t-bipt">
+<div class="doc-meta">
+<span class="doc-no">PAPER · 04</span>
+<span class="badge b-tpami">IEEE TPAMI</span>
+<span class="role">作者</span>
+<span class="role">点云 / 二值化</span>
+</div>
+<h2 class="doc-title">BiPT：高效二值点云 Transformer 网络
+    <span class="en">BiPT: Efficient Binary Point Cloud Transformer Networks</span>
+</h2>
+<p class="doc-authors">作者：Yihua Shao、<b>李奥多</b>（并列第一作者）、Yuxuan Fan、Siyu Chen、Ziyang Yan、Guofeng Mei、Jingcai Guo、Haotong Qin、Fabio Poiesi、Hao Tang、Ling Shao（IEEE Fellow）、Ming-Hsuan Yang（IEEE Fellow）。</p>
+<p class="doc-affil">CVPR 投稿后转投 IEEE TPAMI（在审）。</p>
+<div class="abstract">
+<p><b>摘要</b>——点云 Transformer 在 3D 感知上达到最先进性能，但其高昂代价限制了在资源受限设备上的部署。我们提出 <b>BiPT</b>，一种把权重和激活都用 <b>1-bit</b> 表示的极致网络二值化。直接二值化对点云 Transformer 尤其困难，因为它会破坏对邻域注意力至关重要的稀疏性和尺度一致性。我们用一组<b>几何感知的二值化算子</b>来解决这一问题，包括 <b>Softmax 感知二值化（SAB）</b>、<b>SubLayerNorm</b>、<b>RelNorm</b> 和 <b>双线性逐层尺度恢复（BiLinearLSR）</b>。我们的方法实现了 <b>18.9× 参数压缩</b>和 <b>14–15× 推理加速</b>，带来数量级的效率提升（如 56× FLOPs 削减），在分类任务上维持近 FP32 精度、在点云基准上维持实用精度。对稠密语义分割，我们进一步引入仅训练期的超点引导边界与对比正则，在不修改推理流水线的前提下改善极致量化下的局部区域一致性。本工作是首批在点云 Transformer 中充分利用二值神经网络的工作之一，为资源受限边缘平台上的实时 3D 深度学习铺平道路。</p>
+<p class="kw"><b>关键词</b>：二值网络、点云理解、高效 AI、模型量化、低比特推理</p>
+</div>
+<h3>I. 引言</h3>
+<p>利用神经网络处理点云是现代 3D 理解的核心。PointNet、PointNet++ 等早期点基方法和近期的 Point Transformer 架构都达到了强精度，但其计算和内存代价对资源受限的边缘平台仍然过高。即便是基于稀疏卷积或混合点-体素流水线的效率导向设计，仍依赖稠密浮点运算和宽特征通道。对边缘设备（如自主无人机或移动机器人）的真实部署而言，主要瓶颈不只是计算 FLOPs，而是<b>内存带宽约束</b>。单纯缩小网络架构是不够的——例如把 FP32 骨干缩到 1/4 通道宽（PTv3-Small）只带来微弱的 2.4× 延迟加速，却仍需相当的内存占用。</p>
+<p>模型量化、尤其是极致二值化，通过把浮点 MAC 换成 XNOR 运算、提供高达 32× 内存压缩，给出了缓解带宽瓶颈的更优效率方案。虽然二值神经网络（BNN）在图像和语言上已被广泛研究，3D 点云二值化主要还局限于分类或地点识别。这一缺口并非偶然：从 2D 图像把二值化扩展到 3D 点云引入了若干根本挑战。第一，图像位于规则网格、感受野固定，激活范围可预测；点云不规则、无序，邻域大小可变、特征统计跨局部区域显著变化。第二，2D 特征源于有界像素强度并被空间池化进一步约束，而 3D 特征编码无界的空间坐标和距离、幅度跨场景和尺度变化极大。第三，图像 Transformer 的注意力作用于空间范围一致的图块，但 Point Transformer 注意力必须编码不同密度邻域间的细粒度几何关系，使 softmax 分布对 sign 函数引入的离散化噪声敏感得多。因此为有界激活、空间均匀特征优化的传统 BNN 不能直接用于 Point Transformer。这种高动态范围迫使朴素二值化把不同值映射到同一档，造成"<b>注意力坍塌</b>"——注意力权重变均匀、破坏稀疏几何、带来巨大精度损失。</p>
+<p>本文提出 BiPT，一个在 PTv3 骨干上针对这些失败模式的全二值点云 Transformer，组合三个关键机制：第一，<b>Softmax 感知二值化（SAB）</b>在连续域计算注意力、再施加 query 特定的阈值得到二值掩码，保留注意力稀疏性、减少量化噪声对 softmax 的影响。第二，<b>双线性逐层尺度恢复（BiLinearLSR）</b>给二值线性投影附加可学习标量因子，恢复 sign 函数丢失的幅度信息、跨层稳定注意力 logits 和 FFN 输出的尺度。第三，<b>Sub-LayerNorm</b> 和基于半径的相对位置 <b>RelNorm</b> 在二值化前归一化中间特征和几何编码，避免深 W1A1 栈中的特征同质化和方差爆炸。主要贡献：</p>
+<ol>
+<li>提出 BiPT，一个面向稠密 3D 预测的全二值 Point Transformer，在 S3DIS 上以 52.9% mIoU、相对 FP32 PTv3 的 18.9× 参数压缩和 14.7× 延迟加速确立了强 W1A1 基线；在增强稠密训练配方下，超点引导正则进一步把 W1A1 分割提升到 63.98% mIoU。</li>
+<li>设计 Softmax 感知二值化机制，保护至关重要的 query 依赖注意力稀疏性——不靠无效的固定全局截断，而对每个 query 动态地阈值化 softmax 权重，从而在不规则局部邻域上捕捉信息量大的二值注意力结构。</li>
+<li>引入 BiLinearLSR 配合 Sub-LayerNorm 和 RelNorm，恢复丢失的幅度、稳定二值特征统计，使深 W1A1 栈能在几何 3D 数据上稳健训练。</li>
+<li>对稠密分割，引入由超点边界监督、超点级对比、语义级对比组成的超点引导训练方案，在不修改推理流水线的前提下改善局部几何一致性和类感知特征分离。</li>
+</ol>
+<h3>II. 相关工作</h3>
+<p><b>网络二值化。</b>网络二值化用 1-bit 值表示权重和激活，大幅降低内存、把浮点乘法换成廉价位运算，同时通过 sign 函数保留方向信息。训练通常依赖直通估计器（STE）处理不可微的 sign 函数。XNOR-Net 引入数据依赖的缩放，Bi-RealNet、ReActNet 等后续 2D 架构改进了 shortcut 和激活函数。对 Transformer 式模型，BinaryBERT、BiT 表明自注意力在二值化下尤其脆弱、需要谨慎的激活裁剪和分阶段训练。把极致量化应用到 3D 点云更晚近也更难：BiPointNet 用基于 EMA 的逐层尺度恢复（LSR）缓解特征同质化，FBPT 进一步研究点云分类和地点识别的 W1A1 二值化。我们把 LSR 哲学扩展到通用 Point Transformer 骨干的邻域注意力，并面向稠密语义分割和更广的场景级理解任务。<b>用于 3D 场景理解的超点。</b>超点把几何均匀的点聚成紧凑区域；与设计新超点骨干或划分算法的工作不同，我们用预先算好的超点作为仅训练期的先验，通过边界和对比目标正则化二值 Point Transformer。<b>轻量 3D 模型 vs 网络量化。</b>剪枝常产生难以在通用硬件加速的非结构化稀疏，FP16 通常只提供约 2× 内存削减；相比之下极致二值化（W1A1）通过把 MAC 换成 XNOR 和 popcount 提供高达 32× 内存压缩，这对内存带宽（而非原始 FLOPs）主导运行时瓶颈的极端边缘部署很重要。</p>
+<h3>III. 方法：BiPT</h3>
+<p><b>问题表述。</b>我们考虑点云分割和分类。目标是二值化一个 PTv3 骨干，把所有内部权重和激活量化到 {−1,+1}，同时保留小的全精度 stem 和 head，并在这种极致压缩下保持二值方法间有竞争力的精度。</p>
+<h4>A. 概述</h4>
+<p>BiPT 是建立在 PTv3 上的全二值点云 Transformer。一个全精度 stem 把点特征嵌入 R^d（默认 d=256）并构建多尺度邻域，然后堆叠 L 个二值 Transformer 块。每块含一个二值自注意力（SA）模块和一个二值前馈（FFN）模块，所有线性投影经 BiLinearLSR 和 SAB 在 {−1,+1} 权重和激活上运作。只有 stem 和任务头保持 FP32，所有内部 transformer 块以 W1A1 模式运作。</p>
+<h4>B. 参数级二值化</h4>
+<p><b>基础二值化。</b>全精度线性层算 y=xW；我们改用由 sign 函数从实值张量得到的二值张量 x_b、W_b∈{−1,+1}（式 1）。为反传过不可微的 sign，采用 STE、把梯度裁剪到 |x|&lt;1（式 2）。<b>双线性逐层尺度恢复（BiLinearLSR）。</b>sign 运算丢弃幅度信息（x=0.01 和 x=100 都映射到 +1）；为恢复有用尺度，每个全精度投影 y=xW 被替换为 y=α·(x_b·W_b)（式 3），含可学习标量（或向量）尺度 α。α 从对应的预训练全精度 PTv3 教师初始化为 α_init=std(xW_fp)/std(x_b·W_b)（式 4），再由梯度下降优化。<b>高效位运算。</b>二值点积经 XNOR 和 popcount 实现：q_b·k_b=2·popcount(XNOR(...))−d（式 5），把 O(d) 浮点 MAC 降到 O(d/w) 位运算（w∈{32,64}）。<b>Sub-LayerNorm 稳定激活。</b>在二值网络中，注意力和 FFN 聚合是实值的、可跨深度累积方差，仅在块边界用 LayerNorm 不够。因此我们在两处插入 SubLN：(i) Q/K/V 投影前、(ii) 第一个 FFN 非线性前（式 6、7）。消融显示这种归一化层布置是训练稳定性增益的主驱动。<b>相对位置归一化（RelNorm）。</b>用层查询半径 r(l) 归一化相对位置 Δp（式 8），把位置通道保持在单位尺度范围、限制跨层方差，且因复用邻域构建已用的 r(l) 而开销极小。<b>EMA-max 聚合。</b>为缓解二值化引入的随机性，训练时对 max 池化特征用指数移动平均（式 9，λ=0.1）；推理时丢弃 EMA 项、用普通 max 池化，无额外开销。</p>
+<h4>C. 注意力级二值化（SAB）</h4>
+<p>朴素地在 softmax 前二值化注意力 logits 是尺度敏感的，因为 exp(·) 放大量化噪声。SAB 保留软注意力分布来定义稀疏模式、只二值化聚合中用的权重、并把梯度经 softmax 路由。<b>自适应逐 query 阈值。</b>给定 BiLinearLSR 层来的二值 query/key 嵌入，先算注意力 logits s_ij（式 10）、再 softmax 得常规分布 a^(s)（式 11）。SAB 不用全局固定阈值，而对每个 query i 用 θ_i=μ_i+βσ_i，其中 μ_i、σ_i 是该 query 注意力分布的均值和标准差；正文采用规范选择 β=0，即 θ_i=μ_i（式 12）。二值掩码 a^(q)_ij=1[a^(s)_ij≥θ_i]（式 13）。<b>前向聚合。</b>用二值掩码聚合输出特征 z_i=HardTanh(α_v·Σ a^(q)_ij·v_b,j)（式 14）。<b>反向梯度路由。</b>直接对式 13 求导几乎处处零梯度；SAB 用软 STE：把对二值掩码的梯度经标准 softmax 雅可比近似回传（式 15、16）——前向走二值掩码，而注意力 logits 及其二值 Q/K 输入像用了 softmax 权重一样被更新。</p>
+<h4>D. 训练级优化</h4>
+<p>量化到 1-bit 降低表示能力、更难拟合复杂 3D 数据（尤其稀有类）。我们用来自全精度 PTv3 教师的<b>知识蒸馏</b>和针对类不平衡与校准的多项损失训练 BiPT。蒸馏同时蒸馏预测和注意力模式：用温度 T 的 KL 散度蒸馏 logits（式 18），并对每层注意力矩阵 L2 归一化后最小化 MSE（式 19），总蒸馏损失 L_KD=λ_LD·L_LD+λ_AD·L_AD（式 20）。<b>基础分割损失</b>组合多个互补项（式 21）：类平衡交叉熵（用有效样本数加权，γ=0.997）、Lovász-Softmax（mIoU 的凸代理，λ_Lov=0.8）、Tversky 损失（对极稀有类强调召回，α=0.3、β=0.7）、置信惩罚（熵正则、改善校准）和知识蒸馏。<b>超点引导边界与对比学习。</b>稠密室内场景有大平面区、细结构和高度不平衡类别；极致量化下二值特征会过平滑、削弱边界判别。我们引入仅训练期的超点引导正则：用边界损失 L_edge 保留局部几何不连续，用 L_sp 强制语义连贯超点内特征一致，用 L_sem 改善语义级类间分离。完整稠密分割目标 L=L_base+λ_edge·L_edge+λ_sp·L_sp+λ_sem·L_sem（式 26）。超点 id 只被辅助损失消费、推理时丢弃，不修改推理图或部署成本。</p>
+<h3>IV. 几何感知二值化分析</h3>
+<p><b>注意力稀疏性与分布保真。</b>SAB 呈现<b>层自适应稀疏</b>：浅层（Layer 1/2）维持更高非零比（0.52/0.48）捕捉稠密局部几何模式，深层（Layer 3/4）激进稀疏（0.35/0.31）专注语义显著 token。尽管 16× 压缩，SAB 相对 FP32 教师保持 85.7% 的熵保真，维持固定阈值会摧毁的长尾 token 重要性；KL 散度跨层保持低位，解释了 SAB 为何改善稀有类性能。<b>1-bit 约束下的蒸馏动态。</b>敏感性分析揭示<b>注意力蒸馏主导</b>：变化 AD 权重对最终 mIoU 的影响范围（Δ=4.0%）显著大于 LD（Δ=2.9%），证实保留拓扑注意力结构比单纯 logit 对齐更关键。蒸馏动态<b>非单调</b>：性能在中等蒸馏强度峰值，过强则退化——过度依赖教师注意力会妨碍二值模型在 1-bit 约束下发现任务特定模式。<b>超越标准 BNN 实践。</b>不用任何提出的模块时基线只达 21.3% mIoU、比完整模型低 31.6 点；BiLinearLSR 在此差距中起核心作用（sign 函数剥离全部幅度信息）；SAB 相对固定阈值基线贡献 +4.6 mIoU，结合 SubLN（再 +17.1）联合增益达 +21.7 mIoU。<b>复杂度分析。</b>空间上权重内存从 O(L·d²·32) 降到 O(L·d²·1) bit，整体内存约 32× 削减（实测参数压缩 18.9×，计入非二值 stem 和头）；时间上把 O(N·K·d) 浮点 MAC 换成 O(N·K·d/64) 位运算，数学上对应约 56× FLOPs 削减。</p>
+<h3>V. 实验</h3>
+<h4>A. 设置</h4>
+<p><b>基线：</b>BiPointNet（点云二值化）、BiViT（transformer 二值化）、FBPT（最接近的二值 Point Transformer 先验，用 sign 二值化+固定阈值注意力规则）、BitNet b1.58（LLM 二值化），全部迁移到 PTv3 作基线。<b>数据集：</b>S3DIS（室内分割，13 类）、ScanNet（20 类）、nuScenes-lidarseg（室外 16 类）、ModelNet40（分类，40 类），均按 PTv3 官方配置。<b>训练配方：</b>8×RTX 3090、AdamW、60 epoch、初始 lr 1e-4、OneCycleLR；解耦学习率（非块参数 1e-4、二值块参数含 BiLinearLSR 尺度 1e-5）；用稀有类采样（RCS）和多任务损失维持少数类梯度流。骨干用 PTv3-m1.0 配置，阶段通道 {32,64,128,256,512}。</p>
+<h4>B. 定量结果</h4>
+<p><b>效率（表 1）。</b>在 S3DIS 上，FP32 PTv3 换成 BiPT 把 FLOPs 从 60.90G 降到 1.09G（55.9×）、参数从 46.00M 降到 2.43M（18.9×）、RTX 3090 实测前向延迟从 147 ms 降到 10 ms（14.7×）。实现的加速小于名义 FLOPs 削减，因为 FLOPs 核算忽略了非二值组件（FP32 stem/head、LayerNorm、SAB 中的 softmax、内存流量、位打包）。<b>室内分割（表 2）。</b>在更激进的 W1A1 区，BiPT 在 S3DIS/ScanNet/nuScenes 得 52.9/44.7/48.6 mIoU，在 PTv3 骨干下一致取得 W1A1 变体中最高精度；在 S3DIS 上比 FBPT 高 27.8 mIoU 点（52.9 vs 25.1）。52.9% 应读作不带超点先验的核心 BiPT W1A1 架构基线；激活超点引导稠密训练配方后，匹配 W1A1 运行提升到 63.24%（历史磁盘超点）和 63.90%/63.98%（重生成 pycut 超点）。ModelNet40 上 top-1 从 93.7% 降到 91.2%，而先前 W1A1 方法损失大得多（BiPointNet −13.4 点、BiViT −15.2 点）。</p>
+<div class="doc-wrap">
+<table class="dtable">
+<caption>表 1（节选）　效率比较（S3DIS，RTX 3090 仅前向延迟）。</caption>
+<tr><th>方法</th><th>FLOPs(G)</th><th>参数(M)</th><th>延迟(ms)</th></tr>
+<tr><td>PTv3 (FP32)</td><td>60.90</td><td>46.00</td><td>147</td></tr>
+<tr><td>FBPT→PTv3</td><td>1.30</td><td>2.44</td><td>12</td></tr>
+<tr><td>BiViT→PTv3</td><td>2.10</td><td>2.48</td><td>22</td></tr>
+<tr><td class="hi">BiPT (本文)</td><td class="hi">1.09 (55.9×)</td><td class="hi">2.43 (18.9×)</td><td class="hi">10 (14.7×)</td></tr>
+</table>
+</div>
+<div class="doc-wrap">
+<table class="dtable">
+<caption>表 2（节选）　PTv3 骨干上的量化比较（mIoU%；FP32 PTv3 为上界）。</caption>
+<tr><th>方法</th><th>W/A</th><th>S3DIS</th><th>ScanNet</th><th>nuScenes</th><th>ModelNet40 OA</th></tr>
+<tr><td>PTv3 (FP32)</td><td>32/32</td><td>73.6</td><td>77.6</td><td>75.3</td><td>93.7</td></tr>
+<tr><td>BiPT (本文)</td><td>2/8</td><td>65.0</td><td>—</td><td>—</td><td>92.0</td></tr>
+<tr><td>FBPT→PTv3</td><td>1/1</td><td>25.1</td><td>—</td><td>—</td><td>67.2</td></tr>
+<tr><td>BiPointNet→PTv3</td><td>1/1</td><td>36.8</td><td>—</td><td>—</td><td>80.3</td></tr>
+<tr><td class="hi">BiPT (本文)</td><td>1/1</td><td class="hi">52.9</td><td class="hi">44.7</td><td class="hi">48.6</td><td class="hi">91.2</td></tr>
+<tr><td class="hi">BiPT++（超点引导）</td><td>1/1</td><td class="hi">63.98</td><td>—</td><td>—</td><td>—</td></tr>
+</table>
+</div>
+<p><b>二值化 vs 轻量 FP32 架构（表 3）。</b>线性缩小 FP32 骨干给出次优的效率-精度权衡：PTv3-Small（12.0M）只 2.4× 加速却掉到 57.8% mIoU，PTv3-Tiny（3.2M）掉到不可用的 41.2%。相比之下，BiPT W2A8（5.8M）精度（60.8%）超过 PTv3-Small 且快近 2.7×；极致 BiPT W1A1 达 14.7× 加速（10 ms），比同样大小的 PTv3-Tiny 高 +11.7% mIoU——证明在极端延迟和内存约束下，维持更宽网络拓扑+1-bit 量化比激进剪通道更有表现力、更硬件友好。</p>
+<div class="doc-wrap">
+<table class="dtable">
+<caption>表 3　缩小 FP32 架构 vs 网络二值化（S3DIS，RTX 3090）。</caption>
+<tr><th>模型配置</th><th>精度</th><th>参数(M)</th><th>延迟(ms)</th><th>mIoU(%)</th></tr>
+<tr><td>PTv3-Base（教师）</td><td>FP32</td><td>46.0</td><td>147</td><td>73.6</td></tr>
+<tr><td>PTv3-Small</td><td>FP32</td><td>12.0</td><td>61</td><td>57.8</td></tr>
+<tr><td>PTv3-Tiny</td><td>FP32</td><td>3.2</td><td>38</td><td>41.2</td></tr>
+<tr><td>BiPT (W2A8)</td><td>2/8</td><td>5.8</td><td>22</td><td>60.8</td></tr>
+<tr><td class="hi">BiPT (W1A1)</td><td>1/1</td><td class="hi">2.4</td><td class="hi">10</td><td class="hi">52.9</td></tr>
+</table>
+</div>
+<h4>C. 消融研究</h4>
+<p><b>组件消融（表 4）。</b>基线（sign 二值化+固定 0.5 阈值注意力+标准 max 池化）只 21.28 mIoU。加 SAB→25.86（+4.58），尤其改善 window 类（per-query 阈值比全局截断更好保留 softmax 稀疏模式）。再加 SubLN→42.99（+17.13，单个模块最大增益）；它把 ceiling IoU 从 42.1 提到 68.5、wall 从 34.6 到 58.9，说明稳定中间统计对沿深度累积误差的大结构区尤其重要。RelNorm 在早期训练（step 4096）改善 +7.28 mIoU。完整模型（SAB+SubLN+RelNorm+EMA-max）达 52.85 mIoU。<b>损失消融（表 5）。</b>从标准 CE（38.42）起：类平衡 CE→42.18（+3.76），Lovász-Softmax→46.35（+4.17，对齐 IoU），Tversky→48.91（+2.56，改善稀有类召回），知识蒸馏→52.85（+3.94）。KD 权重消融揭示注意力蒸馏主导、AD=0.5/LD=0.3 最优（52.9% mIoU）。<b>超点源（表 6）。</b>同样配方下用 pycut 替换历史超点把 W1A1 从 63.24% 提到 63.98% mIoU，说明更干净的几何划分提供更可靠的区域级监督。</p>
+<div class="doc-wrap">
+<table class="dtable">
+<caption>表 4（节选）　S3DIS 组件消融（基线=sign 二值化+固定阈值注意力）。</caption>
+<tr><th>配置</th><th>SAB</th><th>SubLN</th><th>RelNorm</th><th>mIoU</th></tr>
+<tr><td>PTv3 教师（FP32）</td><td>—</td><td>—</td><td>—</td><td>73.58</td></tr>
+<tr><td>a) 基线</td><td>✗</td><td>✗</td><td>✗</td><td>21.28</td></tr>
+<tr><td>b) +SAB</td><td>✓</td><td>✗</td><td>✗</td><td>25.86</td></tr>
+<tr><td>c) +SAB+SubLN</td><td>✓</td><td>✓</td><td>✗</td><td>42.99</td></tr>
+<tr><td class="hi">f) 完整模型(+EMA-max)</td><td>✓</td><td>✓</td><td>✓</td><td class="hi">52.85</td></tr>
+</table>
+</div>
+<p><b>对比 FBPT：克服注意力坍塌。</b>在同一 PTv3 骨干、同 W1A1 设定下重实现 FBPT 核心机制（sign-only 二值化+固定阈值注意力），只得 25.1% mIoU、比 BiPT 低 27.8 点。FBPT 难以量化 3D 注意力图固有的高动态范围，把不同几何响应映射到单一量化档，造成注意力坍塌、注意力权重在局部邻域变均匀、丧失对稀疏信息结构特征（物体边缘、角点）的聚焦。BiPT 的 SAB 学到自适应、query 特定阈值保留注意力权重的长尾分布，BiLinearLSR 恢复 sign 丢失的关键幅度尺度——证明把 2D/1D 二值化配方直接搬到 3D Transformer 不够、需要几何感知机制。</p>
+<h3>VI. 讨论与局限</h3>
+<p><b>细结构挑战：</b>BiPT 偶尔在高长宽比的极细结构（椅腿、桌沿、室外行人肢体）上欠分割——sign 函数抑制了浮点网络可利用的高频空间梯度。<b>极端类不平衡脆弱性：</b>稀有类（梁、柱、小交通锥）对 1-bit 模型仍极具挑战，尽管用了 Tversky 损失和类平衡 CE。<b>硬件部署差距：</b>尽管理论 FLOPs 分析和实测 GPU 延迟展示巨大效率增益（56× FLOPs 削减、14.7× 加速），在商品边缘设备上实现这些增益仍需专门推理引擎——标准 NPU 和边缘 GPU 常为 INT8 高度优化，但缺乏成熟的全融合 XNOR-popcount W1A1 核函数编译支持。<b>W2A8 vs W1A1：</b>W1A1 推到效率极限但精度损失可能限制其在安全关键场景部署；放松到 W2A8 恢复大部分全精度精度、仍保持强效率优势，但在超点引导训练下 W2A8 对量化-边界监督-对比正则的平衡更敏感。</p>
+<h3>VII. 结论</h3>
+<p>本文提出 BiPT，一个把二值神经网络带入点云 Transformer 的框架。通过分割和分类任务上的综合实验，我们表明 BiPT 在 W1A1 区达到有竞争力的精度、一致超越先前基于 PTv3 的二值基线，同时在 FLOPs、参数和延迟上实现大幅效率增益。这把 BiPT 确立为紧资源预算下 3D 深度学习的强精度-效率工作点。对稠密分割，我们进一步表明超点引导边界和对比正则能作为仅训练期先验整合、不改变推理图。总之，我们的工作为点云 Transformer 带来计算和内存使用的数量级改进，这对实时和移动 3D 应用至关重要；同时，实际部署仍依赖能成熟支持融合 XNOR-popcount 核函数的硬件和编译器栈，这对当今商品边缘运行时仍是开放挑战。</p>
+<p class="tnote">以上为 IEEE TPAMI 在审论文《BiPT: Efficient Binary Point Cloud Transformer Networks》全文中译，依据原文逐节翻译；公式以原文符号呈现，部分表格节选关键行、参考文献从略。李奥多为并列第一作者。</p>
+</section>
+</main>
+</div>
+<footer>
+<div class="grad-line"></div>
+<div>© 2026 Aoduo Li · 李奥多  ·  论文全文翻译  ·  <a href="papers.html">论文讲解</a>  ·  <a href="index.html">学术主页</a></div>
+</footer>
+<div class="totop" id="toTop" title="回到顶部">↑</div>
+<script>
+(function(){
+  // fast anchor scroll
+  var OFF=76;
+  function ease(p){return 1-Math.pow(1-p,3);}
+  function scrollTo(el){
+    var sy=window.pageYOffset||document.documentElement.scrollTop;
+    var ty=el.getBoundingClientRect().top+sy-OFF, d=ty-sy;
+    if(Math.abs(d)<2)return;
+    var dur=Math.min(560,220+Math.abs(d)*0.16), t0=null;
+    function step(ts){if(t0===null)t0=ts;var p=Math.min(1,(ts-t0)/dur);window.scrollTo(0,sy+d*ease(p));if(p<1)requestAnimationFrame(step);}
+    requestAnimationFrame(step);
+  }
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener('click',function(e){
+      var id=a.getAttribute('href').slice(1);if(!id)return;
+      var el=document.getElementById(id);if(!el)return;
+      e.preventDefault();scrollTo(el);
+      if(history.replaceState)history.replaceState(null,'','#'+id);
+    });
+  });
+  // sidebar active
+  var links=document.querySelectorAll('.sidebar a[href^="#t-"]');
+  var map={};
+  links.forEach(function(a){var id=a.getAttribute('href').slice(1);var s=document.getElementById(id);if(s)map[id]=a;});
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){var id=e.target.id;if(!map[id])return;if(e.isIntersecting){links.forEach(function(a){a.classList.remove('active');});map[id].classList.add('active');}});
+  },{rootMargin:'-25% 0px -65% 0px'});
+  Object.keys(map).forEach(function(id){var s=document.getElementById(id);if(s)io.observe(s);});
+  // back to top
+  var tt=document.getElementById('toTop');
+  window.addEventListener('scroll',function(){if((window.pageYOffset||document.documentElement.scrollTop)>500)tt.classList.add('show');else tt.classList.remove('show');},{passive:true});
+  tt.addEventListener('click',function(){scrollTo(document.getElementById('hero'));});
+})();
+</script>
+</body>
+</html>

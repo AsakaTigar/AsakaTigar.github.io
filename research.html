@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>研究综述 · Aoduo Li 李奥多</title>
+<meta content="李奥多 Aoduo Li 个人研究综述 —— 以「高效、可部署的 AI 系统」为主线，串联模型压缩、LLM 对齐、多模态安全与具身智能四条研究线。" name="description"/>
+<link href="data:image/svg+xml,&lt;svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27&gt;&lt;text y=%27.9em%27 font-size=%2790%27&gt;🧭&lt;/text&gt;&lt;/svg&gt;" rel="icon"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#1d1d2b;--bg-elev:#252540;--bg-soft:#2a2a48;
+  --text:#e8e8f0;--text-muted:#a0a0b8;--text-dim:#7a7a92;
+  --accent:#4ecdc4;--accent-2:#ff6b9d;--accent-3:#ffd166;
+  --border:#333355;--border-soft:#2c2c4a;
+  --grad:linear-gradient(135deg,#4ecdc4 0%,#7367f0 100%);
+  --font-zh:"Noto Serif SC",ui-serif,"Songti SC","Source Han Serif",serif;
+  --font-en:"Space Grotesk","Inter",ui-sans-serif,system-ui,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:auto}
+.doc-sec,.hero{scroll-margin-top:84px}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:var(--font-zh);
+  line-height:1.95;letter-spacing:.01em;
+  background-image:
+    radial-gradient(800px 400px at 80% -10%, rgba(78,205,196,.08), transparent 60%),
+    radial-gradient(600px 400px at -10% 30%, rgba(115,103,240,.08), transparent 60%);
+  background-attachment:fixed;min-height:100vh;
+}
+a{color:var(--accent);text-decoration:none;transition:.2s}
+a:hover{color:var(--accent-2)}
+::selection{background:rgba(78,205,196,.3);color:#fff}
+.topbar{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:rgba(29,29,43,.78);border-bottom:1px solid var(--border)}
+.topbar-inner{max-width:1400px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{font-family:var(--font-en);font-weight:700;font-size:1.05rem;letter-spacing:.04em;display:flex;align-items:center;gap:10px}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:var(--grad);display:grid;place-items:center;color:#0e0e1a;font-weight:800;box-shadow:0 4px 14px rgba(78,205,196,.4)}
+.brand small{color:var(--text-muted);font-weight:400;margin-left:6px;font-family:var(--font-zh)}
+.topbar-links{display:flex;gap:20px;align-items:center;font-family:var(--font-en);font-size:.86rem;flex-wrap:wrap}
+.topbar-links a{color:var(--text-muted);font-weight:500}
+.topbar-links a:hover{color:var(--accent)}
+.cta{padding:7px 16px;border:1px solid var(--accent);border-radius:999px;color:var(--accent);font-family:var(--font-en);font-size:.82rem}
+.cta:hover{background:var(--accent);color:#0e0e1a}
+.shell{max-width:1400px;margin:0 auto;padding:0 32px;display:grid;grid-template-columns:280px 1fr;gap:48px;position:relative;z-index:1}
+@media(max-width:980px){.shell{grid-template-columns:1fr;padding:0 20px;gap:0}}
+.sidebar{position:sticky;top:78px;align-self:start;height:calc(100vh - 100px);overflow-y:auto;padding:32px 0 64px;scrollbar-width:thin;scrollbar-color:#333 transparent}
+.sidebar::-webkit-scrollbar{width:6px}
+.sidebar::-webkit-scrollbar-thumb{background:#333;border-radius:3px}
+.sidebar-title{font-family:var(--font-en);font-size:.7rem;font-weight:700;letter-spacing:.18em;color:var(--text-dim);text-transform:uppercase;border-left:2px solid var(--accent);padding:0 0 10px 12px;margin-bottom:6px}
+.sidebar a{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;color:var(--text-muted);font-size:.9rem;border-radius:6px;transition:.18s;border-left:2px solid transparent;line-height:1.5}
+.sidebar a:hover{background:var(--bg-elev);color:var(--text)}
+.sidebar a.active{color:var(--accent);background:rgba(78,205,196,.08);border-left-color:var(--accent)}
+.side-idx{font-family:var(--font-mono);font-size:.72rem;color:var(--text-dim);min-width:22px}
+@media(max-width:980px){.sidebar{position:relative;top:0;height:auto;padding:24px 0}}
+.hero{padding:80px 0 36px}
+.hero-eyebrow{font-family:var(--font-en);font-size:.78rem;letter-spacing:.3em;color:var(--accent);text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:14px}
+.hero-eyebrow::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--accent),transparent)}
+.hero h1{font-size:clamp(2.2rem,5vw,3.4rem);font-weight:700;line-height:1.18;margin-bottom:18px}
+.hero h1 .gradient{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-sub{color:var(--text-muted);font-size:1.08rem;max-width:760px;line-height:1.9}
+.hero-stats{display:flex;gap:30px;flex-wrap:wrap;margin-top:34px;padding-top:26px;border-top:1px solid var(--border-soft)}
+.stat{display:flex;flex-direction:column}
+.stat-num{font-family:var(--font-en);font-weight:700;font-size:2rem;color:var(--accent);line-height:1}
+.stat-label{font-size:.8rem;color:var(--text-dim);margin-top:8px;letter-spacing:.04em}
+.doc-sec{padding:54px 0 36px;border-top:1px solid var(--border-soft)}
+.sec-label{font-family:var(--font-en);font-size:.72rem;font-weight:700;letter-spacing:.22em;color:var(--accent);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.sec-label::before{content:"";width:18px;height:1px;background:var(--accent)}
+.doc-sec h2{font-size:clamp(1.5rem,3vw,2rem);font-weight:700;line-height:1.32;margin-bottom:8px}
+.doc-sec h2 .en{display:block;font-family:var(--font-en);font-size:.86rem;color:var(--text-dim);font-weight:500;margin-top:8px;letter-spacing:.02em}
+.doc-sec h3{font-family:var(--font-zh);font-size:1.2rem;font-weight:700;color:var(--accent-3);margin:30px 0 12px}
+.doc-sec p{font-size:1.04rem;color:var(--text);margin-bottom:16px;text-align:justify}
+.doc-sec p strong{color:var(--accent);font-weight:600}
+.doc-sec p em{color:var(--accent-3);font-style:normal;font-weight:500}
+.lead{font-size:1.12rem;color:var(--text);border-left:3px solid var(--accent);padding:6px 0 6px 20px;margin:0 0 22px;background:linear-gradient(90deg,rgba(78,205,196,.05),transparent);line-height:1.9}
+.thread{background:var(--bg-elev);border:1px solid var(--border-soft);border-left:3px solid var(--accent);border-radius:10px;padding:22px 26px;margin-bottom:20px}
+.thread.t1{border-left-color:#4ecdc4}
+.thread.t2{border-left-color:#ff6b9d}
+.thread.t3{border-left-color:#a78bfa}
+.thread.t4{border-left-color:#60a5fa}
+.thread h3{margin-top:0;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.thread.t1 h3{color:#4ecdc4}.thread.t2 h3{color:#ff6b9d}.thread.t3 h3{color:#a78bfa}.thread.t4 h3{color:#60a5fa}
+.thread .tnum{font-family:var(--font-en);font-size:1.5rem;font-weight:800;opacity:.85}
+.thread .papers{font-family:var(--font-en);font-size:.74rem;color:var(--text-dim);font-weight:500;letter-spacing:.02em}
+.thread p{font-size:1rem;margin-bottom:12px}
+.thread p:last-child{margin-bottom:0}
+.pill-row{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 6px}
+.pill{font-family:var(--font-en);font-size:.74rem;padding:4px 12px;border-radius:999px;background:var(--bg-soft);border:1px solid var(--border);color:var(--text-muted);white-space:nowrap}
+.pill b{color:var(--accent);font-weight:600}
+.method-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-top:10px}
+.method-card{background:var(--bg-elev);border:1px solid var(--border-soft);border-radius:9px;padding:18px 20px}
+.method-card h4{font-size:1.02rem;font-weight:700;color:var(--accent);margin-bottom:8px}
+.method-card p{font-size:.93rem;color:var(--text-muted);margin-bottom:0;line-height:1.78}
+.method-card p strong{color:var(--accent-3)}
+.tl{list-style:none;margin:6px 0 0;padding:0}
+.tl li{position:relative;padding:0 0 16px 26px;font-size:.98rem;color:var(--text);line-height:1.8}
+.tl li::before{content:"";position:absolute;left:5px;top:9px;width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px rgba(78,205,196,.15)}
+.tl li::after{content:"";position:absolute;left:8.5px;top:17px;bottom:0;width:1px;background:var(--border)}
+.tl li:last-child::after{display:none}
+.tl li b{color:var(--accent-3);font-family:var(--font-en);font-weight:600;margin-right:6px}
+footer{text-align:center;padding:56px 0;color:var(--text-dim);font-size:.82rem;border-top:1px solid var(--border-soft);margin-top:50px}
+footer .grad-line{width:60px;height:2px;background:var(--grad);margin:0 auto 16px;border-radius:2px}
+.totop{position:fixed;right:26px;bottom:26px;z-index:40;width:46px;height:46px;border-radius:50%;background:var(--bg-elev);border:1px solid var(--accent);color:var(--accent);display:grid;place-items:center;cursor:pointer;opacity:0;pointer-events:none;transition:.25s;font-size:1.1rem}
+.totop.show{opacity:1;pointer-events:auto}
+.totop:hover{background:var(--accent);color:#0e0e1a}
+</style>
+</head>
+<body>
+<header class="topbar">
+<div class="topbar-inner">
+<div class="brand"><span class="brand-mark">A</span><span>Aoduo Li <small>· 研究综述</small></span></div>
+<nav class="topbar-links">
+<a href="index.html">← 学术主页</a>
+<a href="papers.html">论文讲解</a>
+<a href="papers.html#kgraph">◆ 知识图谱</a>
+<a href="translations.html">全文翻译</a>
+<a class="cta" href="mailto:2030728844@qq.com">联系作者</a>
+</nav>
+</div>
+</header>
+<div class="shell">
+<aside class="sidebar" id="sidebar">
+<div class="sidebar-title">研究综述</div>
+<a href="#vision"><span class="side-idx">00</span><span>研究愿景与主线</span></a>
+<a href="#t1"><span class="side-idx">01</span><span>高效 AI 与极致压缩</span></a>
+<a href="#t3"><span class="side-idx">03</span><span>多模态理解与安全</span></a>
+<a href="#method"><span class="side-idx">05</span><span>贯穿性方法论</span></a>
+<a href="#future"><span class="side-idx">06</span><span>未来研究方向</span></a>
+<a href="#timeline"><span class="side-idx">07</span><span>研究历程</span></a>
+</aside>
+<main>
+<section class="hero" id="hero">
+<div class="hero-eyebrow">Research Statement</div>
+<h1>研究<span class="gradient">综述</span></h1>
+<p class="hero-sub">我是李奥多，广东工业大学人工智能专业本科生。我的研究始终围绕一个问题：<strong style="color:var(--accent)">如何让强大的 AI 能力，真正跑在资源受限的真实设备上</strong>。从 3D 高斯压缩、二值点云 Transformer，到大模型对齐、多模态安全与四足机器人导航，我以「效率优先、面向部署约束」为统一视角，把昂贵的能力压缩、蒸馏、编译成轻量可落地的形式。本综述把我的工作梳理成四条研究线，并提炼贯穿其间的方法论。</p>
+<div class="hero-stats">
+<div class="stat"><div class="stat-num">11</div><div class="stat-label">论文与研究项目</div></div>
+<div class="stat"><div class="stat-num">4</div><div class="stat-label">研究主线</div></div>
+<div class="stat"><div class="stat-num">3</div><div class="stat-label"> (IEEE TCE)</div></div>
+<div class="stat"><div class="stat-num">1</div><div class="stat-label">IEEE TPAMI 在审</div></div>
+</div>
+</section>
+<section class="doc-sec" id="vision">
+<div class="sec-label">Vision</div>
+<h2>研究愿景与主线<span class="en">Research Vision &amp; The Connecting Thread</span></h2>
+<p class="lead">我研究的核心命题是「<strong>可部署的智能（Deployable Intelligence）</strong>」：当前最强的模型——大语言模型、点云 Transformer、4D 高斯场景——往往以巨大的算力、显存和延迟为代价，把它们留在了云端和数据中心。我想把这道鸿沟填上，让这些能力能在手机、机器狗、无人机这类带电、带算力预算的边缘设备上真正运转起来。</p>
+<p>这个命题之所以吸引我，是因为它<strong>同时是科学问题和工程问题</strong>。科学上，它逼迫我去理解一个模型里「哪些部分是真正承载能力的、哪些是冗余的」——这要求对模型内部机制有足够深的洞察；工程上，它要求把这种洞察落到真实硬件的延迟、显存、带宽约束里，并用实测数字而非纸面 FLOPs 来检验。我的每一篇工作，本质上都是在某个具体场景里回答「能力从哪来、冗余在哪里、如何无损地把它压到能部署」这组问题。</p>
+<p>顺着这条主线，我的工作自然聚成<em>四条研究线</em>：(1) <strong>高效 AI 与极致压缩</strong>——直接攻克部署的算力/显存瓶颈；(2) <strong>LLM 对齐与拟人化交互</strong>——让端侧小模型也具备大模型的对话与推理品质；(3) <strong>多模态理解与安全</strong>——在跨模态系统里以近零开销提供理解与防护；(4) <strong>具身智能与机器人导航</strong>——把前三条线整合到真实机器人这一终极部署载体上。四条线看似分散，但都被「效率—部署」这条主线串起，并共享一套可迁移的方法论（见第 5 节）。</p>
+</section>
+<section class="doc-sec" id="t1">
+<div class="sec-label">Thread 01</div>
+<h2>高效 AI 与极致压缩<span class="en">Efficient AI &amp; Extreme Compression</span></h2>
+<p>这是我研究的根基与发力点。我关心的不是"再小一点"的渐进式压缩，而是<strong>极致压缩</strong>——用数量级（10×–10000×）的体积/算力削减，去触碰真实边缘部署的门槛，同时把质量损失控制在可接受范围。</p>
+<div class="thread t1">
+<h3><span class="tnum">①</span>VEDAL <span class="papers">· CGI 2026 · 一作 · 3D Gaussian Splatting</span></h3>
+<p>3D 高斯泼溅能实时渲染高质量场景，但要存几百万个高斯体，上不了边缘设备。我没有沿用"按梯度/不透明度排序、一刀切硬剪"的主流做法，而是把剪枝<strong>形式化为变分推断</strong>：每个高斯是否保留是一个二值潜变量，通过最小化变分自由能（重建误差 + KL 正则）端到端学习其保留概率。关键洞察是——不同高斯收敛速率天差地别（纹理区快、镜面/遮挡区慢），所以我设计了<em>异步预测误差门</em>，只对"已收敛"的高斯施加剪枝压力，避免误伤。结果：5.2× 压缩、PSNR 仅降 0.31 dB、渲染反而提速；叠加属性量化达 27.2×。</p>
+<div class="pill-row"><span class="pill"><b>5.2×</b> 压缩</span><span class="pill"><b>−0.31 dB</b> PSNR</span><span class="pill"><b>185 FPS</b></span><span class="pill">变分推断 / 闭式解</span></div>
+</div>
+<div class="thread t1">
+<h3><span class="tnum">②</span>BiPT <span class="papers">· IEEE TPAMI 在审 · 作者 · 点云二值化</span></h3>
+<p>这是我压缩工作里最硬的一篇。1-bit 量化（权重+激活都 W1A1）是压缩的物理极限，但直接套到点云 Transformer 上会彻底崩溃——邻域注意力的重尾 softmax 在固定阈值下会"坍塌"成均匀分布，几何稀疏结构被抹平。我提出一组<strong>几何感知二值化算子</strong>：SAB（先在连续域算 softmax、再逐 query 自适应阈值）防注意力坍塌、BiLinearLSR（可学习尺度因子）恢复 sign 丢失的幅值、SubLN/RelNorm 稳住二值激活的方差和几何尺度。最终在 PTv3 上实现 18.9× 参数压缩、14.7× 加速、56× FLOPs 削减，并保持实用精度。这篇工作让我与 TPAMI 级别的合作者一起，把"二值化能不能用于 3D Transformer"这个开放问题往前推了一步。</p>
+<div class="pill-row"><span class="pill"><b>18.9×</b> 参数</span><span class="pill"><b>14.7×</b> 加速</span><span class="pill"><b>56×</b> FLOPs</span><span class="pill">W1A1 全二值</span></div>
+</div>
+<div class="thread t1">
+<h3><span class="tnum">③</span>Latent4D <span class="papers">· IEEE TCE 2026 · 一作 · 4DGS 压缩 · 二轮返修</span></h3>
+<p>把压缩从静态 3D 推到<strong>动态 4D 场景</strong>。动态高斯在相邻时刻、相邻空间高度冗余，逐属性硬量化等于把同样信息抄千百遍。我用变分自编码器（VAE）学一个紧致潜空间来当编解码器，把整套时变高斯属性投影到低维潜流形、再量化潜码落盘，最高达 <em>21900×</em> 压缩比，解码后仍可直接泼溅渲染。它和 VEDAL 是互补的：VEDAL 减"数量"、Latent4D 压"表示"。</p>
+<div class="pill-row"><span class="pill"><b>21900×</b> 压缩</span><span class="pill">VAE 潜空间编解码</span><span class="pill">时序冗余</span></div>
+</div>
+<div class="thread t1">
+<h3><span class="tnum">④</span>CUDA-Eval <span class="papers">· NeurIPS 2026 在投 · 一作 · LLM × CUDA</span></h3>
+<p>这篇是从另一个角度切入"效率"——不是压缩模型，而是<strong>用受控实验厘清"LLM 写高效 GPU 代码时，能力到底卡在哪一环"</strong>。现有全栈 CUDA 智能体把提议、搜索、反馈、环境六个组件揉成黑盒刷分，无法归因。我把它当作组件归因问题，固定其余、只变一项，跑了 4320 个单元的受控矩阵，提出 SPC 算子量化每个组件的边际贡献。核心发现反直觉而有方向性：<em>85.6–95% 的失败是"数值失配"而非编译错误</em>——瓶颈不在语法生成、而在数值语义保真，且搜索策略并非普适加成（在弱模型上反而有害）。这把研究焦点从"换更强的 LLM"转向"教模型理解数值精度"。</p>
+<div class="pill-row"><span class="pill"><b>4320</b> 受控单元</span><span class="pill"><b>SPC</b> 归因算子</span><span class="pill">数值保真瓶颈</span></div>
+</div>
+<p>这四篇让我建立起对"效率"的系统理解：压缩不是单点技巧，而是要<strong>从机制上找到能力的真正载体</strong>（VEDAL 的收敛高斯、BiPT 的注意力稀疏、CUDA-Eval 的数值语义），再围绕它做无损削减。这套能力直接对应简历里的工程经验——3DGS 压缩、二值化设计、Benchmark 设计、CUDA 优化、部署约束下的性能分析。</p>
+</section>
+<section class="doc-sec" id="t3">
+<div class="sec-label">Thread 03</div>
+<h2>多模态理解与安全<span class="en">Multimodal Understanding &amp; Safety</span></h2>
+<p>这条线关注多模态系统里两个被忽视的实用问题：跨模态合成的<strong>物理保真</strong>，以及跨模态大模型的<strong>近零开销安全防护</strong>。</p>
+<div class="thread t3">
+<h3><span class="tnum">①</span>NeuroGuard <span class="papers">· AAAI 2027 在投 · 一作 · 多模态安全</span></h3>
+<p>多模态大模型有一类新攻击：图安全、文也安全，但绑在一起就越界（SIUO 问题）。传统单模态护栏对这种"组合即攻击"几乎无效，重型分类器又太慢。我的洞察是：安全性由<em>跨模态绑定状态</em>决定，而非单模态内容。NeuroGuard 完全冻结 MLLM 当免费特征提取器，只在融合层取隐层表征，用一组方向性统计探针（把脑电分析的锁相值 PLV 迁到投影域得 dPLV、多尺度角度一致性 MAC、累积偏差 CDS）判断绑定模式是否异常。关键发现：组合攻击在相似度上藏得住、但<strong>方向上会露馅</strong>。监控开销仅约 2.67ms，相比动辄 1.5–7s 的响应级护栏是数量级优势，且对自适应 PGD、多轮渐变攻击的鲁棒性远超扁平 MLP。</p>
+<div class="pill-row"><span class="pill"><b>&lt;3ms</b> 监控开销</span><span class="pill"><b>dPLV / MAC / CDS</b></span><span class="pill">攻击正交监控</span><span class="pill">模型无关</span></div>
+</div>
+<div class="thread t3">
+<h3><span class="tnum">②</span>TCE 红外合成 <span class="papers">· IEEE TCE 2026 已发表 · 作者 · 图像合成 · </span></h3>
+<p>红外相机昂贵、数据稀缺，"用 RGB 合成 IR"是缓解瓶颈的关键，但现有方法常丢高频细节、破坏热物理一致性。我没用易崩的 GAN，而是用 Transformer 编解码器（STE-Net）+ 多元特征分工：傅里叶分支看全局热场、小波看多尺度纹理、空间看几何、Sobel 边缘看锐度，再用<strong>四元数卷积（MFFM）</strong>把四路特征当一个实部三个虚部、经 Hamilton 积强制耦合。这个设计的巧妙在于参数极省（仅约 195K）却优于所有拼接/注意力融合。在多个数据集上 PSNR/SSIM/高频保真全面领先，且下游行人检测 mAP 验证了实用价值。</p>
+<div class="pill-row"><span class="pill"><b>四元数卷积</b> 融合</span><span class="pill">弃用 GAN</span><span class="pill">高频保真 SOTA</span><span class="pill"> Q1</span></div>
+</div>
+</section>
+<section class="doc-sec" id="method">
+<div class="sec-label">Methodology</div>
+<h2>贯穿性方法论<span class="en">Cross-Cutting Methodology</span></h2>
+<p>四条研究线表面分散，但我处理问题的方式高度一致。下面四条是我反复使用、且可迁移到新问题的方法论原语——它们比任何单篇论文都更能代表我的研究品味。</p>
+<div class="method-grid">
+<div class="method-card">
+<h4>① 重能力离线化、推理轻量化</h4>
+<p>把昂贵的能力预先“烤”进权重或紧致表示，推理时只跑轻量映射。ATRIE 把 14B LLM 推理蒸进 11.8M Adapter；BiPT 把 FP32 能力压进 1-bit。本质都是把推理时延复杂度从 O(大模型) 降到 O(轻量件)。</p>
+</div>
+<div class="method-card">
+<h4>② 概率/变分视角处理离散决策</h4>
+<p>面对"砍/留""安全/不安全"这类离散硬决策，我倾向<strong>用概率建模换取可学习性与理论保证</strong>。VEDAL 把不可逆的硬剪枝变成变分推断下的连续概率优化，并给出闭式保留概率；NeuroGuard 把安全判定建成低维证据上的概率决策。</p>
+</div>
+<div class="method-card">
+<h4>③ 用受控实验做机制归因</h4>
+<p>不满足于"刷高指标"，而是<strong>固定变量、量化每个组件的边际贡献</strong>。CUDA-Eval 用 4320 单元受控矩阵 + SPC 算子把黑盒拆开；每篇工作的消融都遵循"逐个拿掉模块看掉多少"的严格归因，确保贡献可信而非偶然。</p>
+</div>
+<div class="method-card">
+<h4>④ 以真实部署约束为最终标尺</h4>
+<p>我用实测延迟、显存、真机试验而非纸面 FLOPs 检验工作。BiPT 报 RTX 3090 实测加速并诚实说明小于名义 FLOPs；DOGe 在图书馆服务机器狗系统中完成真实环境测试。诚实地区分“理论增益”与“落地增益”是我的底线。</p>
+</div>
+</div>
+</section>
+<section class="doc-sec" id="future">
+<div class="sec-label">Future</div>
+<h2>未来研究方向<span class="en">Future Directions</span></h2>
+<p>我的四条研究线正在自然地收敛到一个目标：<strong>端侧的多模态具身智能（On-Device Multimodal Embodied AI）</strong>——一个能在机器人本体上实时运行、既懂语言又懂场景、还能安全决策的统一系统。具体地，我想推进三个方向：</p>
+<h3>1. 把极致压缩从单模态推向多模态统一模型</h3>
+<p>我已在点云（BiPT）、高斯场景（VEDAL/Latent4D）、语音（ATRIE）上分别验证了极致压缩，下一步是把这套几何/语义感知的压缩原语推广到<strong>多模态统一骨干</strong>，让一个端侧模型同时高效处理视觉、语言、3D。CUDA-Eval 积累的"数值语义保真"洞察会在这里派上用场。</p>
+<h3>2. 让端侧模型具备可信的安全与不确定性意识</h3>
+<p>NeuroGuard 的“近零开销、攻击正交监控”指向一个原则：部署级智能必须自带安全与不确定性校准。我希望把这种轻量安全监控做成端侧多模态系统的标准组件，而非事后补丁。</p>
+<h3>3. 把"重训练、轻推理"范式系统化为端侧具身智能的训练框架</h3>
+<p>归根结底，我相信 AI 的下一个前沿不只在"更大的模型"，也在「<strong>让最强的能力，跑在最受限的设备上</strong>」。这正是我想长期投入的方向。</p>
+</section>
+<section class="doc-sec" id="timeline">
+<div class="sec-label">Trajectory</div>
+<h2>研究历程<span class="en">Research Trajectory</span></h2>
+<ul class="tl">
+<li><b>2025</b>Forestpest-YOLO 发表于 CAIT 2025——我的第一篇一作，从边缘小目标检测切入"高效部署"主题。</li>
+<li><b>2026 初</b>TCE 红外合成（作者）发表于 IEEE TCE（ ）；BiPT（作者）投稿 IEEE TPAMI，与资深合作者一起攻 1-bit 点云 Transformer。</li>
+<li>2026 春密集产出一作工作：ATRIE（ACM ICMR 已录用）、VEDAL（CGI 已录用）、DOGe（IEEE WCCIS 已录用），覆盖语音、3DGS 压缩与具身导航。</li>
+<li>NeuroGuard 的“近零开销、攻击正交监控”指向一个原则：部署级智能必须自带安全与不确定性校准。我希望把这种轻量安全监控做成端侧多模态系统的标准组件，而非事后补丁。</li>
+</ul>
+</section>
+</main>
+</div>
+<footer>
+<div class="grad-line"></div>
+<div>© 2026 Aoduo Li · 李奥多  ·  研究综述  ·  <a href="papers.html">论文讲解</a>  ·  <a href="translations.html">全文翻译</a>  ·  <a href="index.html">学术主页</a></div>
+</footer>
+<div class="totop" id="toTop" title="回到顶部">↑</div>
+<script>
+(function(){
+  var OFF=76;
+  function ease(p){return 1-Math.pow(1-p,3);}
+  function scrollTo(el){
+    var sy=window.pageYOffset||document.documentElement.scrollTop;
+    var ty=el.getBoundingClientRect().top+sy-OFF, d=ty-sy;
+    if(Math.abs(d)<2)return;
+    var dur=Math.min(560,220+Math.abs(d)*0.16), t0=null;
+    function step(ts){if(t0===null)t0=ts;var p=Math.min(1,(ts-t0)/dur);window.scrollTo(0,sy+d*ease(p));if(p<1)requestAnimationFrame(step);}
+    requestAnimationFrame(step);
+  }
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener('click',function(e){
+      var id=a.getAttribute('href').slice(1);if(!id)return;
+      var el=document.getElementById(id);if(!el)return;
+      e.preventDefault();scrollTo(el);
+      if(history.replaceState)history.replaceState(null,'','#'+id);
+    });
+  });
+  var links=document.querySelectorAll('.sidebar a[href^="#"]');
+  var map={};
+  links.forEach(function(a){var id=a.getAttribute('href').slice(1);var s=document.getElementById(id);if(s)map[id]=a;});
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){var id=e.target.id;if(!map[id])return;if(e.isIntersecting){links.forEach(function(a){a.classList.remove('active');});map[id].classList.add('active');}});
+  },{rootMargin:'-25% 0px -65% 0px'});
+  Object.keys(map).forEach(function(id){var s=document.getElementById(id);if(s)io.observe(s);});
+  var tt=document.getElementById('toTop');
+  window.addEventListener('scroll',function(){if((window.pageYOffset||document.documentElement.scrollTop)>500)tt.classList.add('show');else tt.classList.remove('show');},{passive:true});
+  tt.addEventListener('click',function(){scrollTo(document.getElementById('hero'));});
+})();
+</script>
+</body>
+</html>

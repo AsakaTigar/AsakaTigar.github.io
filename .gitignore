@@ -1,0 +1,6 @@
+# 临时构建/提取脚本与中间产物（不部署）
+_mk_*.py
+extract_teasers.py
+_forestpest.pdf
+*.pyc
+__pycache__/
