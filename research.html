@@ -136,7 +136,6 @@ footer .grad-line{width:60px;height:2px;background:var(--grad);margin:0 auto 16p
 <section class="hero" id="hero">
 <div class="hero-eyebrow">Research Statement</div>
 <h1>研究<span class="gradient">综述</span></h1>
-
 <div class="hero-stats">
 <div class="stat"><div class="stat-num">11</div><div class="stat-label">论文与研究项目</div></div>
 <div class="stat"><div class="stat-num">4</div><div class="stat-label">研究主线</div></div>
@@ -147,26 +146,10 @@ footer .grad-line{width:60px;height:2px;background:var(--grad);margin:0 auto 16p
 <section class="doc-sec" id="vision">
 <div class="sec-label">Vision</div>
 <h2>研究愿景与主线<span class="en">Research Vision &amp; The Connecting Thread</span></h2>
-
 <p>这个命题之所以吸引我，是因为它<strong>同时是科学问题和工程问题</strong>。科学上，它逼迫我去理解一个模型里「哪些部分是真正承载能力的、哪些是冗余的」——这要求对模型内部机制有足够深的洞察；工程上，它要求把这种洞察落到真实硬件的延迟、显存、带宽约束里，并用实测数字而非纸面 FLOPs 来检验。我的每一篇工作，本质上都是在某个具体场景里回答「能力从哪来、冗余在哪里、如何无损地把它压到能部署」这组问题。</p>
 <p>顺着这条主线，我的工作自然聚成<em>四条研究线</em>：(1) <strong>高效 AI 与极致压缩</strong>——直接攻克部署的算力/显存瓶颈；(2) <strong>LLM 对齐与拟人化交互</strong>——让端侧小模型也具备大模型的对话与推理品质；(3) <strong>多模态理解与安全</strong>——在跨模态系统里以近零开销提供理解与防护；(4) <strong>具身智能与机器人导航</strong>——把前三条线整合到真实机器人这一终极部署载体上。四条线看似分散，但都被「效率—部署」这条主线串起，并共享一套可迁移的方法论（见第 5 节）。</p>
 </section>
 
-<section class="doc-sec" id="t3">
-<div class="sec-label">Thread 03</div>
-<h2>多模态理解与安全<span class="en">Multimodal Understanding &amp; Safety</span></h2>
-<p>这条线关注多模态系统里两个被忽视的实用问题：跨模态合成的<strong>物理保真</strong>，以及跨模态大模型的<strong>近零开销安全防护</strong>。</p>
-<div class="thread t3">
-<h3><span class="tnum">①</span>NeuroGuard <span class="papers">· AAAI 2027 在投 · 一作 · 多模态安全</span></h3>
-<p>多模态大模型有一类新攻击：图安全、文也安全，但绑在一起就越界（SIUO 问题）。传统单模态护栏对这种"组合即攻击"几乎无效，重型分类器又太慢。我的洞察是：安全性由<em>跨模态绑定状态</em>决定，而非单模态内容。NeuroGuard 完全冻结 MLLM 当免费特征提取器，只在融合层取隐层表征，用一组方向性统计探针（把脑电分析的锁相值 PLV 迁到投影域得 dPLV、多尺度角度一致性 MAC、累积偏差 CDS）判断绑定模式是否异常。关键发现：组合攻击在相似度上藏得住、但<strong>方向上会露馅</strong>。监控开销仅约 2.67ms，相比动辄 1.5–7s 的响应级护栏是数量级优势，且对自适应 PGD、多轮渐变攻击的鲁棒性远超扁平 MLP。</p>
-<div class="pill-row"><span class="pill"><b>&lt;3ms</b> 监控开销</span><span class="pill"><b>dPLV / MAC / CDS</b></span><span class="pill">攻击正交监控</span><span class="pill">模型无关</span></div>
-</div>
-<div class="thread t3">
-<h3><span class="tnum">②</span>TCE 红外合成 <span class="papers">· IEEE TCE 2026 已发表 · 作者 · 图像合成 · </span></h3>
-<p>红外相机昂贵、数据稀缺，"用 RGB 合成 IR"是缓解瓶颈的关键，但现有方法常丢高频细节、破坏热物理一致性。我没用易崩的 GAN，而是用 Transformer 编解码器（STE-Net）+ 多元特征分工：傅里叶分支看全局热场、小波看多尺度纹理、空间看几何、Sobel 边缘看锐度，再用<strong>四元数卷积（MFFM）</strong>把四路特征当一个实部三个虚部、经 Hamilton 积强制耦合。这个设计的巧妙在于参数极省（仅约 195K）却优于所有拼接/注意力融合。在多个数据集上 PSNR/SSIM/高频保真全面领先，且下游行人检测 mAP 验证了实用价值。</p>
-<div class="pill-row"><span class="pill"><b>四元数卷积</b> 融合</span><span class="pill">弃用 GAN</span><span class="pill">高频保真 SOTA</span><span class="pill"> Q1</span></div>
-</div>
-</section>
 <section class="doc-sec" id="method">
 <div class="sec-label">Methodology</div>
 <h2>贯穿性方法论<span class="en">Cross-Cutting Methodology</span></h2>
@@ -174,19 +157,17 @@ footer .grad-line{width:60px;height:2px;background:var(--grad);margin:0 auto 16p
 <div class="method-grid">
 <div class="method-card">
 <h4>① 重能力离线化、推理轻量化</h4>
-
 </div>
 <div class="method-card">
 <h4>② 概率/变分视角处理离散决策</h4>
-<p>面对"砍/留""安全/不安全"这类离散硬决策，我倾向<strong>用概率建模换取可学习性与理论保证</strong>。VEDAL 把不可逆的硬剪枝变成变分推断下的连续概率优化，并给出闭式保留概率；NeuroGuard 把安全判定建成低维证据上的概率决策。</p>
+
 </div>
 <div class="method-card">
 <h4>③ 用受控实验做机制归因</h4>
-<p>不满足于"刷高指标"，而是<strong>固定变量、量化每个组件的边际贡献</strong>。CUDA-Eval 用 4320 单元受控矩阵 + SPC 算子把黑盒拆开；每篇工作的消融都遵循"逐个拿掉模块看掉多少"的严格归因，确保贡献可信而非偶然。</p>
+
 </div>
 <div class="method-card">
 <h4>④ 以真实部署约束为最终标尺</h4>
-
 </div>
 </div>
 </section>
@@ -195,9 +176,9 @@ footer .grad-line{width:60px;height:2px;background:var(--grad);margin:0 auto 16p
 <h2>未来研究方向<span class="en">Future Directions</span></h2>
 <p>我的四条研究线正在自然地收敛到一个目标：<strong>端侧的多模态具身智能（On-Device Multimodal Embodied AI）</strong>——一个能在机器人本体上实时运行、既懂语言又懂场景、还能安全决策的统一系统。具体地，我想推进三个方向：</p>
 <h3>1. 把极致压缩从单模态推向多模态统一模型</h3>
-<p>我已在点云（。CUDA-Eval 积累的"数值语义保真"洞察会在这里派上用场。</p>
+
 <h3>2. 让端侧模型具备可信的安全与不确定性意识</h3>
-<p>NeuroGuard 的“近零开销、攻击正交监控”指向一个原则：部署级智能必须自带安全与不确定性校准。我希望把这种轻量安全监控做成端侧多模态系统的标准组件，而非事后补丁。</p>
+
 <h3>3. 把"重训练、轻推理"范式系统化为端侧具身智能的训练框架</h3>
 <p>归根结底，我相信 AI 的下一个前沿不只在"更大的模型"，也在「<strong>让最强的能力，跑在最受限的设备上</strong>」。这正是我想长期投入的方向。</p>
 </section>
@@ -206,9 +187,8 @@ footer .grad-line{width:60px;height:2px;background:var(--grad);margin:0 auto 16p
 <h2>研究历程<span class="en">Research Trajectory</span></h2>
 <ul class="tl">
 <li><b>2025</b>Forestpest-YOLO 发表于 CAIT 2025——我的第一篇一作，从边缘小目标检测切入"高效部署"主题。</li>
-
 <li>2026 春密集产出一作工作：ATRIE（ACM ICMR 已录用）、VEDAL（CGI 已录用）、DOGe（IEEE WCCIS 已录用），覆盖语音、3DGS 压缩与具身导航。</li>
-<li>NeuroGuard 的“近零开销、攻击正交监控”指向一个原则：部署级智能必须自带安全与不确定性校准。我希望把这种轻量安全监控做成端侧多模态系统的标准组件，而非事后补丁。</li>
+
 </ul>
 </section>
 </main>
